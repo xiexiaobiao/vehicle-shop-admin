@@ -1,0 +1,67 @@
+buildscript {
+    ext {
+        springBootVersion = '2.2.2.RELEASE'
+    }
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+plugins {
+    id 'java'
+    id 'idea'
+    id 'org.springframework.boot' version '2.2.2.RELEASE' //这才会将第三方jar打包进来
+    //id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+}
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile group: 'org.apache.dubbo', name: 'dubbo-spring-boot-starter', version: '2.7.5'
+    //other module dependency config
+    compile project(":common")
+}
+
+sourceSets {
+    main{
+        java{
+            srcDirs = ['src/main/java']
+            //srcDirs = ['src/main/java','../common/src/main/java'] Duplicate content roots detected
+        }
+    }
+    test{}
+}
+
+// build后Dao包里没有mapper.xml
+processResources {
+    from('src/main/java'){
+        include('**/*.xml')
+        exclude "**/*.java"
+    }
+}
+
+// 打包jar必须的配置
+jar {
+    // all 3rd part dependencies in one
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+
+    manifest {
+        attributes 'Main-Class': 'com.biao.shop.BusinessApp'
+    }
+}
+
+// 三种打包jar方法 https://www.leadroyal.cn/?p=555，一是自带的jar命令，二是使用shadow plugin，三是使用springboot plugin
+// 这里使用 springboot plugin打包jar，通过 buildscript 和 org.springframework.boot插件，打包使用此插件生成的 bootJar 命令

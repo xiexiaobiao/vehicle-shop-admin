@@ -1,0 +1,47 @@
+//day01
+1.springboot druid
+2.mapper location 问题解决，需要将mapper文件放common模块的resources下
+//day02
+3.jar包：
+// 三种打包jar方法 https://www.leadroyal.cn/?p=555，一是自带的jar命令，二是使用shadow plugin，三是使用springboot plugin
+// 这里使用 springboot plugin打包jar，通过 buildscript 和 org.springframework.boot插件，打包使用此插件生成的 bootJar 命令
+4.保存订单测试数据格式，时间格式中要有个T：
+POST  http://localhost:8081/shop-order-entity/save
+{
+  "uuid": "4",
+  "clientUuid": "4",
+  "idList": "4",
+  "generateDate": "2019-01-06T00:00:00",
+  "modifyDate": "2019-01-06T00:00:00"
+}
+//day03
+5.rocketmq 事务实现
+//day04
+6.business 与 stock MQ 通信
+// day05 修改订单和明细结构
+7.POST  http://localhost:8081/shop-order-entity/save
+  {
+    "clientUuid": "CN003",
+    "generateDate": "2019-01-17T00:00:00",
+    "modifyDate": "2000-01-01T00:00:00",
+    "detail": [
+    {"itemUuid": "SP000010", "quantity": "3","remark": "九折，优惠5元"},
+    {"itemUuid": "SP000012","quantity": "2","remark": "优惠5元"},
+    {"itemUuid": "SP000015","quantity": "1","remark": "九折，优惠10元"}
+    ]
+  }
+
+8.IDEA 控制台输出中文乱码, idea64.exe.vmoptions文件末尾加 -Dfile.encoding=UTF-8
+
+//day 06 business-stock-customer 业务整合连接
+9.jackson使用
+  /**因Jackson默认LocalDateTime序列化为："time":{"nano":538064800,"year":2020,"monthValue":1,"dayOfMonth":18,"hour":15,"minute":11,"second":9,
+           * "month":"JANUARY","dayOfWeek":"SATURDAY","dayOfYear":18,"chronology":{"id":"ISO","calendarType":"iso8601"}}
+           * 导致无法反序列化为LocalDateTime，可以先将LocalDateTime转为instant，再转回来。*/
+          @JsonSerialize(using = CustomDateSerializer.class)
+          @JsonDeserialize(using = CustomDateDeserializer.class)
+   需预定义下CustomDateSerializer和CustomDateDeserializer两个类即可，
+
+10 注意defaultMQPushConsumer.setMessageModel(MessageModel.CLUSTERING);
+   导致消息会被同group消费者"瓜分"式消费，
+11.

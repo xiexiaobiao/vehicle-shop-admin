@@ -1,0 +1,101 @@
+server:
+  port: 9090
+  servlet:
+    context-path: /vehicle #所有访问该应用的路径前缀
+
+spring:
+  # 配置文件名称，标识不同环境的配置。由 spring.profiles.active 的值来决定使用哪组配置。
+  profiles: default
+  main:
+    allow-bean-definition-overriding: true
+  # spring GATEWAY 配置
+  application:
+      name: api-gateway
+  cloud:
+    gateway:
+      # 路由规则: 唯一标识（ID）、目标服务地址（uri）、一组断言（predicates）和一组过滤器组成（filters）
+      routes:
+        # 路由规则id,id前须有空格符
+      - id: url-proxy-rule-01
+        order: 1
+        # 目标uri
+        uri: http://localhost:8081/vehicle/shop-order-entity/query
+        #uri: http://www.baidu.com
+        # 路由条件谓词，可使用表达式组成复杂判断逻辑
+        predicates:
+          # 注意-有个空格符,=号前后无空格。符合的请求路径为 **/vehicle/query，转发地址为：uri/query
+          - Path=/vehicle/query
+          #- Query=smile #包含smile字符即符合
+          #- Header=X-Request-Id, \d+
+          #- Cookie=sessionId, test
+          #- Method=GET
+          #- Host=**.baidu.com
+          #- RemoteAddr=192.168.1.1/24
+        filters:
+          - StripPrefix=2 # 截取路径位数,比如 /vehicle/query，截取后为 /query
+
+  #连接池配置
+  datasource:
+    name: druidDatasource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/vehicle_shop?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
+    username: root
+    password: 123456
+    # 使用druid数据源
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      # 配置测试查询语句, #Oracle需要打开注释
+      validationQuery: SELECT 1 FROM DUAL
+      # 初始化大小，最小，最大
+      initialSize: 10
+      minIdle: 10
+      maxActive: 200
+      # 配置一个连接在池中最小生存的时间，单位是毫秒
+      minEvictableIdleTimeMillis: 180000
+      testOnBorrow: false
+      testWhileIdle: true
+      removeAbandoned: true
+      removeAbandonedTimeout: 1800
+      logAbandoned: true
+      # 打开PSCache，并且指定每个连接上PSCache的大小
+      poolPreparedStatements: true
+      maxOpenPreparedStatements: 100
+      # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+      filters: stat,wall
+      # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+      connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+
+
+#mybatis
+mybatis-plus:
+  ## 如果是放在common模块的src/main/java目录下 classpath:com/yourpackage/*/mapper/*Mapper.xml
+  # 如果是放在common模块的resource目录 classpath:mapper/*Mapper.xml
+  mapper-locations: classpath:mapper/*Mapper.xml
+  #实体扫描，多个package用逗号或者分号分隔
+  typeAliasesPackage: com.biao.shop.common.*.entity
+  global-config:
+    #数据库相关配置
+    db-config:
+      #主键类型  AUTO:"数据库ID自增", INPUT:"用户输入ID", ID_WORKER:"全局唯一ID (数字类型唯一ID)", UUID:"全局唯一ID UUID";
+      id-type: UUID
+      #字段策略 IGNORED:"忽略判断",NOT_NULL:"非 NULL 判断"),NOT_EMPTY:"非空判断"
+      # field-strategy: NOT_NULL
+    banner: false
+  #原生配置
+  configuration:
+    #驼峰
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+    #当查询数据为空时字段返回为null，不加这个查询数据为空时，字段将被隐藏
+    call-setters-on-nulls: true
+    #插入空值时报错
+    jdbc-type-for-null: 'null'
+    # 这个配置会将执行的sql打印出来，在开发或测试的时候可以用
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# mybatis sql日志
+logging:
+  #打印sql,你的项目包路径
+  level:
+    com:
+      biao: debug

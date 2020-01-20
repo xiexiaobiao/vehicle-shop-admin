@@ -1,0 +1,29 @@
+plugins {
+    id 'java'
+    id 'war'
+}
+
+sourceCompatibility = 1.8
+
+repositories {
+    maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+}
+
+//if code include the chinese content
+//>>>>>>>>>>>> unmappable character for encoding GBK,
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile group: 'com.baomidou', name: 'mybatis-plus-generator', version: '3.3.0'
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
+    compile group: 'org.apache.velocity', name: 'velocity-engine-core', version: '2.1'
+
+    compile group: 'org.apache.rocketmq', name: 'rocketmq-client', version: '4.6.0'
+    compile group: 'org.apache.rocketmq', name: 'rocketmq-common', version: '4.6.0'
+    compile group: 'org.apache.rocketmq', name: 'rocketmq-remoting', version: '4.6.0'
+
+
+}

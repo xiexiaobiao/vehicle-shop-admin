@@ -1,0 +1,24 @@
+rootProject.name = 'vehicle-shop-admin'
+// 公共模块
+include 'common'
+// 订单处理
+include 'business'
+// 库存
+include 'stock'
+// 搜索
+include 'search'
+// 系统管理
+include 'system'
+// 用户管理
+include 'customer'
+//  快递
+include 'delivery'
+// 权限
+include 'authority'
+// 门户
+include 'portal'
+// 金融
+include 'finance'
+// 网关
+include 'gateway'
+

@@ -1,7 +1,6 @@
 package com.biao.shop.business.conf;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 

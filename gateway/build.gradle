@@ -25,7 +25,8 @@ dependencies {
     compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-gateway', version: '2.2.1.RELEASE'
     // netty all in one
     compile group: 'io.netty', name: 'netty-all', version: '4.1.44.Final'
+    providedCompile group: 'javax.servlet', name: 'javax.servlet-api', version: '4.0.1'
 
-    compile project(":common")
+    //compile project(":common")
 }
 

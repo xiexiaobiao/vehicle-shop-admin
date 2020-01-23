@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.biao.shop.common.dao.ItemListDao">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.biao.shop.common.entity.ItemListEntity">
+        <id column="id_list" property="idList" />
+        <result column="order_uuid" property="orderUuid" />
+
+        <result column="item_uuid" property="itemUuid" />
+        <result column="quantity" property="quantity" />
+        <result column="remark" property="remark" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id_list,order_uuid, item_uuid, quantity, remark
+    </sql>
+
+</mapper>

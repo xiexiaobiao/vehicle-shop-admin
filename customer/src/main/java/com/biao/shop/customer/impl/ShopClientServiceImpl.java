@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
+import org.dromara.soul.client.common.annotation.SoulClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +26,7 @@ import java.util.Objects;
 @org.springframework.stereotype.Service
 @Service(version = "1.0",group = "shop",interfaceClass = ShopClientService.class)
 @Slf4j
+@SoulClient(path = "/", desc = "customer provider")
 public class ShopClientServiceImpl extends ServiceImpl<ShopClientDao, ShopClientEntity> implements ShopClientService {
 
     private ShopClientDao shopClientDao;

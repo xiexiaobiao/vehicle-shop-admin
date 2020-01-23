@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 
 /**
@@ -55,19 +56,33 @@ public class TransListenerImpl implements TransactionListener {
         }
     }
 
-    // 上面方法执行后，半消息无回应时，broker会执行此方法去检查本地事务状态
+    // 上面方法执行后，半消息无回应时，broker会执行此方法去检查本地事务状态，然后决定是否将消息发往下游
     @Override
     public LocalTransactionState checkLocalTransaction(MessageExt msg) {
+        // Jackson 反序列化，注意CustomDateDeserializer的使用
+        JavaTimeModule timeModule = new JavaTimeModule();
+        timeModule.addDeserializer(LocalDateTime.class,new CustomDateDeserializer());
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(timeModule);
+        OrderBO orderBo = null;
+        try {
+            orderBo = objectMapper.readValue(msg.getBody(), OrderBO.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+    }
+        assert orderBo != null;
+        String uuid  = orderBo.getUuid();
         if (null == msg.getTransactionId()) {
-            // 回查一次结束
+            // 此返回值将回查一次结束
             return LocalTransactionState.ROLLBACK_MESSAGE;
         }
-        if (shopOrderService.checkOrderSaveStatus("UUID")){
-            // 回查一次结束
+        // 如果订单uuid存在，则认为本地事务执行成功，半消息将发送到下游
+        if (shopOrderService.checkOrderSaveStatus(uuid)){
+            // 此返回值将回查一次结束
             return LocalTransactionState.COMMIT_MESSAGE;
         }
         else {
-            // 执行多次，知道达到最大回查次数，默认15次
+            // 此返回值将执行多次，直到达到最大回查次数，默认15次
             return LocalTransactionState.UNKNOW;
         }
     }

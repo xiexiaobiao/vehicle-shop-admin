@@ -26,6 +26,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -116,8 +117,12 @@ public class ShopOrderServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrderEnt
     @Override
     public boolean checkOrderSaveStatus(String orderUUID) {
         // 查询订单数据库，看orderUUID是否已经存在，
-        // 。。。
-        log.debug("simulate checkOrderSaveStatus 》》》》");
+        QueryWrapper<ShopOrderEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.ne(true,"uuid",orderUUID);
+        if (Objects.isNull(shopOrderDao.selectOne(queryWrapper))){
+            return false;
+        }
+        log.debug("simulate checkOrderSaveStatus !!!");
         return true;
     }
 

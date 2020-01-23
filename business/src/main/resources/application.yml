@@ -120,7 +120,9 @@ dubbo:
     retries: 2
     #负载均衡四种策略： random,roundrobin,leastactive,consistenthash
     loadbalance: roundrobin
+    cluster: failover
   provider:
     timeout: 1000
     retries: 2
     loadbalance: roundrobin
+    cluster: failback

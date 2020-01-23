@@ -84,3 +84,17 @@ dubbo:
   protocol:
     name: dubbo
     port: 20880
+  consumer:
+    cluster: failover
+  provider:
+    cluster: failback
+    timeout: 2000
+    retries: 2
+    loadbalance: consistenthash
+
+#soul 配置
+soul:
+  dubbo:
+    admin-url: http://localhost:9095
+    context-path: /vehicle
+    app-name: customer

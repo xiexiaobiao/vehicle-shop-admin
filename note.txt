@@ -44,4 +44,5 @@ POST  http://localhost:8081/shop-order-entity/save
 
 10 注意defaultMQPushConsumer.setMessageModel(MessageModel.CLUSTERING);
    导致消息会被同group消费者"瓜分"式消费，
+
 11.

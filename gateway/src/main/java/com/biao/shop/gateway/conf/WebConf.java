@@ -19,7 +19,7 @@ public class WebConf {
     private static final String MAX_AGE = "18000L";
 
     // cors 设置
-    @Bean
+    @Bean("corsFilter")
     public WebFilter corsFilter() {
         return (ServerWebExchange ctx, WebFilterChain chain) -> {
             ServerHttpRequest request = ctx.getRequest();

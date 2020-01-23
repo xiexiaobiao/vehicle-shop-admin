@@ -5,6 +5,13 @@ import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * @Classname GateWayConf
+ * @Description  API style for the spring-gateway settings
+ * @Author KOOL
+ * @Date  2020/1/21 12:04
+ * @Version 1.0
+ **/
 //@Configuration
 public class GateWayConf {
     //@Bean

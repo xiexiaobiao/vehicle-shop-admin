@@ -1,4 +1,4 @@
-package com.biao.shop.business.conf;
+package com.biao.shop.common.conf;
 
 import com.biao.shop.common.exception.RocketMQException;
 import org.apache.rocketmq.client.exception.MQClientException;
@@ -9,9 +9,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 import org.springframework.util.StringUtils;
 
 
+// 生成基础版本的RocketMQProducer，使用的模块中再具体配置
 @Configuration
 //@Slf4j
 public class RocketMQProducerConf {
@@ -38,6 +40,7 @@ public class RocketMQProducerConf {
     private Integer retryTimesWhenSendFailed;
 
     @Bean
+    @Scope(value = "prototype")
     public TransactionMQProducer transactionMQProducer() throws RocketMQException {
         if (StringUtils.isEmpty(this.groupName)){
             throw new RocketMQException("groupName is blank");

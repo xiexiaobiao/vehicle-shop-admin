@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebFilter(urlPatterns = "/*")
+@WebFilter(urlPatterns = "/*",dispatcherTypes = DispatcherType.REQUEST)
 @Order(value = 1)
 public class CorsFilter implements Filter {
 

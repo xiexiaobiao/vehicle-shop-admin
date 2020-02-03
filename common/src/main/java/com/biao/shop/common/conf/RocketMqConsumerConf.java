@@ -1,6 +1,5 @@
-package com.biao.shop.business.conf;
+package com.biao.shop.common.conf;
 
-import com.biao.shop.business.mq.RocketMQConsumeMsgListener;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.rocketmq.client.consumer.DefaultLitePullConsumer;
 import org.apache.rocketmq.client.consumer.DefaultMQPushConsumer;
@@ -8,12 +7,13 @@ import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
 import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 
 
+// 生成基础版本的RocketMqConsumer，使用的模块中再具体配置
 @Configuration
 //@Slf4j
 public class RocketMqConsumerConf {
@@ -31,14 +31,8 @@ public class RocketMqConsumerConf {
     @Value("${rocketmq.consumer.consumeMessageBatchMaxSize}")
     private int consumeMessageBatchMaxSize;
 
-    private RocketMQConsumeMsgListener mqMessageListenerProcessor;
-
-    @Autowired
-    public RocketMqConsumerConf(RocketMQConsumeMsgListener mqMessageListenerProcessor){
-        this.mqMessageListenerProcessor = mqMessageListenerProcessor;
-    }
-
     @Bean
+    @Scope(value = "prototype")
     public DefaultMQPushConsumer getRocketMQConsumer() throws Exception{
 
         if (StringUtils.isEmpty(groupName)){
@@ -59,7 +53,7 @@ public class RocketMqConsumerConf {
         consumer.setConsumeThreadMax(consumeThreadMax);
         // 加入一个消息监听器，进行消息的消费
         /**特别注意！！！不是 consumer.setMessageListener(listener);*/
-        consumer.registerMessageListener(mqMessageListenerProcessor);
+//        consumer.registerMessageListener(mqMessageListenerProcessor);
         /**
          * 设置Consumer第一次启动是从队列头部开始消费还是队列尾部开始消费
          * 如果非第一次启动，那么按照上次消费的位置继续消费

@@ -44,8 +44,9 @@ CREATE TABLE `shop_order` (
   `client_uuid` varchar(45) DEFAULT NULL,
   `generate_date` datetime DEFAULT NULL,
   `modify_date` datetime DEFAULT NULL,
+  `paid` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id_order`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='订单表';
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='订单表'
 
 CREATE TABLE `shop_stock` (
   `id_stock` int(11) NOT NULL AUTO_INCREMENT,

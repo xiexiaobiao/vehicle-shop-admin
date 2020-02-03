@@ -19,7 +19,7 @@ POST  http://localhost:8081/shop-order-entity/save
 //day04
 6.business 与 stock MQ 通信
 // day05 修改订单和明细结构
-7.POST  http://localhost:8081/shop-order-entity/save
+7.POST  http://localhost:8081/vehicle/shop-order-entity/save
   {
     "clientUuid": "CN003",
     "generateDate": "2019-01-17T00:00:00",
@@ -45,4 +45,7 @@ POST  http://localhost:8081/shop-order-entity/save
 10 注意defaultMQPushConsumer.setMessageModel(MessageModel.CLUSTERING);
    导致消息会被同group消费者"瓜分"式消费，
 
-11.
+11.配置增加全局： context-path: /vehicle #所有访问该应用的路径前缀
+   http://localhost:8081/vehicle/shop-order-entity/save
+12.ShopOrderService.saveOrder()方法中，使用RPC调用clientService.addPoint(),这里就使用了事务的传播属性：
+13.表设计中字符统一使用utf8mb4，表示是否的字段统一使用is_deleted,模式

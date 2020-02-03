@@ -25,6 +25,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -37,12 +39,15 @@ public class RocketMQConsumer {
     @Autowired
     ShopStockService shopStockService;
 
+    @Autowired
+    DefaultMQPushConsumer defaultMQPushConsumer;
+
     private final Logger logger = LoggerFactory.getLogger(RocketMQConsumer.class);
 
     @Bean(name = "StockDefaultMQPushConsumer")
+    @Scope(value = "prototype",proxyMode = ScopedProxyMode.TARGET_CLASS)
     public DefaultMQPushConsumer defaultMQPushConsumer() throws MQClientException {
-        DefaultMQPushConsumer defaultMQPushConsumer =  new DefaultMQPushConsumer("shop");
-        defaultMQPushConsumer.setNamesrvAddr("192.168.1.224:9876");
+        defaultMQPushConsumer.setConsumerGroup("shop");
         defaultMQPushConsumer.subscribe("ShopTopic","order_tag");
         defaultMQPushConsumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
         /** RocketMQ supports two message models: clustering and broadcasting. If clustering is set, consumer clients with

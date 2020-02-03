@@ -70,6 +70,7 @@ public class ShopOrderController {
         timeModule.addSerializer(LocalDateTime.class, new CustomDateSerializer());
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(timeModule);
+
         String JsonStr = objectMapper.writeValueAsString(order);
         Message msg = new Message("ShopTopic","order_tag",
                 JsonStr.getBytes(RemotingHelper.DEFAULT_CHARSET));

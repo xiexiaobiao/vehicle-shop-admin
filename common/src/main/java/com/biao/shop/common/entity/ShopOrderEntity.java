@@ -50,6 +50,8 @@ public class ShopOrderEntity implements Serializable {
     @JsonDeserialize(using = CustomDateDeserializer.class)
     private LocalDateTime modifyDate;
 
+    private Boolean paid;
+
 
     public Integer getIdOrder() {
         return idOrder;
@@ -100,6 +102,15 @@ public class ShopOrderEntity implements Serializable {
                 ", clientUuid='" + clientUuid + '\'' +
                 ", generateDate=" + generateDate +
                 ", modifyDate=" + modifyDate +
+                ", paid=" + paid +
                 '}';
+    }
+
+    public Boolean getPaid() {
+        return paid;
+    }
+
+    public void setPaid(Boolean paid) {
+        this.paid = paid;
     }
 }

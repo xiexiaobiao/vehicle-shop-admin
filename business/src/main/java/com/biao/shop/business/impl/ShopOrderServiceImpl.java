@@ -58,12 +58,16 @@ public class ShopOrderServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrderEnt
         this.shopOrderDao = shopOrderDao;
     }
 
+    /** */
     // 订单的明细单独保存，使用 dubbo RPC调用customer模块的服务
     @Override
     @Transactional(propagation = Propagation.NESTED)
     public int saveOrder(OrderBO order) {
-        // 模拟本地事务出错
-        // int a = 1 / 0 ;
+
+        /**测试模拟本地事务出错,"sendStatus": "SEND_OK",
+         * 但是"localTransactionState": "ROLLBACK_MESSAGE"，半消息不会发送到下游*/
+         // int a = 1 / 0 ;
+
         ShopOrderEntity orderEntity = new ShopOrderEntity();
         order.setGenerateDate(LocalDateTime.now());
         BeanUtils.copyProperties(order,orderEntity);
@@ -83,11 +87,13 @@ public class ShopOrderServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrderEnt
             BeanUtils.copyProperties(itemBo,listEntity);
             listEntity.setOrderUuid(String.valueOf(orderUuid));
             itemListEntities.add(listEntity);
-            // 加积分,积分换算即售价取整，100.56=100积分
+            // 加积分,积分换算即售价取整
             int pointToAdd = itemService.queryById(itemBo.getItemUuid()).getSellPrice().intValue();
             clientService.addPoint(order.getClientUuid(),pointToAdd);
         });
         itemListService.saveBatch(itemListEntities);
+        // 测试事务的传播属性，propagation
+        int j = 1/0;
         return shopOrderDao.insert(orderEntity);
 
         /**另一种程序结构：这里使用manager层的类

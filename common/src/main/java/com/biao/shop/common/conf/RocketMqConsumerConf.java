@@ -26,8 +26,6 @@ public class RocketMqConsumerConf {
     private int consumeThreadMin;
     @Value("${rocketmq.consumer.consumeThreadMax}")
     private int consumeThreadMax;
-    @Value("${rocketmq.consumer.topics}")
-    private String topics; // ShopTopic~*
     @Value("${rocketmq.consumer.consumeMessageBatchMaxSize}")
     private int consumeMessageBatchMaxSize;
 
@@ -39,9 +37,6 @@ public class RocketMqConsumerConf {
             throw new Exception();
         }
         if (StringUtils.isEmpty(namesrvAddr)){
-            throw new Exception();
-        }
-        if(StringUtils.isEmpty(topics)){
             throw new Exception();
         }
         //MQPushConsumer注意这里是push，还有pull类型DefaultMQPullConsumer
@@ -80,7 +75,7 @@ public class RocketMqConsumerConf {
 			}*/
             consumer.subscribe("ShopTopic", "*");
             consumer.start();
-            log.info("consumer is start !!! groupName:{},topics:{},namesrvAddr:{}",groupName,topics,namesrvAddr);
+            log.info("consumer is start !!! groupName:{},namesrvAddr:{}",groupName,namesrvAddr);
         } catch (Exception e) {
             throw new Exception();
         }

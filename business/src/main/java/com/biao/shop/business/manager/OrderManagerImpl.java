@@ -24,12 +24,13 @@ import java.util.List;
  * @Version 1.0
  **/
 @Component
-public class OrderManager {
+public class OrderManagerImpl implements OrderManager{
     @Autowired
     ItemListDao itemListDao;
     @Autowired
     ShopOrderDao shopOrderDao;
 
+    @Override
     public int saveOrder(OrderBO order) {
         ShopOrderEntity orderEntity = new ShopOrderEntity();
         BeanUtils.copyProperties(order,orderEntity);

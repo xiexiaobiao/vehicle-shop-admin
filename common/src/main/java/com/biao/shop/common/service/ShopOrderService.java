@@ -16,10 +16,13 @@ import java.util.List;
  * @since 2020-01-06
  */
 public interface ShopOrderService extends IService<ShopOrderEntity> {
-    int saveOrder(OrderBO order);
-    int deleteOrder(String uuid);
+    int saveOrderUnpaid(OrderBO order);
+    int saveOrderPaid(OrderBO order);
+    int paidOrder(String orderId);
+    int deleteOrder(String orderId);
     int modifyOrder(ShopOrderEntity order);
-    List<ShopOrderEntity> queryOrder(String condition);
+    List<ShopOrderEntity> listOrder(String condition);
+    ShopOrderEntity queryOrder(String orderId);
     boolean checkOrderSaveStatus(String orderUUID);
 
     Page<ShopOrderEntity> queryOrderPagination(Integer current, Integer size);

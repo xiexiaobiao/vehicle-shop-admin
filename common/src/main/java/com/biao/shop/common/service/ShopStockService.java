@@ -20,5 +20,6 @@ public interface ShopStockService extends IService<ShopStockEntity> {
     int modifyStock(ShopStockEntity  Stock);
     List<ShopStockEntity > queryOrder(String condition);
 
-    int decrStock(String itemUuid, int lockQuantity) throws Exception;
+    int frozenStock(String itemUuid, int frozenQuantity) throws Exception;
+    int decreaseStock(String itemUuid, int decreaseQuantity) throws Exception;
 }

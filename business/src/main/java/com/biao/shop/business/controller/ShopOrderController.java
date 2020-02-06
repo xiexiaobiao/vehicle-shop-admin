@@ -42,30 +42,37 @@ import java.util.List;
 @Slf4j
 public class ShopOrderController {
     private final Logger logger = LoggerFactory.getLogger(ShopOrderController.class);
-    @Autowired
+
     private ShopOrderService orderService;
-    @Autowired
     private RocketMQTransProducer rocketMQTransProducer;
-    @Autowired
     private DefaultMQProducer defaultMQProducer;
+
+    @Autowired
+    public ShopOrderController(ShopOrderService orderService,RocketMQTransProducer rocketMQTransProducer,
+                               DefaultMQProducer defaultMQProducer){
+        this.orderService = orderService;
+        this.rocketMQTransProducer = rocketMQTransProducer;
+        this.defaultMQProducer = defaultMQProducer;
+    }
 
     @RequestMapping(value = "/query",method = RequestMethod.GET)
     public List<ShopOrderEntity> listOrder(){
-        return orderService.queryOrder("10");
+        return orderService.listOrder("10");
     }
 
     // 测试mysql数据保存功能
-    @PostMapping(value = "/save") //@PostMapping等价于@RequestMapping(method = RequestMethod.POST)
-    public int saveOrder(@RequestBody OrderBO  order){
+    @PostMapping(value = "/saveUnpaid") //@PostMapping等价于@RequestMapping(method = RequestMethod.POST)
+    public int saveOrderUnpaid(@RequestBody OrderBO  order){
         logger.debug("订单日期：{}", order.getGenerateDate());
-        return orderService.saveOrder(order);
+        return orderService.saveOrderUnpaid(order);
     }
 
     // 测试RocketMq事务消息功能
-    @PostMapping(value = "/saveTrans")
-    public TransactionSendResult saveTransOrder(@RequestBody OrderBO order) throws UnsupportedEncodingException, MQClientException, JsonProcessingException {
+    @PostMapping(value = "/saveMqPaid")
+    public TransactionSendResult saveTransOrder(@RequestBody OrderBO order) throws UnsupportedEncodingException,
+            MQClientException, JsonProcessingException {
         logger.debug(order.toString());
-        //jackson 序列化, 但要注意
+        //jackson 序列化, 但要注意时间的序列化
         JavaTimeModule timeModule = new JavaTimeModule();
         timeModule.addSerializer(LocalDateTime.class, new CustomDateSerializer());
         ObjectMapper objectMapper = new ObjectMapper();
@@ -79,7 +86,7 @@ public class ShopOrderController {
         return  result;
     }
 
-    // 测试mybatis分页功能
+    // 测试mybatis分页查询功能
     @GetMapping(value = "/page") //@PostMapping等价于@RequestMapping(method = RequestMethod.POST)
     public Page<ShopOrderEntity> queryOrderPage(){
         Page<ShopOrderEntity> result= orderService.queryOrderPagination(1,3);

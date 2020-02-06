@@ -36,11 +36,14 @@ import java.util.Set;
 @Configuration
 public class RocketMQConsumer {
 
-    @Autowired
-    ShopStockService shopStockService;
+    private ShopStockService shopStockService;
+    private DefaultMQPushConsumer defaultMQPushConsumer;
 
     @Autowired
-    DefaultMQPushConsumer defaultMQPushConsumer;
+    public RocketMQConsumer(ShopStockService shopStockService,DefaultMQPushConsumer defaultMQPushConsumer){
+        this.shopStockService = shopStockService;
+        this.defaultMQPushConsumer = defaultMQPushConsumer;
+    }
 
     private final Logger logger = LoggerFactory.getLogger(RocketMQConsumer.class);
 
@@ -62,7 +65,7 @@ public class RocketMQConsumer {
                     logger.info("Rocket MQ is empty");
                 }
                 //todo 消息消费处理业务
-                /**消息可能会重复消费，务必注意这里的幂等处理，如使用order_id判断是否已经处理过*/
+                /**消息可能会重复消费，务必注意这里的幂等处理，比如使用order_id判断是否已经处理过*/
                 msgs.forEach(msgExt -> {
                         logger.info("tags is {} ",msgExt.getTags());
                         String msg = new String(msgExt.getBody());
@@ -76,7 +79,7 @@ public class RocketMQConsumer {
                         objectMapper.registerModule(timeModule);
                         OrderBO orderBO = objectMapper.readValue(msgExt.getBody(), OrderBO.class);
                         List<OrderBO.itemBo> itemBos = orderBO.getDetail();
-                        // 冻结库存
+                        // 扣减库存
                         itemBos.forEach(itemBo ->
                         {
                             try {

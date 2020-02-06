@@ -28,6 +28,7 @@ import java.time.LocalDateTime;
 @Component
 public class TransListenerImpl implements TransactionListener {
     private final Logger logger = LoggerFactory.getLogger(TransListenerImpl.class);
+
     @Autowired
     private ShopOrderService shopOrderService;
 
@@ -48,7 +49,7 @@ public class TransListenerImpl implements TransactionListener {
                 OrderBO orderBo = objectMapper.readValue(msg.getBody(), OrderBO.class);
                 logger.debug("orderBo is : {}",orderBo.toString());
                 //本地transaction
-                shopOrderService.saveOrder(orderBo);
+                shopOrderService.saveOrderPaid(orderBo);
             }
             return LocalTransactionState.COMMIT_MESSAGE;
         }catch (Exception e){

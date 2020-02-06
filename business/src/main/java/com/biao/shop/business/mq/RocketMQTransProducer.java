@@ -9,10 +9,14 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class RocketMQTransProducer {
+    private TransactionMQProducer transactionMQProducer;
+    private TransListenerImpl transactionListener;
+
     @Autowired
-    TransactionMQProducer transactionMQProducer;
-    @Autowired
-    TransListenerImpl transactionListener;
+    public RocketMQTransProducer(TransactionMQProducer transactionMQProducer,TransListenerImpl transactionListener){
+        this.transactionMQProducer = transactionMQProducer;
+        this.transactionListener = transactionListener;
+    }
 
     public TransactionSendResult sendMsg(Message msg, Object arg) throws MQClientException {
         transactionMQProducer.setTransactionListener(transactionListener);

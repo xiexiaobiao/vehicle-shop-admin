@@ -43,33 +43,33 @@ import java.util.Objects;
 public class ShopOrderServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrderEntity> implements ShopOrderService {
 
     private final Logger logger = LoggerFactory.getLogger(ShopOrderServiceImpl.class);
-    private ShopOrderDao shopOrderDao;
 
-    @Autowired
-    private ItemListService itemListService;
-    @Autowired
-    private ShopItemService itemService;
+    private ShopOrderDao shopOrderDao; //订单
+    private ItemListService itemListService; // 订单明细
+    private ShopItemService itemService; // 商品
 
     @Reference(version = "1.0",group = "shop",interfaceClass = ShopClientService.class)
     private ShopClientService clientService;
 
     @Autowired
-    public ShopOrderServiceImpl(ShopOrderDao shopOrderDao){
+    public ShopOrderServiceImpl(ShopOrderDao shopOrderDao,ItemListService itemListService,ShopItemService itemService){
         this.shopOrderDao = shopOrderDao;
+        this.itemListService = itemListService;
+        this.itemService = itemService;
     }
 
     /** */
     // 订单的明细单独保存，使用 dubbo RPC调用customer模块的服务
     @Override
     @Transactional(propagation = Propagation.NESTED)
-    public int saveOrder(OrderBO order) {
+    public int saveOrderUnpaid(OrderBO order) {
 
         /**测试模拟本地事务出错,"sendStatus": "SEND_OK",
          * 但是"localTransactionState": "ROLLBACK_MESSAGE"，半消息不会发送到下游*/
          // int a = 1 / 0 ;
 
         ShopOrderEntity orderEntity = new ShopOrderEntity();
-        order.setGenerateDate(LocalDateTime.now());
+        orderEntity.setGenerateDate(LocalDateTime.now());
         BeanUtils.copyProperties(order,orderEntity);
         // 可以使用其他算法生成UUID，如雪花，redis等
         // String orderUuid = String.valueOf(UUID.randomUUID());
@@ -87,9 +87,6 @@ public class ShopOrderServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrderEnt
             BeanUtils.copyProperties(itemBo,listEntity);
             listEntity.setOrderUuid(String.valueOf(orderUuid));
             itemListEntities.add(listEntity);
-            // 加积分,积分换算即售价取整
-            int pointToAdd = itemService.queryById(itemBo.getItemUuid()).getSellPrice().intValue();
-            clientService.addPoint(order.getClientUuid(),pointToAdd);
         });
         itemListService.saveBatch(itemListEntities);
         // 测试事务的传播属性，propagation
@@ -104,20 +101,75 @@ public class ShopOrderServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrderEnt
     }
 
     @Override
-    public int deleteOrder(String uuid) {
-        return 0;
+    @Transactional
+    public int saveOrderPaid(OrderBO order) {
+        ShopOrderEntity orderEntity = new ShopOrderEntity();
+        orderEntity.setGenerateDate(LocalDateTime.now());
+        BeanUtils.copyProperties(order,orderEntity);
+        // 可以使用其他算法生成UUID，如雪花，redis等
+        // String orderUuid = String.valueOf(UUID.randomUUID());
+        Long orderUuid = SnowFlake.generateId();
+        orderEntity.setUuid(String.valueOf(orderUuid));
+        // 已付款设置
+        orderEntity.setPaid(true);
+        List<ItemListEntity> itemListEntities = new ArrayList<>(16);
+        /**
+         * 这里有个问题可以思考下，以下这行放forEach外边，结果怎样？
+         * ItemListEntity listEntity = new ItemListEntity();*/
+        // 保存订单明细
+        order.getDetail().forEach(itemBo-> {
+            ItemListEntity listEntity = new ItemListEntity();
+            BeanUtils.copyProperties(itemBo,listEntity);
+            listEntity.setOrderUuid(String.valueOf(orderUuid));
+            itemListEntities.add(listEntity);
+            // 加积分,积分换算即售价取整
+            int pointToAdd = itemService.queryById(itemBo.getItemUuid()).getSellPrice().intValue();
+            clientService.addPoint(order.getClientUuid(),pointToAdd);
+        });
+        itemListService.saveBatch(itemListEntities);
+        return shopOrderDao.insert(orderEntity);
+
+        /**另一种程序结构：这里使用manager层的类
+         * OrderManager.saveOrder(OrderBO order),
+         * 区别在于manager层先组合了各dao，service直接调用，上面的模式则是
+         * service间调用，并且可以使用service.saveBatch()批处理方法。
+         * */
+    }
+
+    @Override
+    public int paidOrder(String orderId) {
+        ShopOrderEntity orderEntity = this.queryOrder(orderId);
+        if (Objects.isNull(orderEntity))
+            return 0;
+        else
+            orderEntity.setPaid(true);
+        return shopOrderDao.updateById(orderEntity);
+    }
+
+    @Override
+    public int deleteOrder(String orderId) {
+        QueryWrapper<ShopOrderEntity> qw = new QueryWrapper<>();
+        qw.eq(true,"id_order",orderId);
+        return shopOrderDao.delete(qw);
     }
 
     @Override
     public int modifyOrder(ShopOrderEntity order) {
-        return 0;
+        return shopOrderDao.updateById(order);
     }
 
     @Override
-    public List<ShopOrderEntity> queryOrder(String condition) {
+    public List<ShopOrderEntity> listOrder(String condition) {
         QueryWrapper<ShopOrderEntity> qw = new QueryWrapper<>();
-        qw.eq("id_order",condition);
+        qw.eq(true,"id_order",condition);
         return shopOrderDao.selectList(qw);
+    }
+
+    @Override
+    public ShopOrderEntity queryOrder(String orderId) {
+        QueryWrapper<ShopOrderEntity> qw = new QueryWrapper<>();
+        qw.eq(true,"id_order",orderId);
+        return shopOrderDao.selectOne(qw);
     }
 
     @Override

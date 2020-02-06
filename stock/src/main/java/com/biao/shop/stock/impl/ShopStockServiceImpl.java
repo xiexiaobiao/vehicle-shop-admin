@@ -51,7 +51,7 @@ public class ShopStockServiceImpl extends ServiceImpl<ShopStockDao, ShopStockEnt
     }
 
     @Override
-    public int decrStock(String itemUuid, int lockQuantity) throws Exception {
+    public int frozenStock(String itemUuid, int lockQuantity) throws Exception {
         QueryWrapper<ShopStockEntity> qw = new QueryWrapper<>();
         qw.eq(true,"item_uuid",itemUuid);
         ShopStockEntity shopStockEntity = stockDao.selectOne(qw);
@@ -59,6 +59,18 @@ public class ShopStockServiceImpl extends ServiceImpl<ShopStockDao, ShopStockEnt
             throw new Exception("stock has not enough stock quantity!!!!");
         }
         shopStockEntity.setQuantityLocked(shopStockEntity.getQuantityLocked() + lockQuantity);
+        return stockDao.updateById(shopStockEntity);
+    }
+
+    @Override
+    public int decreaseStock(String itemUuid, int decreaseQuantity) throws Exception {
+        QueryWrapper<ShopStockEntity> qw = new QueryWrapper<>();
+        qw.eq(true,"item_uuid",itemUuid);
+        ShopStockEntity shopStockEntity = stockDao.selectOne(qw);
+        if (decreaseQuantity > shopStockEntity.getQuantity() - shopStockEntity.getQuantityLocked()){
+            throw new Exception("stock has not enough stock quantity!!!!");
+        }
+        shopStockEntity.setQuantity(shopStockEntity.getQuantity() -  decreaseQuantity);
         return stockDao.updateById(shopStockEntity);
     }
 }

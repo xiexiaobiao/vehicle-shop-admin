@@ -2,10 +2,11 @@ package com.biao.shop.business.controller;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.biao.shop.business.service.ShopOrderService;
 import com.biao.shop.common.bo.OrderBO;
+import com.biao.shop.common.rpc.service.ShopOrderRPCService;
 import com.biao.shop.common.entity.ShopOrderEntity;
 import com.biao.shop.business.mq.RocketMQTransProducer;
-import com.biao.shop.common.service.ShopOrderService;
 import com.biao.shop.common.utils.CustomDateSerializer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -87,7 +88,7 @@ public class ShopOrderController {
     }
 
     // 测试mybatis分页查询功能
-    @GetMapping(value = "/page") //@PostMapping等价于@RequestMapping(method = RequestMethod.POST)
+    @GetMapping(value = "/pages") //@PostMapping等价于@RequestMapping(method = RequestMethod.POST)
     public Page<ShopOrderEntity> queryOrderPage(){
         Page<ShopOrderEntity> result= orderService.queryOrderPagination(1,3);
         System.out.println(result.getRecords());
@@ -105,7 +106,6 @@ public class ShopOrderController {
 
 //    @RequestMapping(value = "/pay",method = RequestMethod.GET)
 //    public ResEntity<String> payOrder(@Param("orderId") String orderId){
-
 
 }
 

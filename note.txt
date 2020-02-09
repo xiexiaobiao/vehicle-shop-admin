@@ -49,3 +49,8 @@ POST  http://localhost:8081/shop-order-entity/save
    http://localhost:8081/vehicle/shop-order-entity/save
 12.ShopOrderService.saveOrder()方法中，使用RPC调用clientService.addPoint(),这里就使用了事务的传播属性：
 13.表设计中字符统一使用utf8mb4，表示是否的字段统一使用is_deleted,模式
+day 07
+14.dubbo服务和模块的服务分开，对外RPC只暴露dubbo服务，再通过dubbo服务内部调用模块的服务，这样的好处就是服务分离，可选择性暴露内部服务方法，
+  模块的服务仅供模块内部使用！
+15.
+

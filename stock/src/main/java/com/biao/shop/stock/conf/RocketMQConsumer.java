@@ -1,11 +1,8 @@
 package com.biao.shop.stock.conf;
 
 import com.biao.shop.common.bo.OrderBO;
-import com.biao.shop.common.entity.ShopStockEntity;
-import com.biao.shop.common.service.ShopStockService;
+import com.biao.shop.stock.service.ShopStockService;
 import com.biao.shop.common.utils.CustomDateDeserializer;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.commons.collections.CollectionUtils;

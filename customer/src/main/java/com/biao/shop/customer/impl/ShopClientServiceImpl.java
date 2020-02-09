@@ -3,10 +3,8 @@ package com.biao.shop.customer.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.biao.shop.common.entity.ShopClientEntity;
 import com.biao.shop.common.dao.ShopClientDao;
-import com.biao.shop.common.service.ShopClientService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Service;
 import org.dromara.soul.client.common.annotation.SoulClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +15,6 @@ import java.util.Objects;
 
 /**
  * <p>
- * �ͻ��� ����ʵ����
  * </p>
  *
  * @author XieXiaobiao
@@ -35,19 +32,22 @@ public class ShopClientServiceImpl extends ServiceImpl<ShopClientDao, ShopClient
     public ShopClientServiceImpl(ShopClientDao shopClientDao){
         this.shopClientDao = shopClientDao;
     }
+
     @Override
     public int addClient(ShopClientEntity clientEntity) {
-        return 0;
+        return shopClientDao.insert(clientEntity);
     }
 
     @Override
     public int deleteClient(String uuid) {
-        return 0;
+        QueryWrapper<ShopClientEntity> qw = new QueryWrapper<>();
+        qw.eq(true,"uuid",uuid);
+        return shopClientDao.delete(qw);
     }
 
     @Override
     public int modifyClient(ShopClientEntity clientEntity) {
-        return 0;
+        return shopClientDao.updateById(clientEntity);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class ShopClientServiceImpl extends ServiceImpl<ShopClientDao, ShopClient
     public int addPoint(String uuid,int pointToAdd) {
         ShopClientEntity clientEntity =  this.queryById(uuid);
         log.debug(clientEntity.toString());
-        clientEntity.setPoint(Objects.isNull(clientEntity.getPoint()) ? 0:clientEntity.getPoint() + pointToAdd);
+        clientEntity.setPoint(Objects.isNull(clientEntity.getPoint()) ? 0 : clientEntity.getPoint() + pointToAdd);
         return shopClientDao.updateById(clientEntity);
     }
 

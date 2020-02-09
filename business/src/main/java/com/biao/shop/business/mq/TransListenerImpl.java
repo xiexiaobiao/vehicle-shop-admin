@@ -1,7 +1,7 @@
 package com.biao.shop.business.mq;
 
 import com.biao.shop.common.bo.OrderBO;
-import com.biao.shop.common.service.ShopOrderService;
+import com.biao.shop.business.service.ShopOrderService;
 import com.biao.shop.common.utils.CustomDateDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;

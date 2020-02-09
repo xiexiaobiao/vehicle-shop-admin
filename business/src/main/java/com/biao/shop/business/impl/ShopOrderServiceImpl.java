@@ -3,14 +3,14 @@ package com.biao.shop.business.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.biao.shop.business.service.ItemListService;
+import com.biao.shop.business.service.ShopOrderService;
 import com.biao.shop.common.bo.OrderBO;
 import com.biao.shop.common.dao.ShopOrderDao;
 import com.biao.shop.common.entity.ItemListEntity;
 import com.biao.shop.common.entity.ShopOrderEntity;
-import com.biao.shop.common.service.ItemListService;
-import com.biao.shop.common.service.ShopClientService;
-import com.biao.shop.common.service.ShopItemService;
-import com.biao.shop.common.service.ShopOrderService;
+import com.biao.shop.common.rpc.service.ShopClientRPCService;
+import com.biao.shop.common.rpc.service.ShopItemRPCService;
 import com.biao.shop.common.utils.SnowFlake;
 import org.apache.dubbo.config.annotation.Reference;
 import org.slf4j.Logger;
@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,20 +45,21 @@ public class ShopOrderServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrderEnt
 
     private ShopOrderDao shopOrderDao; //订单
     private ItemListService itemListService; // 订单明细
-    private ShopItemService itemService; // 商品
 
-    @Reference(version = "1.0",group = "shop",interfaceClass = ShopClientService.class)
-    private ShopClientService clientService;
+    @Reference(version = "1.0",group = "shop",interfaceClass = ShopClientRPCService.class)
+    private ShopItemRPCService itemRPCService; // 商品
+
+    @Reference(version = "1.0",group = "shop",interfaceClass = ShopClientRPCService.class)
+    private ShopClientRPCService clientRPCService;
 
     @Autowired
-    public ShopOrderServiceImpl(ShopOrderDao shopOrderDao,ItemListService itemListService,ShopItemService itemService){
+    public ShopOrderServiceImpl(ShopOrderDao shopOrderDao,ItemListService itemListService){
         this.shopOrderDao = shopOrderDao;
         this.itemListService = itemListService;
-        this.itemService = itemService;
     }
 
     /** */
-    // 订单的明细单独保存，使用 dubbo RPC调用customer模块的服务
+    // 订单的明细单独保存，
     @Override
     @Transactional(propagation = Propagation.NESTED)
     public int saveOrderUnpaid(OrderBO order) {
@@ -93,13 +93,15 @@ public class ShopOrderServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrderEnt
         int j = 1/0;
         return shopOrderDao.insert(orderEntity);
 
-        /**另一种程序结构：这里使用manager层的类
+        /**另一种程序结构：这里也可使用manager层的类
          * OrderManager.saveOrder(OrderBO order),
          * 区别在于manager层先组合了各dao，service直接调用，上面的模式则是
          * service间调用，并且可以使用service.saveBatch()批处理方法。
+         * 而dao无法使用batch处理
          * */
     }
 
+    // 使用 dubbo RPC调用customer模块的服务
     @Override
     @Transactional
     public int saveOrderPaid(OrderBO order) {
@@ -123,16 +125,18 @@ public class ShopOrderServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrderEnt
             listEntity.setOrderUuid(String.valueOf(orderUuid));
             itemListEntities.add(listEntity);
             // 加积分,积分换算即售价取整
-            int pointToAdd = itemService.queryById(itemBo.getItemUuid()).getSellPrice().intValue();
-            clientService.addPoint(order.getClientUuid(),pointToAdd);
+            int pointToAdd = itemRPCService.queryById(itemBo.getItemUuid()).getSellPrice().intValue();
+            clientRPCService.addPoint(order.getClientUuid(),pointToAdd);
         });
+
         itemListService.saveBatch(itemListEntities);
         return shopOrderDao.insert(orderEntity);
 
-        /**另一种程序结构：这里使用manager层的类
+        /**另一种程序结构：这里也可使用manager层的类
          * OrderManager.saveOrder(OrderBO order),
          * 区别在于manager层先组合了各dao，service直接调用，上面的模式则是
          * service间调用，并且可以使用service.saveBatch()批处理方法。
+         * 而dao无法使用batch处理
          * */
     }
 

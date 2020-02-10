@@ -80,7 +80,7 @@ public class RocketMQConsumer {
                         itemBos.forEach(itemBo ->
                         {
                             try {
-                                shopStockService.decrStock(itemBo.getItemUuid(),itemBo.getQuantity());
+                                shopStockService.decreaseStock(itemBo.getItemUuid(),itemBo.getQuantity());
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }

@@ -35,6 +35,8 @@ public class ShopItemEntity implements Serializable {
      */
     private String category;
 
+    private String classification;
+
     private String name;
 
     private BigDecimal sellPrice;
@@ -111,5 +113,13 @@ public class ShopItemEntity implements Serializable {
 
     public void setSpecification(String specification) {
         this.specification = specification;
+    }
+
+    public String getClassification() {
+        return classification;
+    }
+
+    public void setClassification(String classification) {
+        this.classification = classification;
     }
 }

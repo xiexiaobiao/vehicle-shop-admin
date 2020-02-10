@@ -4,6 +4,7 @@ package com.biao.shop.common.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Controller;
  * @author XieXiaobiao
  * @since 2020-01-06
  */
-@Controller
+@RestController
 @RequestMapping("/item-list-entity")
 public class ItemListController {
 

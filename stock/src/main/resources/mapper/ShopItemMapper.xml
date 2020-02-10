@@ -7,6 +7,7 @@
         <id column="id_item" property="idItem" />
         <result column="uuid" property="uuid" />
         <result column="category" property="category" />
+        <result column="classification" property="classification" />
         <result column="name" property="name" />
         <result column="sell_price" property="sellPrice" />
         <result column="purchase_price" property="purchasePrice" />
@@ -16,7 +17,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id_item, uuid, category, name, sell_price, purchase_price, brand, specification
+        id_item, uuid, category,classification, name, sell_price, purchase_price, brand, specification
     </sql>
 
 </mapper>

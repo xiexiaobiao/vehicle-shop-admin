@@ -1,9 +1,12 @@
 package com.biao.shop.stock.controller;
 
 
+import com.biao.shop.common.entity.ShopItemEntity;
+import com.biao.shop.stock.service.ShopItemService;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
@@ -13,9 +16,10 @@ import org.springframework.stereotype.Controller;
  * @author XieXiaobiao
  * @since 2020-01-06
  */
-@Controller
+@RestController
 @RequestMapping("/shop-stock-entity")
 public class ShopStockController {
+
 
 }
 

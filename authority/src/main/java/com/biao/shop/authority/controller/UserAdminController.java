@@ -3,6 +3,7 @@ package com.biao.shop.authority.controller;
 import com.biao.shop.common.dto.UserDto;
 import com.biao.shop.common.response.ObjectResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.dromara.soul.client.common.annotation.SoulClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +26,7 @@ import java.util.Map;
 @Slf4j
 @RequestMapping("/admin")
 public class UserAdminController {
+
     @Value("${jwt.tokenHeader}")
     private String tokenHeader;
     @Value("${jwt.tokenHead}")
@@ -33,6 +35,7 @@ public class UserAdminController {
     private final Logger logger = LoggerFactory.getLogger(UserAdminController.class);
 
     //@ApiOperation(value = "登录以后返回token")
+    @SoulClient(path = "/vehicle/admin/login", desc = "登录")
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ObjectResponse login(@RequestBody UserDto userDto) {
         //String token = adminService.login(umsAdminLoginParam.getUsername(), umsAdminLoginParam.getPassword());
@@ -54,6 +57,7 @@ public class UserAdminController {
     }
 
     // @ApiOperation(value = "获取当前登录用户信息")
+    @SoulClient(path = "/vehicle/admin/info", desc = "获取用户信息")
     @RequestMapping(value = "/info", method = RequestMethod.GET)
     public ObjectResponse getAdminInfo() {
         ObjectResponse objectResponse = new ObjectResponse();
@@ -67,6 +71,7 @@ public class UserAdminController {
         return objectResponse;
     }
 
+    @SoulClient(path = "/vehicle/admin/logout", desc = "用户注销")
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
     public ObjectResponse logout() {
         ObjectResponse objectResponse = new ObjectResponse();

@@ -8,11 +8,11 @@ import org.springframework.context.annotation.Configuration;
 public class WebConf {
 
     // 另一种注入CorsFilter的方式
-    @Bean
+    /*@Bean
     public FilterRegistrationBean<CorsFilter> filterRegistrationBean(){
         FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean();
         bean.setFilter(new CorsFilter());
         bean.addUrlPatterns("/*");
         return bean;
-    }
+    }*/
 }

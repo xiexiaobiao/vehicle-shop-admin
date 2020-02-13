@@ -1,6 +1,8 @@
 package com.biao.shop.common.entity;
 
 import java.math.BigDecimal;
+
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -43,7 +45,12 @@ public class ShopItemEntity implements Serializable {
 
     private BigDecimal purchasePrice;
 
-    private String brand;
+    private String brandName;
+
+    private String description;
+
+    @TableField(value = "is_shipment")
+    private Boolean shipment;
 
     /**
      * 规格
@@ -100,11 +107,11 @@ public class ShopItemEntity implements Serializable {
     }
 
     public String getBrand() {
-        return brand;
+        return brandName;
     }
 
-    public void setBrand(String brand) {
-        this.brand = brand;
+    public void setBrand(String brandName) {
+        this.brandName = brandName;
     }
 
     public String getSpecification() {
@@ -121,5 +128,21 @@ public class ShopItemEntity implements Serializable {
 
     public void setClassification(String classification) {
         this.classification = classification;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Boolean getShipment() {
+        return shipment;
+    }
+
+    public void setShipment(Boolean shipment) {
+        this.shipment = shipment;
     }
 }

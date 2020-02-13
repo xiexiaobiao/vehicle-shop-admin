@@ -52,5 +52,10 @@ POST  http://localhost:8081/shop-order-entity/save
 day 07
 14.dubbo服务和模块的服务分开，对外RPC只暴露dubbo服务，再通过dubbo服务内部调用模块的服务，这样的好处就是服务分离，可选择性暴露内部服务方法，
   模块的服务仅供模块内部使用！
-15.
+
+// day07 使用soul网关
+15.出现错误提示： has been blocked by CORS policy: The 'Access-Control-Allow-Origin' header contains multiple values '*‘
+  是因为soul网关已经处理了跨域，而服务器端又作跨域处理，导致重复，故我这里服务端去掉了cors 处理
+
+16
 

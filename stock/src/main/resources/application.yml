@@ -97,3 +97,40 @@ rocketmq:
     consumeThreadMax: 64
     #设置一次消费消息的条数，默认为1条
     consumeMessageBatchMaxSize: 1
+
+## soul 配置
+soul:
+  http:
+    adminUrl: http://localhost:9095
+    contextPath: /stock
+    appName: stockApp
+    #register: true
+    #zookeeperUrl: localhost:2181
+  dubbo:
+    adminUrl: http://localhost:9095
+    contextPath: /stock
+    appName: stockApp
+# adminUrl: 为你启动的soul-admin 项目的ip + 端口，注意要加http://
+# contextPath: 为你的这个mvc项目在soul网关的路由前缀， 比如/order ，/product 等等，网关会根据这个前缀来进行路由.
+# appName：你的应用名称，不配置的话，会默认取 dubbo配置中application 中的名称
+
+pagehelper:
+  # dialect:
+  # 分页插件会自动检测当前的数据库链接，自动选择合适的分页方式（可以不设置）
+  # helper-dialect: mysql
+  # 上面数据库设置后，下面的设置为true不会改变上面的结果（默认为true）
+  auto-dialect: true
+  page-size-zero: false # ②
+  reasonable: true #
+  # 默认值为 false，该参数对使用 RowBounds 作为分页参数时有效。（一般用不着）
+  offset-as-page-num: false
+  # 默认值为 false，RowBounds是否进行count查询（一般用不着）
+  row-bounds-with-count: false
+  #params:
+  #support-methods-arguments: 和params配合使用，具体可以看下面的讲解
+  # 默认值为 false。设置为 true 时，允许在运行时根据多数据源自动识别对应方言的分页
+  auto-runtime-dialect: false # ⑤
+  # 与auto-runtime-dialect配合使用
+  close-conn: true
+  # 用于控制默认不带 count 查询的方法中，是否执行 count 查询，这里设置为true后，total会为-1
+  default-count: false

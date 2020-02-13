@@ -14,6 +14,7 @@ spring:
   main:
     allow-bean-definition-overriding: true
 
+
   #连接池配置
   datasource:
     name: druidDatasource
@@ -44,3 +45,18 @@ spring:
       filters: stat,wall
       # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
       connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+  application:
+    name: authApp
+
+## soul 配置
+soul:
+  http:
+    adminUrl: http://localhost:9095
+    contextPath: /auth
+    appName: authApp
+    #register: true
+    #zookeeperUrl: localhost:2181
+  dubbo:
+    adminUrl: http://localhost:9095
+    contextPath: /auth
+    appName: authApp

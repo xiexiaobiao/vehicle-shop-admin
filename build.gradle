@@ -72,6 +72,13 @@ subprojects {
         //compile group: 'org.springframework', name: 'spring-aspects', version: '5.2.3.RELEASE'
         //compile group: 'org.springframework', name: 'spring-aop', version: '5.2.3.RELEASE'
 
+        // soul-gateway
+        compile group: 'org.dromara',name:'soul-client-apache-dubbo',version: '2.1.2-RELEASE'
+        compile group: 'org.dromara',name:'soul-client-springmvc',version: '2.1.2-RELEASE'
+
+        // Mybatis-PageHelper
+        compile group: 'com.github.pagehelper', name: 'pagehelper', version: '5.1.11'
+
     }
     //if code include the chinese content
     //>>>>>>>>>>>> unmappable character for encoding GBK,

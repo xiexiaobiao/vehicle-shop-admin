@@ -1,7 +1,9 @@
 package com.biao.shop.stock.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.biao.shop.common.entity.ShopItemEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.pagehelper.PageInfo;
 
 import java.util.List;
 import java.util.Set;
@@ -16,9 +18,15 @@ import java.util.Set;
  */
 public interface ShopItemService extends IService<ShopItemEntity> {
 
-    ShopItemEntity queryById(String uuid);
+    ShopItemEntity queryById(String id);
+
+    ShopItemEntity queryByUUid(String uuid);
 
     int addItem(ShopItemEntity itemEntity);
 
-    Set<String> listBrand();
+    int updateItem(ShopItemEntity itemEntity);
+
+    Page<String> listBrand(Integer current, Integer size);
+
+    PageInfo<ShopItemEntity> listItem(Integer current, Integer size);
 }

@@ -43,7 +43,7 @@ public class CorsFilter implements Filter {
         String origin = request.getHeader("Origin");
         logger.info("origin >>> {}",origin);
         if (StringUtils.isNotBlank(origin)){
-            response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN,"*");
+            response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN,origin);
         }
 
         String methods = request.getHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS);

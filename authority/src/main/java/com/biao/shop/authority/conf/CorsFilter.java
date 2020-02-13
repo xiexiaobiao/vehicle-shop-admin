@@ -32,7 +32,7 @@ public class CorsFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) res;
         HttpServletRequest request = (HttpServletRequest) req;
 
-        // 解决preflight跨域问题，第一次OPTIONS请求直接返回200，
+        // 解决preflight跨域问题，第一次预检请求OPTIONS请求直接返回200，
         if (request.getMethod().equals("OPTIONS")) {
             response.setStatus(200);
             response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN,"*");

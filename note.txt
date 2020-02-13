@@ -57,5 +57,15 @@ day 07
 15.出现错误提示： has been blocked by CORS policy: The 'Access-Control-Allow-Origin' header contains multiple values '*‘
   是因为soul网关已经处理了跨域，而服务器端又作跨域处理，导致重复，故我这里服务端去掉了cors 处理
 
-16
+16.千万注意Mybatis的bug：Entity字段与表字段对应关系，如果自己实现了getter和setter，Entity最后的输出字段以getter和setter方法名称中的为准！！！
+   使用@TableField注解对应都没用，在mapper文件中用BaseResultMap中设置也没用！！！
+       @TableField(value = "brand_name")
+       private String brandName;
+
+17.soul网关使用中发现无法支持DELETE转发，只能改为使用GET,虽然RESTFUL属于比较好的实践，可以在同一个@RequestMapping("/stock")通过不同的动词
+   区分，但目前使用最广泛的是GET/POST，导致很多其他的语义DELETE/PUT使用退化为了GET/POST
+
+18.vue前端删除后已删数据仍停留在页面的问题解决：https://blog.csdn.net/qq_39009348/article/details/81698316
+
+
 

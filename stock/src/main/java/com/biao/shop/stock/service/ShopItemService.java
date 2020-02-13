@@ -24,9 +24,20 @@ public interface ShopItemService extends IService<ShopItemEntity> {
 
     int addItem(ShopItemEntity itemEntity);
 
+    int deleteById(Integer id);
+
+    int deleteBatchItems(List<Integer> ids);
+
+    int deleteByUid(List<String> uids);
+
     int updateItem(ShopItemEntity itemEntity);
 
     Page<String> listBrand(Integer current, Integer size);
 
-    PageInfo<ShopItemEntity> listItem(Integer current, Integer size);
+    List<String> listCategory(Integer current, Integer size);
+
+    PageInfo<ShopItemEntity> listItem(Integer current, Integer size,
+                                      String itemName,String itemUuid,
+                                      String category,String brandName,
+                                      int shipment);
 }

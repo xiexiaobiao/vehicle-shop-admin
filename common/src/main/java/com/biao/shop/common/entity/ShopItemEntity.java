@@ -30,7 +30,8 @@ public class ShopItemEntity implements Serializable {
     @TableId(value = "id_item", type = IdType.AUTO)
     private Integer idItem;
 
-    private String uuid;
+    @TableField(value = "item_uuid")
+    private String itemUuid;
 
     /**
      * 类别
@@ -39,12 +40,13 @@ public class ShopItemEntity implements Serializable {
 
     private String classification;
 
-    private String name;
+    private String itemName;
 
     private BigDecimal sellPrice;
 
     private BigDecimal purchasePrice;
 
+    @TableField(value = "brand_name")
     private String brandName;
 
     private String description;
@@ -66,13 +68,6 @@ public class ShopItemEntity implements Serializable {
         this.idItem = idItem;
     }
 
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
 
     public String getCategory() {
         return category;
@@ -82,13 +77,6 @@ public class ShopItemEntity implements Serializable {
         this.category = category;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public BigDecimal getSellPrice() {
         return sellPrice;
@@ -106,13 +94,6 @@ public class ShopItemEntity implements Serializable {
         this.purchasePrice = purchasePrice;
     }
 
-    public String getBrand() {
-        return brandName;
-    }
-
-    public void setBrand(String brandName) {
-        this.brandName = brandName;
-    }
 
     public String getSpecification() {
         return specification;
@@ -144,5 +125,29 @@ public class ShopItemEntity implements Serializable {
 
     public void setShipment(Boolean shipment) {
         this.shipment = shipment;
+    }
+
+    public String getBrandName() {
+        return brandName;
+    }
+
+    public void setBrandName(String brandName) {
+        this.brandName = brandName;
+    }
+
+    public String getItemUuid() {
+        return itemUuid;
+    }
+
+    public void setItemUuid(String itemUuid) {
+        this.itemUuid = itemUuid;
+    }
+
+    public String getItemName() {
+        return itemName;
+    }
+
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
     }
 }

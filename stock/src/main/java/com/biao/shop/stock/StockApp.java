@@ -18,8 +18,7 @@ import java.util.List;
 @MapperScan(basePackages = "com.biao.shop.common.dao.*")
 public class StockApp {
     public static void main(String[] args) {
-        List<String> list = new ArrayList<>();
         SpringApplication.run(StockApp.class,args);
         System.out.println("Stock Application started.>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-    }
+        }
 }

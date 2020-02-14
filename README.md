@@ -4,6 +4,7 @@ a mirco-service framework admin system for vehicle shop
 ## Framework架构:
 ![Image text](https://github.com/xiexiaobiao/vehicle-shop-admin/blob/master/resource/framework.PNG)
 
+***
 
 ## 后端技术列表
 
@@ -25,6 +26,29 @@ a mirco-service framework admin system for vehicle shop
 | ElasticSearch     | DB     | 搜索；推荐；日志存储     |
 | Logstash     | 日志     | 收集系统日志     |
 | Kibna     | 日志     | 日志展现     |
+| Druid     | JDBC     | 数据库连接池     |
+| Mybatis+     | ORM     | 实体映射和DAO     |
+| Lombok     | POJO     | 实体类简化处理和log     |
+| Logback     | 日志     | 日志类生成     |
 | Mango     | DB     | 文件存储服务器     |
 | Mysql     | DB     | 业务数据存储     |
+| Junit     | Test     | 单元测试     |
+| Pagehelper     | pagination     | 数据分页查询     |
 | FineReport     | Report     | 系统报表功能     |
+
+***
+
+## 工具类
+
+| 名称      | 组件     | 用途     |
+| ---------- | :-----------  | :----------- |
+| Gradle     | Build     | 代码编译     |
+| Idea     | IDE     | 编码；HTTP测试     |
+
+***
+## 前端技术列表
+
+| 名称      | 组件     | 用途     |
+| ---------- | :-----------  | :----------- |
+| Vue.js     | JS     | 前端开发框架    |
+| ElementUI     | UI     | UI界面组件    |

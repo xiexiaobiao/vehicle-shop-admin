@@ -1,7 +1,10 @@
 # vehicle-shop-admin
 a mirco-service framework admin system for vehicle shop
 
-## Framework架构:
+自己业余全栈开发的一个小系统，前后分离，不为功能完善酷炫，只为技术整合。
+
+## Framework架构图:
+
 ![Image text](https://github.com/xiexiaobiao/vehicle-shop-admin/blob/master/resource/framework.PNG)
 
 ***

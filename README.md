@@ -28,7 +28,7 @@ a mirco-service framework admin system for vehicle shop
 | Kafka     | MQ     | 日志传输     |
 | ElasticSearch     | DB     | 搜索；推荐；日志存储     |
 | Logstash     | 日志     | 收集系统日志     |
-| Kibna     | 日志     | 日志展现     |
+| Kibana     | 日志     | 日志展现     |
 | Druid     | JDBC     | 数据库连接池     |
 | Mybatis+     | ORM     | 实体映射和DAO     |
 | Lombok     | POJO     | 实体类简化处理和log     |

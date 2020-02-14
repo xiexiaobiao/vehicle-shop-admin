@@ -6,7 +6,7 @@ a mirco-service framework admin system for vehicle shop
 
 ***
 
-## 后端技术列表
+## 后端技术列表(部分采用)
 
 | 名称      | 组件     | 用途     |
 | ---------- | :-----------  | :----------- |

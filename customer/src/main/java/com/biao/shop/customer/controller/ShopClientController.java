@@ -6,11 +6,13 @@ import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RestController;
+import com.biao.shop.common.entity.ShopClientEntity;
+import com.biao.shop.customer.service.ShopClientService;
+import com.biao.shop.customer.nacos.NacosConfTest;
+import com.github.pagehelper.PageInfo;
+import org.dromara.soul.client.common.annotation.SoulClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,8 +25,12 @@ import java.util.List;
  * @since 2020-01-06
  */
 @RestController
-@RequestMapping("/shop-client-entity")
+@RequestMapping("/client")
 public class ShopClientController {
+
+    /////////////// nacos 测试使用
+    @Autowired
+    NacosConfTest nacosConfTest;
 
     @NacosInjected
     private NamingService namingService;
@@ -32,9 +38,50 @@ public class ShopClientController {
     @NacosInjected
     private ConfigService configService;
 
-    @RequestMapping("/nacos")
-    public List<Instance> getInstance(@PathVariable String serviceName) throws NacosException {
+    @RequestMapping("/nacos/test")
+    public void getInstance() throws NacosException {
+        nacosConfTest.testNacosConfig();
+    }
+
+    @GetMapping("/nacos/service/{name}")
+    public List<Instance> getInstance(@PathVariable(name = "name") String serviceName) throws NacosException {
         return namingService.getAllInstances(serviceName);
+    }
+    ////////////////////
+
+    private ShopClientService clientService;
+
+    @Autowired
+    public ShopClientController(ShopClientService clientService){
+        this.clientService = clientService;
+    }
+
+    @SoulClient(path = "/vehicle/client/list", desc = "获取客户列表")
+    @GetMapping("/list")
+    public PageInfo<ShopClientEntity> listClient(@RequestParam("pageNum")Integer current, @RequestParam("pageSize")Integer size,
+                                                 @RequestParam(value = "clientUuid",required = false)String clientUuid,
+                                                 @RequestParam(value = "name",required = false)String name,
+                                                 @RequestParam(value = "vehiclePlate",required = false)String vehiclePlate,
+                                                 @RequestParam(value = "phone",required = false)String phone){
+        return clientService.listClient( current,size,clientUuid,name,vehiclePlate,phone);
+    }
+
+    @SoulClient(path = "/vehicle/client/**", desc = "查询一个客户")
+    @GetMapping("/{id}")
+    public ShopClientEntity listClient(@PathVariable("id") int id){
+        return clientService.queryById(id);
+    }
+
+    @SoulClient(path = "/vehicle/client/update", desc = "更新一个客户")
+    @PostMapping("/update")
+    public int listClient(@RequestBody ShopClientEntity client){
+        return clientService.updateClient(client);
+    }
+
+    @SoulClient(path = "/vehicle/client/create", desc = "创建一个客户")
+    @PostMapping("/create")
+    public int createClient(@RequestBody ShopClientEntity client){
+        return clientService.createClient(client);
     }
 
 }

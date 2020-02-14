@@ -1,5 +1,5 @@
 drop database vehicle_shop;
-create database vehicle_shop CHARACTER SET utf8mb4;
+create database vehicle_shop CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ;
 
 use vehicle_shop;
 
@@ -11,11 +11,11 @@ CREATE TABLE `item_list` (
   `quantity` int(11) DEFAULT NULL,
   `remark` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id_list`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='订单商品明细清单';
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='订单商品明细清单'
 
 CREATE TABLE `shop_client` (
   `id_client` int(11) NOT NULL AUTO_INCREMENT,
-  `uuid` varchar(45) DEFAULT NULL,
+  `client_uuid` varchar(45) DEFAULT NULL,
   `name` varchar(45) DEFAULT NULL,
   `age` varchar(45) DEFAULT NULL,
   `gender` tinyint(1) DEFAULT NULL,
@@ -24,29 +24,32 @@ CREATE TABLE `shop_client` (
   `addr` varchar(45) DEFAULT NULL,
   `point` int(11) DEFAULT NULL,
   PRIMARY KEY (`id_client`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='客户表';
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='客户表'
 
 CREATE TABLE `shop_item` (
   `id_item` int(11) NOT NULL AUTO_INCREMENT,
-  `uuid` varchar(45) DEFAULT NULL,
+  `item_uuid` varchar(45) DEFAULT NULL,
+  `classification` varchar(45) DEFAULT NULL,
   `category` varchar(45) DEFAULT NULL COMMENT '类别',
-  `name` varchar(45) DEFAULT NULL,
+  `item_name` varchar(45) DEFAULT NULL,
   `sell_price` decimal(5,2) DEFAULT NULL,
   `purchase_price` decimal(5,2) DEFAULT NULL,
-  `brand` varchar(45) DEFAULT NULL,
+  `brand_name` varchar(45) DEFAULT NULL,
   `specification` varchar(45) DEFAULT NULL COMMENT '规格',
+  `description` varchar(200) DEFAULT NULL,
+  `is_shipment` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id_item`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='商品表';
+) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='商品表'
 
 CREATE TABLE `shop_order` (
   `id_order` int(11) NOT NULL AUTO_INCREMENT,
-  `uuid` varchar(45) DEFAULT NULL COMMENT '订单流水号',
+  `order_uuid` varchar(45) DEFAULT NULL COMMENT '订单流水号',
   `client_uuid` varchar(45) DEFAULT NULL,
   `generate_date` datetime DEFAULT NULL,
   `modify_date` datetime DEFAULT NULL,
-  `paid` tinyint(1) DEFAULT NULL,
+  `is_paid` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id_order`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='订单表'
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='订单表'
 
 CREATE TABLE `shop_stock` (
   `id_stock` int(11) NOT NULL AUTO_INCREMENT,
@@ -54,7 +57,7 @@ CREATE TABLE `shop_stock` (
   `quantity` int(11) DEFAULT NULL,
   `quantity_locked` int(11) DEFAULT NULL,
   PRIMARY KEY (`id_stock`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='库存表';
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='库存表'
 
 INSERT INTO `vehicle_shop`.`shop_item` (`uuid`, `category`, `name`, `sell_price`, `purchase_price`, `brand`, `specification`) VALUES ('SP000010', '修理', '机油', '150.00', '100.00', '壳牌', '1.5L');
 INSERT INTO `vehicle_shop`.`shop_item` (`uuid`, `category`, `name`, `sell_price`, `purchase_price`, `specification`) VALUES ('SP000011', '修理', '雨刮器', '60.00', '45.00', '35cm');

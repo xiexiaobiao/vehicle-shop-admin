@@ -27,7 +27,7 @@ public class ShopClientEntity implements Serializable {
     @TableId(value = "id_client", type = IdType.AUTO)
     private Integer idClient;
 
-    private String uuid;
+    private String clientUuid;
 
     private String name;
 
@@ -51,12 +51,12 @@ public class ShopClientEntity implements Serializable {
         this.idClient = idClient;
     }
 
-    public String getUuid() {
-        return uuid;
+    public String getClientUuid() {
+        return clientUuid;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
+    public void setClientUuid(String clientUuid) {
+        this.clientUuid = clientUuid;
     }
 
     public String getName() {
@@ -113,20 +113,5 @@ public class ShopClientEntity implements Serializable {
 
     public void setPoint(Integer point) {
         this.point = point;
-    }
-
-    @Override
-    public String toString() {
-        return "ShopClientEntity{" +
-                "idClient=" + idClient +
-                ", uuid='" + uuid + '\'' +
-                ", name='" + name + '\'' +
-                ", age='" + age + '\'' +
-                ", gender=" + gender +
-                ", vehiclePlate='" + vehiclePlate + '\'' +
-                ", phone='" + phone + '\'' +
-                ", addr='" + addr + '\'' +
-                ", point=" + point +
-                '}';
     }
 }

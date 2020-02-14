@@ -32,10 +32,12 @@ public interface ShopItemService extends IService<ShopItemEntity> {
 
     int updateItem(ShopItemEntity itemEntity);
 
+    // mbp 的 分页
     Page<String> listBrand(Integer current, Integer size);
 
     List<String> listCategory(Integer current, Integer size);
 
+    // pagehelper 的 分页
     PageInfo<ShopItemEntity> listItem(Integer current, Integer size,
                                       String itemName,String itemUuid,
                                       String category,String brandName,

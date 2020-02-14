@@ -67,5 +67,10 @@ day 07
 
 18.vue前端删除后已删数据仍停留在页面的问题解决：https://blog.csdn.net/qq_39009348/article/details/81698316
 
+day08 客户模块开发
 
+19.nacos的相关测试主要集中在 customer模块中。
+其中的一个测试：
+http://localhost:8082/vehicle/client/nacos/service/providers:com.biao.shop.common.rpc.service.ShopClientRPCService:1.0.0:
 
+20.

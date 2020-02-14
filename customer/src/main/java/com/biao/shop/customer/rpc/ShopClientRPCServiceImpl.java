@@ -31,6 +31,6 @@ public class ShopClientRPCServiceImpl implements ShopClientRPCService {
 
     @Override
     public ShopClientEntity queryById(String uuid) {
-        return shopClientService.queryById(uuid);
+        return shopClientService.queryByUuId(uuid);
     }
 }

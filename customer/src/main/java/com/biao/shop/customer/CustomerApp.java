@@ -1,4 +1,4 @@
-package com.biao.shop;
+package com.biao.shop.customer;
 
 import com.alibaba.nacos.api.annotation.NacosProperties;
 import com.alibaba.nacos.spring.context.annotation.EnableNacos;

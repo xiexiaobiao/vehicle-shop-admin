@@ -94,7 +94,11 @@ dubbo:
 
 #soul 配置
 soul:
+  http:
+    admin-url: http://localhost:9095
+    app-name: customerApp
+    context-path: /client
   dubbo:
     admin-url: http://localhost:9095
-    context-path: /vehicle
-    app-name: customer
+    context-path: /client
+    app-name: customerApp

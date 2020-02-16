@@ -19,7 +19,7 @@ a mirco-service framework admin system for vehicle shop
 | ---------- | :-----------  | :----------- | :----------- |
 | SpringbootMVC     | 微服务     | 微服务开发    | 已整合
 | Dubbo     | RPC     | 微服务架构，服务间调用     | 已整合
-| Zookeeper     | 注册中心     | 微服务进行注册     |
+| Zookeeper     | 注册中心     | 微服务进行注册     | 已整合
 | Nacos     | Config     | 微服务配置中心     | 已整合
 | Nginx     | 反向代理     | 统一系统访问入口；对网关负载均衡；系统前端静态服务器     |
 | Soul     | 网关     | 路由转发；HTTP访问负载均衡     |已整合
@@ -28,7 +28,7 @@ a mirco-service framework admin system for vehicle shop
 | Seata     | RPC     | 分布式事务方案     |
 | Sentinel     | 限流     | 服务访问限流降级     |
 | Redis     | 缓存     | 数据库访问缓存；session缓存     |
-| RocketMQ     | MQ     | 服务间通信     |已整合
+| RocketMQ     | MQ     | 服务间通信；分布式事务；     |已整合
 | Kafka     | MQ     | 日志传输     |
 | ElasticSearch     | DB     | 搜索；推荐；日志存储     |
 | Logstash     | 日志     | 收集系统日志     |

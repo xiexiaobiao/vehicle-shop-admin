@@ -1,5 +1,6 @@
 package com.biao.shop.stock;
 
+import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,7 +16,8 @@ import java.util.List;
  * @Version 1.0
  **/
 @SpringBootApplication
-@MapperScan(basePackages = "com.biao.shop.common.dao.*")
+@MapperScan(basePackages = "com.biao.shop.common.dao")
+@EnableDubbo
 public class StockApp {
     public static void main(String[] args) {
         SpringApplication.run(StockApp.class,args);

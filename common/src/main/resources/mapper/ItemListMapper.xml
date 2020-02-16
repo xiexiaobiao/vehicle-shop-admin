@@ -6,15 +6,15 @@
     <resultMap id="BaseResultMap" type="com.biao.shop.common.entity.ItemListEntity">
         <id column="id_list" property="idList" />
         <result column="order_uuid" property="orderUuid" />
-
         <result column="item_uuid" property="itemUuid" />
         <result column="quantity" property="quantity" />
+        <result column="discount_price" property="discountPrice" />
         <result column="remark" property="remark" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id_list,order_uuid, item_uuid, quantity, remark
+        id_list,order_uuid, item_uuid, quantity, discount_price,remark
     </sql>
 
 </mapper>

@@ -6,7 +6,7 @@
 // 三种打包jar方法 https://www.leadroyal.cn/?p=555，一是自带的jar命令，二是使用shadow plugin，三是使用springboot plugin
 // 这里使用 springboot plugin打包jar，通过 buildscript 和 org.springframework.boot插件，打包使用此插件生成的 bootJar 命令
 4.保存订单测试数据格式，时间格式中要有个T：
-POST  http://localhost:8081/shop-order-entity/save
+POST  http://localhost:8081/vehicle/business/save
 {
   "uuid": "4",
   "clientUuid": "4",
@@ -19,7 +19,7 @@ POST  http://localhost:8081/shop-order-entity/save
 //day04
 6.business 与 stock MQ 通信
 // day05 修改订单和明细结构
-7.POST  http://localhost:8081/vehicle/shop-order-entity/save
+7.POST  http://localhost:8081/vehicle/business/save
   {
     "clientUuid": "CN003",
     "generateDate": "2019-01-17T00:00:00",
@@ -46,7 +46,7 @@ POST  http://localhost:8081/shop-order-entity/save
    导致消息会被同group消费者"瓜分"式消费，
 
 11.配置增加全局： context-path: /vehicle #所有访问该应用的路径前缀
-   http://localhost:8081/vehicle/shop-order-entity/save
+   http://localhost:8081/vehicle/business/save
 12.ShopOrderService.saveOrder()方法中，使用RPC调用clientService.addPoint(),这里就使用了事务的传播属性：
 13.表设计中字符统一使用utf8mb4，表示是否的字段统一使用is_deleted,模式
 day 07
@@ -61,8 +61,11 @@ day 07
    使用@TableField注解对应都没用，在mapper文件中用BaseResultMap中设置也没用！！！
        @TableField(value = "brand_name")
        private String brandName;
-
-17.soul网关使用中发现无法支持DELETE转发，只能改为使用GET,虽然RESTFUL属于比较好的实践，可以在同一个@RequestMapping("/stock")通过不同的动词
+   经其他模块测试： 发现应该是Mapper.xml文件没有被加载，在程序启动时，可以通过控制台看到是否加载了。
+   Parsed mapper file: 'file [D:\vehicle-shop-admin .....
+17.
+前端部署在一个ip，在前端发送请求过程中，会需要位于不同的IP:PORT微服务来响应，前端请求最佳实践应该是都向一个IP，再由网关去路由，于是就使用到了网关。
+注意：soul网关使用中发现无法支持DELETE转发，只能改为使用GET,虽然RESTFUL属于比较好的实践，可以在同一个@RequestMapping("/stock")通过不同的动词
    区分，但目前使用最广泛的是GET/POST，导致很多其他的语义DELETE/PUT使用退化为了GET/POST
 
 18.vue前端删除后已删数据仍停留在页面的问题解决：https://blog.csdn.net/qq_39009348/article/details/81698316
@@ -73,4 +76,5 @@ day08 客户模块开发
 其中的一个测试：
 http://localhost:8082/vehicle/client/nacos/service/providers:com.biao.shop.common.rpc.service.ShopClientRPCService:1.0.0:
 
-20.
+day09
+20.AspectAOP 在commmon模块配置。

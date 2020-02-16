@@ -1,0 +1,116 @@
+package com.biao.shop.business.controller;
+
+
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.biao.shop.business.service.ShopBusinessService;
+import com.biao.shop.common.bo.OrderBO;
+import com.biao.shop.common.entity.ShopOrderEntity;
+import com.biao.shop.business.mq.RocketMQTransProducer;
+import com.biao.shop.common.utils.CustomDateSerializer;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.rocketmq.client.exception.MQBrokerException;
+import org.apache.rocketmq.client.exception.MQClientException;
+import org.apache.rocketmq.client.producer.DefaultMQProducer;
+import org.apache.rocketmq.client.producer.SendResult;
+import org.apache.rocketmq.client.producer.TransactionSendResult;
+import org.apache.rocketmq.common.message.Message;
+import org.apache.rocketmq.remoting.common.RemotingHelper;
+import org.apache.rocketmq.remoting.exception.RemotingException;
+import org.dromara.soul.client.common.annotation.SoulClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.UnsupportedEncodingException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.List;
+
+/**
+ * <p>
+ * 订单表 前端控制器
+ * </p>
+ *
+ * @author XieXiaobiao
+ * @since 2020-01-05
+ */
+@RestController
+@RequestMapping("/business")
+@Slf4j
+public class ShopBusinessController {
+    private final Logger logger = LoggerFactory.getLogger(ShopBusinessController.class);
+
+    private ShopBusinessService businessService;
+    private RocketMQTransProducer rocketMQTransProducer;
+    private DefaultMQProducer defaultMQProducer;
+
+    @Autowired
+    public ShopBusinessController(ShopBusinessService businessService, RocketMQTransProducer rocketMQTransProducer,
+                                  DefaultMQProducer defaultMQProducer){
+        this.businessService = businessService;
+        this.rocketMQTransProducer = rocketMQTransProducer;
+        this.defaultMQProducer = defaultMQProducer;
+    }
+
+    @RequestMapping(value = "/query",method = RequestMethod.GET)
+    public List<ShopOrderEntity> listOrder(){
+        return businessService.listOrder("10");
+    }
+
+    // 测试mysql数据保存功能
+    @PostMapping(value = "/saveUnpaid") //@PostMapping等价于@RequestMapping(method = RequestMethod.POST)
+    public int saveOrderUnpaid(@RequestBody OrderBO  orderBO){
+        logger.debug("订单日期：{}", orderBO.getGenerateDate());
+        return businessService.saveOrderUnpaid(orderBO);
+    }
+
+    // 测试RocketMq事务消息功能
+    @PostMapping(value = "/saveMqPaid")
+    public TransactionSendResult saveTransOrder(@RequestBody OrderBO order) throws UnsupportedEncodingException,
+            MQClientException, JsonProcessingException {
+        logger.debug(order.toString());
+        //jackson 序列化, 但要注意时间的序列化
+        JavaTimeModule timeModule = new JavaTimeModule();
+        timeModule.addSerializer(LocalDateTime.class, new CustomDateSerializer());
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(timeModule);
+
+        String JsonStr = objectMapper.writeValueAsString(order);
+        Message msg = new Message("ShopTopic","order_tag",
+                JsonStr.getBytes(RemotingHelper.DEFAULT_CHARSET));
+        // 这里可以传入自定义的arg
+        TransactionSendResult result = rocketMQTransProducer.sendMsg(msg,"customized-arg");
+        return  result;
+    }
+
+    // 测试mybatis分页查询功能
+    @GetMapping(value = "/pages") //@PostMapping等价于@RequestMapping(method = RequestMethod.POST)
+    public Page<ShopOrderEntity> queryOrderPage(){
+        Page<ShopOrderEntity> result= businessService.queryOrderPagination(1,3);
+        System.out.println(result.getRecords());
+        return result;
+    }
+
+    //测试business向stock发送msg
+    @GetMapping(value = "/msg")
+    public SendResult msg() throws UnsupportedEncodingException, InterruptedException, RemotingException, MQClientException, MQBrokerException {
+        LocalDateTime time = LocalDateTime.now(ZoneId.systemDefault());
+        Message msg = new Message("ShopTopic","stock_tag",
+                (time  + "-- RocketMQ message from business to stock test.").getBytes(RemotingHelper.DEFAULT_CHARSET));
+        return defaultMQProducer.send(msg);
+    }
+
+//    @RequestMapping(value = "/pay",method = RequestMethod.GET)
+//    public ResEntity<String> payOrder(@Param("orderId") String orderId){
+
+    @SoulClient(path = "/vehicle/business/order/**", desc = "获取一个OrderBO")
+    @GetMapping(value = "/order/{idOrder}")
+    public OrderBO getOrderBO(@PathVariable("idOrder") int idOrder){
+        return businessService.getOrderBO(idOrder);
+    }
+}
+

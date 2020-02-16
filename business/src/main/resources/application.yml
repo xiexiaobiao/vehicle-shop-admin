@@ -85,7 +85,7 @@ rocketmq:
     #发送同一类消息的设置为同一个group，保证唯一,默认不需要设置，rocketmq会使用ip@pid(pid代表jvm名字)作为唯一标示
     groupName: shop
     #mq的nameserver地址
-    namesrvAddr: 192.168.1.224:9876
+    namesrvAddr: 192.168.43.224:9876
     #消息最大长度 默认1024*4(4M)
     maxMessageSize: 4096
     sendMsgTimeout: 3000
@@ -95,7 +95,7 @@ rocketmq:
   consumer:
     isOnOff: on
     groupName: shop
-    namesrvAddr: 192.168.1.224:9876
+    namesrvAddr: 192.168.43.224:9876
     #该消费者订阅的主题和tags("*"号表示订阅该主题下所有的tags),格式：topic~tag1||tag2||tag3;topic2~*;
     topics: ShopTopic~*
     consumeThreadMin: 20
@@ -106,7 +106,7 @@ rocketmq:
 #dubbo的配置
 dubbo:
   application:
-    name: customer-service-dubbo-provider
+    name: business-app
   registry:
     address: nacos://localhost:8848
   ##如果要使用自己创建的命名空间可以使用下面2种方式
@@ -114,7 +114,7 @@ dubbo:
   #dubbo.registry.parameters.namespace=5cbb70a5-xxx-xxx-xxx-d43479ae0932
   protocol:
     name: dubbo
-    port: 20880
+    port: 20882
   consumer:
     timeout: 1000
     retries: 2
@@ -127,3 +127,14 @@ dubbo:
     retries: 2
     loadbalance: roundrobin
     cluster: failback
+
+#soul 配置
+soul:
+  http:
+    admin-url: http://localhost:9095
+    app-name: businessApp
+    context-path: /business
+  dubbo:
+    admin-url: http://localhost:9095
+    context-path: /business
+    app-name: businessApp

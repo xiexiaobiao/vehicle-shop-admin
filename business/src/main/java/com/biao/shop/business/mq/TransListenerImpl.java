@@ -1,7 +1,7 @@
 package com.biao.shop.business.mq;
 
 import com.biao.shop.common.bo.OrderBO;
-import com.biao.shop.business.service.ShopOrderService;
+import com.biao.shop.business.service.ShopBusinessService;
 import com.biao.shop.common.utils.CustomDateDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -30,7 +30,7 @@ public class TransListenerImpl implements TransactionListener {
     private final Logger logger = LoggerFactory.getLogger(TransListenerImpl.class);
 
     @Autowired
-    private ShopOrderService shopOrderService;
+    private ShopBusinessService shopBusinessService;
 
     // LocalTransactionState 是一个枚举类
     // 事务半消息发送成功时调用而执行本地事务
@@ -49,7 +49,7 @@ public class TransListenerImpl implements TransactionListener {
                 OrderBO orderBo = objectMapper.readValue(msg.getBody(), OrderBO.class);
                 logger.debug("orderBo is : {}",orderBo.toString());
                 //本地transaction
-                shopOrderService.saveOrderPaid(orderBo);
+                shopBusinessService.saveOrderPaid(orderBo);
             }
             return LocalTransactionState.COMMIT_MESSAGE;
         }catch (Exception e){
@@ -72,13 +72,13 @@ public class TransListenerImpl implements TransactionListener {
             e.printStackTrace();
     }
         assert orderBo != null;
-        String uuid  = orderBo.getUuid();
+        String orderUuid  = orderBo.getOrderUuid();
         if (null == msg.getTransactionId()) {
             // 此返回值将回查一次结束
             return LocalTransactionState.ROLLBACK_MESSAGE;
         }
         // 如果订单uuid存在，则认为本地事务执行成功，半消息将发送到下游
-        if (shopOrderService.checkOrderSaveStatus(uuid)){
+        if (shopBusinessService.checkOrderSaveStatus(orderUuid)){
             // 此返回值将回查一次结束
             return LocalTransactionState.COMMIT_MESSAGE;
         }

@@ -1,5 +1,6 @@
 package com.biao.shop.customer.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.biao.shop.common.entity.ShopClientEntity;
 import com.biao.shop.common.dao.ShopClientDao;
@@ -14,10 +15,8 @@ import org.dromara.soul.client.common.annotation.SoulClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -40,6 +39,11 @@ public class ShopClientServiceImpl extends ServiceImpl<ShopClientDao, ShopClient
     @Override
     public int createClient(ShopClientEntity clientEntity) {
         return shopClientDao.insert(clientEntity);
+    }
+
+    @Override
+    public int deleteBatchById(Collection<Integer> ids) {
+        return shopClientDao.deleteBatchIds(ids);
     }
 
     @Override
@@ -75,7 +79,7 @@ public class ShopClientServiceImpl extends ServiceImpl<ShopClientDao, ShopClient
     @Override
     public ShopClientEntity queryByUuId(String uuid) {
         QueryWrapper<ShopClientEntity> qw = new QueryWrapper<>();
-        qw.eq(true,"uuid",uuid);
+        qw.eq(true,"client_uuid",uuid);
         return shopClientDao.selectOne(qw);
     }
 
@@ -90,13 +94,20 @@ public class ShopClientServiceImpl extends ServiceImpl<ShopClientDao, ShopClient
         QueryWrapper<ShopClientEntity> qw = new QueryWrapper<>();
         Map<String,Object> map = new HashMap<>(4);
         map.put("client_uuid",clientUuid);
-        map.put("name",name);
+        map.put("vehicle_plate",vehiclePlate);
         map.put("phone",phone);
-        boolean valid = Objects.isNull(vehiclePlate); // "vehicle_plate" 模糊匹配
-        qw.allEq(true,map,false).like(!valid,"vehicle_plate",vehiclePlate);
-        System.out.println(">>>>>"+ current+">>>>>>>>>>"+size);
+        boolean valid = Objects.isNull(name); // "name" 模糊匹配
+        qw.allEq(true,map,false).like(!valid,"name",name);
         PageHelper.startPage(current,size);
         List<ShopClientEntity> clientEntities = shopClientDao.selectList(qw);
         return  PageInfo.of(clientEntities);
+    }
+
+    // java Stream
+    @Override
+    public List<String> listPlate() {
+        List<ShopClientEntity> clientEntities =
+                shopClientDao.selectList(new LambdaQueryWrapper<ShopClientEntity>().isNotNull(ShopClientEntity::getVehiclePlate));
+        return clientEntities.stream().map(ShopClientEntity::getVehiclePlate).collect(Collectors.toList());
     }
 }

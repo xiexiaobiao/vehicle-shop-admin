@@ -14,6 +14,7 @@ import org.dromara.soul.client.common.annotation.SoulClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -82,6 +83,26 @@ public class ShopClientController {
     @PostMapping("/create")
     public int createClient(@RequestBody ShopClientEntity client){
         return clientService.createClient(client);
+    }
+
+    @SoulClient(path = "/vehicle/client/plates", desc = "获取车牌列表")
+    @GetMapping("/plates")
+    public List<String> listPlate(){
+        return clientService.listPlate();
+    }
+
+    @SoulClient(path = "/vehicle/client/del", desc = "获取车牌列表")
+    @GetMapping("/del")
+    public int listPlate(@RequestParam("ids") String ids){
+        if (ids.contains(",")){
+            List<Integer> list = new ArrayList<>(8);
+            String[] strings = ids.split(",");
+            for (int i = 0; i < strings.length; i++) {
+                list.add(Integer.valueOf(strings[i]));
+            }
+            return clientService.deleteBatchById(list);
+        }
+        return clientService.deleteById(Integer.parseInt(ids));
     }
 
 }

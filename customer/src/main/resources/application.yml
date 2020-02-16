@@ -75,7 +75,7 @@ logging:
 #dubbo的配置
 dubbo:
   application:
-    name: customer-provider
+    name: customer-App
   registry:
     address: nacos://localhost:8848
   ##如果要使用自己创建的命名空间可以使用下面2种方式
@@ -83,7 +83,7 @@ dubbo:
   #dubbo.registry.parameters.namespace=5cbb70a5-xxx-xxx-xxx-d43479ae0932
   protocol:
     name: dubbo
-    port: 20880
+    port: 20882
   consumer:
     cluster: failover
   provider:

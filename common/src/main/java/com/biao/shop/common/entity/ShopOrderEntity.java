@@ -25,7 +25,7 @@ import lombok.experimental.Accessors;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@Accessors(chain = true)
+@Accessors(chain = true) // 链式赋值
 @TableName("shop_order")
 public class ShopOrderEntity implements Serializable {
 
@@ -37,21 +37,31 @@ public class ShopOrderEntity implements Serializable {
     /**
      * 订单流水号
      */
-    private String uuid;
+    private String orderUuid;
 
-    // @TableField("") 防止出错，可以自己指定映射字段
+    // @TableField("client_uuid") 防止出错，可以自己指定映射字段
     private String clientUuid;
 
-    @JsonSerialize(using = CustomDateSerializer.class)
-    @JsonDeserialize(using = CustomDateDeserializer.class)
     private LocalDateTime generateDate;
 
-    @JsonSerialize(using = CustomDateSerializer.class)
-    @JsonDeserialize(using = CustomDateDeserializer.class)
     private LocalDateTime modifyDate;
 
-    private Boolean paid;
+    @TableField("is_paid")
+    private Boolean paidStatus;
+    @TableField("order_remark")
+    private String orderRemark;
 
+    @Override
+    public String toString() {
+        return "ShopOrderEntity{" +
+                "idOrder=" + idOrder +
+                ", OrderUuid='" + orderUuid + '\'' +
+                ", clientUuid='" + clientUuid + '\'' +
+                ", generateDate=" + generateDate +
+                ", modifyDate=" + modifyDate +
+                ", paidStatus=" + paidStatus +
+                '}';
+    }
 
     public Integer getIdOrder() {
         return idOrder;
@@ -61,13 +71,6 @@ public class ShopOrderEntity implements Serializable {
         this.idOrder = idOrder;
     }
 
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
 
     public String getClientUuid() {
         return clientUuid;
@@ -76,7 +79,6 @@ public class ShopOrderEntity implements Serializable {
     public void setClientUuid(String clientUuid) {
         this.clientUuid = clientUuid;
     }
-
 
     public LocalDateTime getGenerateDate() {
         return generateDate;
@@ -94,23 +96,27 @@ public class ShopOrderEntity implements Serializable {
         this.modifyDate = modifyDate;
     }
 
-    @Override
-    public String toString() {
-        return "ShopOrderEntity{" +
-                "idOrder=" + idOrder +
-                ", uuid='" + uuid + '\'' +
-                ", clientUuid='" + clientUuid + '\'' +
-                ", generateDate=" + generateDate +
-                ", modifyDate=" + modifyDate +
-                ", paid=" + paid +
-                '}';
+    public Boolean getPaidStatus() {
+        return paidStatus;
     }
 
-    public Boolean getPaid() {
-        return paid;
+    public void setPaidStatus(Boolean paidStatus) {
+        this.paidStatus = paidStatus;
     }
 
-    public void setPaid(Boolean paid) {
-        this.paid = paid;
+    public String getOrderUuid() {
+        return orderUuid;
+    }
+
+    public void setOrderUuid(String orderUuid) {
+        this.orderUuid = orderUuid;
+    }
+
+    public String getOrderRemark() {
+        return orderRemark;
+    }
+
+    public void setOrderRemark(String orderRemark) {
+        this.orderRemark = orderRemark;
     }
 }

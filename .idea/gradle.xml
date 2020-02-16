@@ -20,6 +20,7 @@
             <option value="$PROJECT_DIR$/delivery" />
             <option value="$PROJECT_DIR$/finance" />
             <option value="$PROJECT_DIR$/gateway" />
+            <option value="$PROJECT_DIR$/order" />
             <option value="$PROJECT_DIR$/portal" />
             <option value="$PROJECT_DIR$/search" />
             <option value="$PROJECT_DIR$/stock" />

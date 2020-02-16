@@ -21,4 +21,5 @@ include 'portal'
 include 'finance'
 // 网关
 include 'gateway'
+include 'order'
 

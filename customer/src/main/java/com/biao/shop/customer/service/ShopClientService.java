@@ -5,6 +5,7 @@ import com.biao.shop.common.entity.ShopClientEntity;
 import com.biao.shop.common.entity.ShopItemEntity;
 import com.github.pagehelper.PageInfo;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -17,6 +18,7 @@ import java.util.List;
  */
 public interface ShopClientService extends IService<ShopClientEntity> {
     int createClient(ShopClientEntity clientEntity);
+    int deleteBatchById(Collection<Integer> ids);
     int deleteById(int id);
     int deleteByUUid(String uuid);
     int updateClient(ShopClientEntity clientEntity);
@@ -26,4 +28,5 @@ public interface ShopClientService extends IService<ShopClientEntity> {
     ShopClientEntity queryById(int id);
     PageInfo<ShopClientEntity> listClient(Integer current, Integer size,String clientUuid,
                                             String name,String vehiclePlate,String phone);
+    List<String> listPlate();
 }

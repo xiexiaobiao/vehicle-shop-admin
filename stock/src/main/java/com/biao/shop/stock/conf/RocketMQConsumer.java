@@ -75,7 +75,7 @@ public class RocketMQConsumer {
                         ObjectMapper objectMapper = new ObjectMapper();
                         objectMapper.registerModule(timeModule);
                         OrderBO orderBO = objectMapper.readValue(msgExt.getBody(), OrderBO.class);
-                        List<OrderBO.itemBo> itemBos = orderBO.getDetail();
+                        List<OrderBO.ItemListBO> itemBos = orderBO.getDetail();
                         // 扣减库存
                         itemBos.forEach(itemBo ->
                         {

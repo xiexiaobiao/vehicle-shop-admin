@@ -40,7 +40,7 @@ public class ShopItemServiceImpl extends ServiceImpl<ShopItemDao, ShopItemEntity
     @Override
     public ShopItemEntity queryByUUid(String uuid) {
         QueryWrapper<ShopItemEntity> qw = new QueryWrapper<>();
-        qw.eq(true,"uuid",uuid);
+        qw.eq(true,"item_uuid",uuid);
         return shopItemDao.selectOne(qw);
     }
 
@@ -74,7 +74,7 @@ public class ShopItemServiceImpl extends ServiceImpl<ShopItemDao, ShopItemEntity
         return shopItemDao.updateById(itemEntity);
     }
 
-    // fixme 查全表，需要改进！！
+    // fixme 一次性查全表，需要改进！！！
     @Override
     public List<String> listCategory(Integer current, Integer size) {
         List<ShopItemEntity> itemlist = shopItemDao.selectList(

@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @Version V1.0
  **/
 //
-@Service(version = "1.0.0")
+@Service(version = "1.0.0",group = "shop")
 public class ShopClientRPCServiceImpl implements ShopClientRPCService {
 
     private ShopClientService shopClientService;

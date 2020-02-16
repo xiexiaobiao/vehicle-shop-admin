@@ -32,16 +32,16 @@ subprojects {
         compile group: 'org.springframework.boot', name: 'spring-boot-autoconfigure', version: '2.2.2.RELEASE'
         testCompile group: 'org.springframework.boot', name: 'spring-boot-test', version: '2.2.2.RELEASE'
         compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: '2.2.4.RELEASE'
-
         compile group: 'org.springframework', name: 'spring-tx', version: '5.2.2.RELEASE'
         testCompile group: 'org.springframework', name: 'spring-test', version: '5.2.2.RELEASE'
 
         compile group: 'com.baomidou', name: 'mybatis-plus', version: '3.3.0'
         compile group: 'com.baomidou', name: 'mybatis-plus-boot-starter', version: '3.3.0'
+
+        // Lombok
         providedCompile group: 'org.projectlombok', name: 'lombok', version: '1.18.10'
 
         compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
-        compile group: 'org.apache.dubbo', name: 'dubbo-spring-boot-starter', version: '2.7.5'
 
         // springboot使用druid必须的依赖，在启动应用时自动启动druid,对应yml文件中的spring.datasource.druid
         compile group: 'com.alibaba', name: 'druid-spring-boot-starter', version: '1.1.21'
@@ -49,16 +49,18 @@ subprojects {
         //compile group: 'com.alibaba', name: 'druid', version: '1.1.21'
         compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.18'
 
+        // The all in one project of dubbo
+        compile group: 'org.apache.dubbo', name: 'dubbo', version: '2.7.5'
+        compile group: 'org.apache.dubbo', name: 'dubbo-spring-boot-starter', version: '2.7.5'
         // 用于 dubbo.configcenter-address=nacos://127.0.0.1:8848
         compile group: 'org.apache.dubbo', name: 'dubbo-configcenter-nacos', version: '2.7.5'
+
         // @EnableNacosConfig 和  @NacosPropertySource
         compile group: 'com.alibaba.nacos', name: 'nacos-spring-context', version: '0.3.5'
         // @NacosProperties
         compile group: 'com.alibaba.nacos', name: 'nacos-api', version: '1.1.4'
         // 使用ConfigService
         compile group: 'com.alibaba.nacos', name: 'nacos-client', version: '1.1.4'
-        // The all in one project of dubbo
-        compile group: 'org.apache.dubbo', name: 'dubbo', version: '2.7.5'
         compile group: 'com.alibaba.boot', name: 'nacos-discovery-spring-boot-starter', version: '0.2.4'
 
         // jackson序列化框架
@@ -78,6 +80,10 @@ subprojects {
 
         // Mybatis-PageHelper
         compile group: 'com.github.pagehelper', name: 'pagehelper', version: '5.1.11'
+
+        // Advanced and thread-safe Redis client for synchronous, asynchronous, and reactive usage
+        compile group: 'io.lettuce', name: 'lettuce-core', version: '5.2.2.RELEASE'
+
 
     }
     //if code include the chinese content

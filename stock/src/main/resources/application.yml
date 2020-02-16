@@ -134,3 +134,28 @@ pagehelper:
   close-conn: true
   # 用于控制默认不带 count 查询的方法中，是否执行 count 查询，这里设置为true后，total会为-1
   default-count: false
+
+redis:
+  server:
+    addr: 127.0.0.1:6379
+    db: 0
+
+#dubbo的配置
+dubbo:
+  application:
+    name: customer-App
+  registry:
+    address: nacos://localhost:8848
+  ##如果要使用自己创建的命名空间可以使用下面2种方式
+  #dubbo.registry.address = nacos://10.20.153.10:8848?namespace=5cbb70a5-xxx-xxx-xxx-d43479ae0932
+  #dubbo.registry.parameters.namespace=5cbb70a5-xxx-xxx-xxx-d43479ae0932
+  protocol:
+    name: dubbo
+    port: 20884
+  consumer:
+    cluster: failover
+  provider:
+    cluster: failback
+    timeout: 2000
+    retries: 2
+    loadbalance: consistenthash

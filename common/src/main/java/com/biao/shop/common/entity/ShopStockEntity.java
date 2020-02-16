@@ -18,7 +18,7 @@ import lombok.experimental.Accessors;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@Accessors(chain = true)
+@Accessors(chain = true) // 链式赋值
 @TableName("shop_stock")
 public class ShopStockEntity implements Serializable {
 

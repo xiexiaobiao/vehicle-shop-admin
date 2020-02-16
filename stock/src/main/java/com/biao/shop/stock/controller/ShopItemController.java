@@ -79,9 +79,7 @@ public class ShopItemController {
     @SoulClient(path = "/vehicle/stock/item/**", desc = "查询一个商品")
     @GetMapping("/item/{id}")
     public ShopItemEntity queryById(@PathVariable("id") String id) {
-        ShopItemEntity itemEntity =  shopItemService.queryById(id);
-        System.out.println(itemEntity);
-        return itemEntity;
+        return shopItemService.queryById(id);
     }
     /*@PathVariable其他格式的：*/
     //@GetMapping("/path/{id}/name")

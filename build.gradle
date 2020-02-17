@@ -30,11 +30,14 @@ subprojects {
         compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: '2.2.2.RELEASE'
         compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.2.2.RELEASE'
         compile group: 'org.springframework.boot', name: 'spring-boot-autoconfigure', version: '2.2.2.RELEASE'
-        testCompile group: 'org.springframework.boot', name: 'spring-boot-test', version: '2.2.2.RELEASE'
+        // redis集成
+        compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis', version: '2.2.4.RELEASE'
         compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: '2.2.4.RELEASE'
         compile group: 'org.springframework', name: 'spring-tx', version: '5.2.2.RELEASE'
         testCompile group: 'org.springframework', name: 'spring-test', version: '5.2.2.RELEASE'
+        testCompile group: 'org.springframework.boot', name: 'spring-boot-test', version: '2.2.2.RELEASE'
 
+        // mbp
         compile group: 'com.baomidou', name: 'mybatis-plus', version: '3.3.0'
         compile group: 'com.baomidou', name: 'mybatis-plus-boot-starter', version: '3.3.0'
 

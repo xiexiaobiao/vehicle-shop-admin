@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.biao.shop.business.service.ShopBusinessService;
 import com.biao.shop.common.bo.OrderBO;
 import com.biao.shop.common.dao.ShopOrderDao;
+import com.biao.shop.common.dto.OrderDTO;
 import com.biao.shop.common.entity.ItemListEntity;
 import com.biao.shop.common.entity.ShopClientEntity;
 import com.biao.shop.common.entity.ShopItemEntity;
@@ -24,10 +25,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * <p>
@@ -51,7 +54,7 @@ public class ShopBusinessServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrder
     private ShopOrderRPCService orderRPCService; // 订单
 
     @Reference(version = "1.0.0",group = "shop",interfaceClass = ShopStockRPCService.class)
-    private ShopStockRPCService itemRPCService; // 商品
+    private ShopStockRPCService stockRPCService; // 商品
 
     @Reference(version = "1.0.0",group = "shop",interfaceClass = ShopClientRPCService.class)
     private ShopClientRPCService clientRPCService;
@@ -65,15 +68,15 @@ public class ShopBusinessServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrder
     // 订单的明细单独保存，
     @Override
     @Transactional(propagation = Propagation.NESTED)
-    public int saveOrderUnpaid(OrderBO order) {
+    public int saveOrderUnpaid(OrderDTO orderDTO) {
 
         /**测试模拟本地事务出错,"sendStatus": "SEND_OK",
          * 但是"localTransactionState": "ROLLBACK_MESSAGE"，半消息不会发送到下游*/
          // int a = 1 / 0 ;
 
         ShopOrderEntity orderEntity = new ShopOrderEntity();
+        BeanUtils.copyProperties(orderDTO,orderEntity);
         orderEntity.setGenerateDate(LocalDateTime.now());
-        BeanUtils.copyProperties(order,orderEntity);
         // 可以使用其他算法生成UUID，如雪花，redis等
         // String orderUuid = String.valueOf(UUID.randomUUID());
         Long orderUuid = SnowFlake.generateId();
@@ -84,16 +87,19 @@ public class ShopBusinessServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrder
         /**
          * 这里有个问题可以思考下，以下这行放forEach外边，结果怎样？
          * ItemListEntity listEntity = new ItemListEntity();*/
+        AtomicReference<Double> orderAmount = new AtomicReference<>(0.00);
         // 保存订单明细
-        order.getDetail().forEach(itemBo-> {
+        orderDTO.getDetail().forEach(itemDTO-> {
             ItemListEntity listEntity = new ItemListEntity();
-            BeanUtils.copyProperties(itemBo,listEntity);
+            BeanUtils.copyProperties(itemDTO,listEntity);
             listEntity.setOrderUuid(String.valueOf(orderUuid));
             itemListEntities.add(listEntity);
+            orderAmount.updateAndGet(v -> v + itemDTO.getDiscountPrice().doubleValue() * itemDTO.getQuantity());
         });
-        orderRPCService.saveBatch(itemListEntities);
-        // 测试事务的传播属性，propagation
-        int j = 1/0;
+        orderRPCService.saveBatchItems(itemListEntities);
+        orderEntity.setAmount(BigDecimal.valueOf(orderAmount.get()));
+        /** 测试事务的传播属性，propagation */
+        // int j = 1/0;
         return shopOrderDao.insert(orderEntity);
 
         /**另一种程序结构：这里也可使用manager层的类
@@ -107,10 +113,10 @@ public class ShopBusinessServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrder
     // 使用 dubbo RPC调用customer模块的服务
     @Override
     @Transactional
-    public int saveOrderPaid(OrderBO order) {
+    public int saveOrderPaid(OrderDTO orderDTO) {
         ShopOrderEntity orderEntity = new ShopOrderEntity();
         orderEntity.setGenerateDate(LocalDateTime.now());
-        BeanUtils.copyProperties(order,orderEntity);
+        BeanUtils.copyProperties(orderDTO,orderEntity);
         // 可以使用其他算法生成UUID，如雪花，redis等
         // String orderUuid = String.valueOf(UUID.randomUUID());
         Long orderUuid = SnowFlake.generateId();
@@ -122,17 +128,16 @@ public class ShopBusinessServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrder
          * 这里有个问题可以思考下，以下这行放forEach外边，结果怎样？
          * ItemListEntity listEntity = new ItemListEntity();*/
         // 保存订单明细
-        order.getDetail().forEach(itemBo-> {
+        orderDTO.getDetail().forEach(itemDTO-> {
             ItemListEntity listEntity = new ItemListEntity();
-            BeanUtils.copyProperties(itemBo,listEntity);
+            BeanUtils.copyProperties(itemDTO,listEntity);
             listEntity.setOrderUuid(String.valueOf(orderUuid));
             itemListEntities.add(listEntity);
             // 加积分,积分换算即售价取整
-            int pointToAdd = itemRPCService.queryByUuId(itemBo.getItemUuid()).getSellPrice().intValue();
-            clientRPCService.addPoint(order.getClientUuid(),pointToAdd);
+            int pointToAdd = stockRPCService.queryByUuId(itemDTO.getItemUuid()).getSellPrice().intValue();
+            clientRPCService.addPoint(orderDTO.getClientUuid(),pointToAdd);
         });
-
-        orderRPCService.saveBatch(itemListEntities);
+        orderRPCService.saveBatchItems(itemListEntities);
         return shopOrderDao.insert(orderEntity);
 
         /**另一种程序结构：这里也可使用manager层的类
@@ -214,7 +219,7 @@ public class ShopBusinessServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrder
                 itemListEntity -> {
                     OrderBO.ItemListBO itemListBO = orderBO.new ItemListBO();
                     BeanUtils.copyProperties(itemListEntity,itemListBO);
-                    ShopItemEntity item = itemRPCService.queryByUuId(itemListEntity.getItemUuid());
+                    ShopItemEntity item = stockRPCService.queryByUuId(itemListEntity.getItemUuid());
                     if ( !Objects.isNull(item)){
                         BeanUtils.copyProperties(item,itemListBO);
                     }

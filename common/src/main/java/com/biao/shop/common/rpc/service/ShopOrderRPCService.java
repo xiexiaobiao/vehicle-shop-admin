@@ -9,5 +9,5 @@ import java.util.List;
 public interface ShopOrderRPCService {
     ShopOrderEntity queryOrder(int id);
     List<ItemListEntity> getOrderItemList(String orderUid);
-    boolean saveBatch(Collection<ItemListEntity> itemListEntities);
+    boolean saveBatchItems(Collection<ItemListEntity> itemListEntities);
 }

@@ -23,5 +23,4 @@ public interface OrderService extends IService<ShopOrderEntity>{
     int createOrder(ShopOrderEntity orderEntity);
     ShopOrderEntity queryOrder(int id);
     PageInfo<ShopOrderEntity> listOrder(Integer current, Integer size);
-    List<ItemListEntity> getOrderList(String orderUid);
 }

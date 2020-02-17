@@ -4,6 +4,7 @@ package com.biao.shop.business.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.biao.shop.business.service.ShopBusinessService;
 import com.biao.shop.common.bo.OrderBO;
+import com.biao.shop.common.dto.OrderDTO;
 import com.biao.shop.common.entity.ShopOrderEntity;
 import com.biao.shop.business.mq.RocketMQTransProducer;
 import com.biao.shop.common.utils.CustomDateSerializer;
@@ -23,6 +24,7 @@ import org.dromara.soul.client.common.annotation.SoulClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.UnsupportedEncodingException;
@@ -63,9 +65,9 @@ public class ShopBusinessController {
 
     // 测试mysql数据保存功能
     @PostMapping(value = "/saveUnpaid") //@PostMapping等价于@RequestMapping(method = RequestMethod.POST)
-    public int saveOrderUnpaid(@RequestBody OrderBO  orderBO){
-        logger.debug("订单日期：{}", orderBO.getGenerateDate());
-        return businessService.saveOrderUnpaid(orderBO);
+    public int saveOrderUnpaid(@RequestBody OrderDTO orderDTO){
+        logger.debug("订单日期：{}", orderDTO.getGenerateDate());
+        return businessService.saveOrderUnpaid(orderDTO);
     }
 
     // 测试RocketMq事务消息功能
@@ -110,6 +112,7 @@ public class ShopBusinessController {
     @SoulClient(path = "/vehicle/business/order/**", desc = "获取一个OrderBO")
     @GetMapping(value = "/order/{idOrder}")
     public OrderBO getOrderBO(@PathVariable("idOrder") int idOrder){
+        logger.info("if this log printed, DB query is invoked.");
         return businessService.getOrderBO(idOrder);
     }
 }

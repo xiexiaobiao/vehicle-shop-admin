@@ -19,15 +19,16 @@ POST  http://localhost:8081/vehicle/business/save
 //day04
 6.business 与 stock MQ 通信
 // day05 修改订单和明细结构
-7.POST  http://localhost:8081/vehicle/business/save
+7.POST  http://localhost:8081/vehicle/business/saveUnpaid
   {
     "clientUuid": "CN003",
-    "generateDate": "2019-01-17T00:00:00",
-    "modifyDate": "2000-01-01T00:00:00",
+    "generateDate": "2019-02-17T23:59:59",
+    "paidStatus": false,
+    "orderRemark": "买了个好东西，哈哈",
     "detail": [
-    {"itemUuid": "SP000010", "quantity": "3","remark": "九折，优惠5元"},
-    {"itemUuid": "SP000012","quantity": "2","remark": "优惠5元"},
-    {"itemUuid": "SP000015","quantity": "1","remark": "九折，优惠10元"}
+    {"itemUuid": "SP000010", "quantity": "3","discountPrice": 12.56,"remark": "八折，优惠5元"},
+    {"itemUuid": "SP000012","quantity": "2","discountPrice": 50.5,"remark": "优惠5元"},
+    {"itemUuid": "SP000015","quantity": "1","discountPrice": 88.8,"remark": "九折，优惠10元"}
     ]
   }
 
@@ -78,3 +79,5 @@ http://localhost:8082/vehicle/client/nacos/service/providers:com.biao.shop.commo
 
 day09
 20.AspectAOP 在commmon模块配置。
+
+21.Redis缓存在business模块

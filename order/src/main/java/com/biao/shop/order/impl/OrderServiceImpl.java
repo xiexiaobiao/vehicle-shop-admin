@@ -70,8 +70,4 @@ public class OrderServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrderEntity>
         return PageInfo.of(orderEntities);
     }
 
-    @Override
-    public List<ItemListEntity> getOrderList(String orderUid) {
-        return null;
-    }
 }

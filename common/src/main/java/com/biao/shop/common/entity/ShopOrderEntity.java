@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.io.Serializable;
 
@@ -51,17 +53,8 @@ public class ShopOrderEntity implements Serializable {
     @TableField("order_remark")
     private String orderRemark;
 
-    @Override
-    public String toString() {
-        return "ShopOrderEntity{" +
-                "idOrder=" + idOrder +
-                ", OrderUuid='" + orderUuid + '\'' +
-                ", clientUuid='" + clientUuid + '\'' +
-                ", generateDate=" + generateDate +
-                ", modifyDate=" + modifyDate +
-                ", paidStatus=" + paidStatus +
-                '}';
-    }
+    private BigDecimal amount;
+
 
     public Integer getIdOrder() {
         return idOrder;
@@ -71,6 +64,13 @@ public class ShopOrderEntity implements Serializable {
         this.idOrder = idOrder;
     }
 
+    public String getOrderUuid() {
+        return orderUuid;
+    }
+
+    public void setOrderUuid(String orderUuid) {
+        this.orderUuid = orderUuid;
+    }
 
     public String getClientUuid() {
         return clientUuid;
@@ -104,19 +104,19 @@ public class ShopOrderEntity implements Serializable {
         this.paidStatus = paidStatus;
     }
 
-    public String getOrderUuid() {
-        return orderUuid;
-    }
-
-    public void setOrderUuid(String orderUuid) {
-        this.orderUuid = orderUuid;
-    }
-
     public String getOrderRemark() {
         return orderRemark;
     }
 
     public void setOrderRemark(String orderRemark) {
         this.orderRemark = orderRemark;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 }

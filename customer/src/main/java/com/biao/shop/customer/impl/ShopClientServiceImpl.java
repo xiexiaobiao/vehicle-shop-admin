@@ -12,7 +12,12 @@ import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.Service;
 import org.dromara.soul.client.common.annotation.SoulClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
@@ -29,6 +34,8 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ShopClientServiceImpl extends ServiceImpl<ShopClientDao, ShopClientEntity> implements ShopClientService {
 
+    private final Logger logger = LoggerFactory.getLogger(ShopClientServiceImpl.class);
+
     private ShopClientDao shopClientDao;
 
     @Autowired
@@ -42,16 +49,21 @@ public class ShopClientServiceImpl extends ServiceImpl<ShopClientDao, ShopClient
     }
 
     @Override
+    @CacheEvict(cacheNames = "shopClient")
     public int deleteBatchById(Collection<Integer> ids) {
+        logger.info("删除Redis缓存");
         return shopClientDao.deleteBatchIds(ids);
     }
 
     @Override
+    @CacheEvict(cacheNames = "shopClient")
     public int deleteById(int id) {
+        logger.info("删除Redis缓存");
         return shopClientDao.deleteById(id);
     }
 
     @Override
+    @CacheEvict(cacheNames = "shopClient") // 删除Redis缓存
     public int deleteByUUid(String uuid) {
         QueryWrapper<ShopClientEntity> qw = new QueryWrapper<>();
         qw.eq(true,"uuid",uuid);
@@ -59,14 +71,12 @@ public class ShopClientServiceImpl extends ServiceImpl<ShopClientDao, ShopClient
     }
 
     @Override
+    @CachePut(cacheNames = "shopClient")  // 更新Redis缓存
     public int updateClient(ShopClientEntity clientEntity) {
+        logger.info("更新Redis缓存");
         return shopClientDao.updateById(clientEntity);
     }
 
-    @Override
-    public List<ShopClientEntity> queryClient(String condition) {
-        return null;
-    }
 
     @Override
     public int addPoint(String uuid,int pointToAdd) {
@@ -77,20 +87,26 @@ public class ShopClientServiceImpl extends ServiceImpl<ShopClientDao, ShopClient
     }
 
     @Override
+    @Cacheable(cacheNames = "shopClient")
     public ShopClientEntity queryByUuId(String uuid) {
+        logger.info("queryByUuId 未使用Redis缓存");
         QueryWrapper<ShopClientEntity> qw = new QueryWrapper<>();
         qw.eq(true,"client_uuid",uuid);
         return shopClientDao.selectOne(qw);
     }
 
     @Override
+    @Cacheable(cacheNames = "shopClient")
     public ShopClientEntity queryById(int id) {
+        logger.info("queryById 未使用Redis缓存");
         return shopClientDao.selectById(id);
     }
 
     @Override
+    @Cacheable(cacheNames = "shopClient")
     public PageInfo<ShopClientEntity> listClient(Integer current, Integer size, String clientUuid, String name,
                                                  String vehiclePlate, String phone) {
+        logger.info("listClient 未使用Redis缓存");
         QueryWrapper<ShopClientEntity> qw = new QueryWrapper<>();
         Map<String,Object> map = new HashMap<>(4);
         map.put("client_uuid",clientUuid);
@@ -105,7 +121,9 @@ public class ShopClientServiceImpl extends ServiceImpl<ShopClientDao, ShopClient
 
     // java Stream
     @Override
+    @Cacheable(cacheNames = "shopClient")
     public List<String> listPlate() {
+        logger.info("listPlate 未使用Redis缓存");
         List<ShopClientEntity> clientEntities =
                 shopClientDao.selectList(new LambdaQueryWrapper<ShopClientEntity>().isNotNull(ShopClientEntity::getVehiclePlate));
         return clientEntities.stream().map(ShopClientEntity::getVehiclePlate).collect(Collectors.toList());

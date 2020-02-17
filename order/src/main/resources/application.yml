@@ -83,7 +83,7 @@ dubbo:
   #dubbo.registry.parameters.namespace=5cbb70a5-xxx-xxx-xxx-d43479ae0932
   protocol:
     name: dubbo
-    port: 20880
+    port: 20888
   consumer:
     cluster: failover
   provider:

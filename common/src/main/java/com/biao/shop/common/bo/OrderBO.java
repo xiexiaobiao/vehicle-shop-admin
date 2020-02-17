@@ -17,7 +17,7 @@ public class OrderBO implements Serializable {
     /**
      * 订单流水号
      */
-    private String OrderUuid;
+    private String orderUuid;
     private String clientUuid;
     private LocalDateTime generateDate;
 /** @JsonSerialize(using = CustomDateSerializer.class)
@@ -27,6 +27,7 @@ public class OrderBO implements Serializable {
     private LocalDateTime modifyDate;
     private Boolean paidStatus;
     private String orderRemark;
+    private BigDecimal amount;
     // 订单明细
     List<ItemListBO> detail;
     // 客户
@@ -35,13 +36,6 @@ public class OrderBO implements Serializable {
     private String phone;
     private String addr;
 
-    public String getOrderUuid() {
-        return OrderUuid;
-    }
-
-    public void setOrderUuid(String orderUuid) {
-        OrderUuid = orderUuid;
-    }
 
     public String getClientUuid() {
         return clientUuid;
@@ -121,6 +115,22 @@ public class OrderBO implements Serializable {
 
     public void setOrderRemark(String orderRemark) {
         this.orderRemark = orderRemark;
+    }
+
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
+
+    public String getOrderUuid() {
+        return orderUuid;
+    }
+
+    public void setOrderUuid(String orderUuid) {
+        this.orderUuid = orderUuid;
     }
 
     @Data

@@ -7,11 +7,15 @@ import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.biao.shop.common.entity.ShopClientEntity;
+import com.biao.shop.customer.impl.ShopClientServiceImpl;
 import com.biao.shop.customer.service.ShopClientService;
 import com.biao.shop.customer.nacos.NacosConfTest;
 import com.github.pagehelper.PageInfo;
 import org.dromara.soul.client.common.annotation.SoulClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -28,6 +32,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/client")
 public class ShopClientController {
+    private final Logger logger = LoggerFactory.getLogger(ShopClientController.class);
 
     /////////////// nacos 测试使用
     @Autowired
@@ -91,9 +96,9 @@ public class ShopClientController {
         return clientService.listPlate();
     }
 
-    @SoulClient(path = "/vehicle/client/del", desc = "获取车牌列表")
+    @SoulClient(path = "/vehicle/client/del", desc = "删除用户")
     @GetMapping("/del")
-    public int listPlate(@RequestParam("ids") String ids){
+    public int delClient(@RequestParam("ids") String ids){
         if (ids.contains(",")){
             List<Integer> list = new ArrayList<>(8);
             String[] strings = ids.split(",");

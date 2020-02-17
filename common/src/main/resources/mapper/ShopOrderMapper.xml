@@ -11,11 +11,12 @@
         <result column="modify_date" property="modifyDate" />
         <result column="is_paid" property="paidStatus" />
         <result column="order_remark" property="orderRemark" />
+        <result column="amount" property="amount" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id_order, uuid, client_uuid, generate_date, modify_date,is_paid,order_remark
+        id_order, uuid, client_uuid, generate_date, modify_date,is_paid,order_remark,amount
     </sql>
 
 </mapper>

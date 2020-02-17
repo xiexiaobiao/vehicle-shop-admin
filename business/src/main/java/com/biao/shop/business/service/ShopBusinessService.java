@@ -2,6 +2,7 @@ package com.biao.shop.business.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.biao.shop.common.bo.OrderBO;
+import com.biao.shop.common.dto.OrderDTO;
 import com.biao.shop.common.entity.ShopClientEntity;
 import com.biao.shop.common.entity.ShopOrderEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -19,8 +20,8 @@ import java.util.List;
  * @since 2020-01-06
  */
 public interface ShopBusinessService extends IService<ShopOrderEntity> {
-    int saveOrderUnpaid(OrderBO order);
-    int saveOrderPaid(OrderBO order);
+    int saveOrderUnpaid(OrderDTO orderDTO);
+    int saveOrderPaid(OrderDTO orderDTO);
     int paidOrder(String orderId);
     int deleteOrder(String orderId);
     int modifyOrder(ShopOrderEntity order);

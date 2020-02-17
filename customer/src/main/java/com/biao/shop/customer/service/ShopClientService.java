@@ -22,7 +22,6 @@ public interface ShopClientService extends IService<ShopClientEntity> {
     int deleteById(int id);
     int deleteByUUid(String uuid);
     int updateClient(ShopClientEntity clientEntity);
-    List<ShopClientEntity> queryClient(String condition);
     int addPoint(String uuid, int pointToAdd);
     ShopClientEntity queryByUuId(String uuid);
     ShopClientEntity queryById(int id);

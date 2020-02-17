@@ -68,7 +68,7 @@ public class ShopBusinessServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrder
     // 订单的明细单独保存，
     @Override
     @Transactional(propagation = Propagation.NESTED)
-    public int saveOrderUnpaid(OrderDTO orderDTO) {
+    public int saveOrder(OrderDTO orderDTO) {
 
         /**测试模拟本地事务出错,"sendStatus": "SEND_OK",
          * 但是"localTransactionState": "ROLLBACK_MESSAGE"，半消息不会发送到下游*/
@@ -100,44 +100,6 @@ public class ShopBusinessServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrder
         orderEntity.setAmount(BigDecimal.valueOf(orderAmount.get()));
         /** 测试事务的传播属性，propagation */
         // int j = 1/0;
-        return shopOrderDao.insert(orderEntity);
-
-        /**另一种程序结构：这里也可使用manager层的类
-         * OrderManager.saveOrder(OrderBO order),
-         * 区别在于manager层先组合了各dao，service直接调用，上面的模式则是
-         * service间调用，并且可以使用service.saveBatch()批处理方法。
-         * 而dao无法使用batch处理
-         * */
-    }
-
-    // 使用 dubbo RPC调用customer模块的服务
-    @Override
-    @Transactional
-    public int saveOrderPaid(OrderDTO orderDTO) {
-        ShopOrderEntity orderEntity = new ShopOrderEntity();
-        orderEntity.setGenerateDate(LocalDateTime.now());
-        BeanUtils.copyProperties(orderDTO,orderEntity);
-        // 可以使用其他算法生成UUID，如雪花，redis等
-        // String orderUuid = String.valueOf(UUID.randomUUID());
-        Long orderUuid = SnowFlake.generateId();
-        orderEntity.setOrderUuid(String.valueOf(orderUuid));
-        // 已付款设置
-        orderEntity.setPaidStatus(true);
-        List<ItemListEntity> itemListEntities = new ArrayList<>(16);
-        /**
-         * 这里有个问题可以思考下，以下这行放forEach外边，结果怎样？
-         * ItemListEntity listEntity = new ItemListEntity();*/
-        // 保存订单明细
-        orderDTO.getDetail().forEach(itemDTO-> {
-            ItemListEntity listEntity = new ItemListEntity();
-            BeanUtils.copyProperties(itemDTO,listEntity);
-            listEntity.setOrderUuid(String.valueOf(orderUuid));
-            itemListEntities.add(listEntity);
-            // 加积分,积分换算即售价取整
-            int pointToAdd = stockRPCService.queryByUuId(itemDTO.getItemUuid()).getSellPrice().intValue();
-            clientRPCService.addPoint(orderDTO.getClientUuid(),pointToAdd);
-        });
-        orderRPCService.saveBatchItems(itemListEntities);
         return shopOrderDao.insert(orderEntity);
 
         /**另一种程序结构：这里也可使用manager层的类

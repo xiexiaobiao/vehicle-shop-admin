@@ -27,7 +27,7 @@ a mirco-service framework admin system for vehicle shop
 | Shiro     | 鉴权     | 系统API访问权限控制     |
 | Seata     | RPC     | 分布式事务方案     |
 | Sentinel     | 限流     | 服务访问限流降级     |
-| Redis     | 缓存     | 数据库访问缓存；session缓存     |
+| Redis     | 缓存     | 数据库访问缓存；session缓存     |已整合
 | RocketMQ     | MQ     | 服务间通信；分布式事务；     |已整合
 | Kafka     | MQ     | 日志传输     |
 | ElasticSearch     | DB     | 搜索；推荐；日志存储     |

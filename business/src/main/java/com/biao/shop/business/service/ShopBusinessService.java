@@ -20,8 +20,7 @@ import java.util.List;
  * @since 2020-01-06
  */
 public interface ShopBusinessService extends IService<ShopOrderEntity> {
-    int saveOrderUnpaid(OrderDTO orderDTO);
-    int saveOrderPaid(OrderDTO orderDTO);
+    int saveOrder(OrderDTO orderDTO);
     int paidOrder(String orderId);
     int deleteOrder(String orderId);
     int modifyOrder(ShopOrderEntity order);

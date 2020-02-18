@@ -7,6 +7,7 @@ import com.biao.shop.common.entity.ShopClientEntity;
 import com.biao.shop.common.entity.ShopOrderEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Collection;
 import java.util.List;
@@ -20,10 +21,8 @@ import java.util.List;
  * @since 2020-01-06
  */
 public interface ShopBusinessService extends IService<ShopOrderEntity> {
-    int saveOrder(OrderDTO orderDTO);
-    int paidOrder(String orderId);
-    int deleteOrder(String orderId);
-    int modifyOrder(ShopOrderEntity order);
+    int saveOrderDTO(OrderDTO orderDTO);
+    int updateOrderDTO(OrderDTO orderDTO,String orderUuid);
     List<ShopOrderEntity> listOrder(String condition);
     ShopOrderEntity queryOrder(String orderId);
     boolean checkOrderSaveStatus(String orderUUID);

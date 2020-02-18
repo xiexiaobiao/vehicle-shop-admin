@@ -8,6 +8,7 @@ import com.biao.shop.order.service.ItemListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -31,8 +32,8 @@ public class ItemListServiceImpl extends ServiceImpl<ItemListDao, ItemListEntity
     }
 
     @Override
-    public int deleteDetail() {
-        return 0;
+    public int deleteBatchItemList(Collection<Integer> ids) {
+        return itemListDao.deleteBatchIds(ids);
     }
 
     @Override
@@ -44,5 +45,10 @@ public class ItemListServiceImpl extends ServiceImpl<ItemListDao, ItemListEntity
     public List<ItemListEntity> listDetail(String orderUuid) {
         return itemListDao.selectList(
                 new LambdaQueryWrapper<ItemListEntity>().eq(ItemListEntity::getOrderUuid,orderUuid));
+    }
+
+    @Override
+    public int deleteByOrderUid(String orderUuid) {
+        return itemListDao.delete(new LambdaQueryWrapper<ItemListEntity>().eq(ItemListEntity::getOrderUuid,orderUuid));
     }
 }

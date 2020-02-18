@@ -29,13 +29,15 @@ public class ShopClientEntity implements Serializable {
 
     private String clientUuid;
 
-    private String name;
+    private String clientName;
 
     private String age;
 
     private Boolean gender;
 
     private String vehiclePlate;
+
+    private String vehicleSeries;
 
     private String phone;
 
@@ -59,13 +61,6 @@ public class ShopClientEntity implements Serializable {
         this.clientUuid = clientUuid;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getAge() {
         return age;
@@ -113,5 +108,21 @@ public class ShopClientEntity implements Serializable {
 
     public void setPoint(Integer point) {
         this.point = point;
+    }
+
+    public String getVehicleSeries() {
+        return vehicleSeries;
+    }
+
+    public void setVehicleSeries(String vehicleSeries) {
+        this.vehicleSeries = vehicleSeries;
+    }
+
+    public String getClientName() {
+        return clientName;
+    }
+
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
     }
 }

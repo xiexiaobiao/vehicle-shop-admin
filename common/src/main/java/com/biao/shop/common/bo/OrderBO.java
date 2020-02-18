@@ -31,7 +31,7 @@ public class OrderBO implements Serializable {
     // 订单明细
     List<ItemListBO> detail;
     // 客户
-    private String name;
+    private String clientName;
     private String vehiclePlate;
     private String phone;
     private String addr;
@@ -69,13 +69,6 @@ public class OrderBO implements Serializable {
         this.detail = detail;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public String getVehiclePlate() {
         return vehiclePlate;
@@ -131,6 +124,14 @@ public class OrderBO implements Serializable {
 
     public void setOrderUuid(String orderUuid) {
         this.orderUuid = orderUuid;
+    }
+
+    public String getClientName() {
+        return clientName;
+    }
+
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
     }
 
     @Data

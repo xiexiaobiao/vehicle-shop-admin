@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -56,5 +57,19 @@ public class OrderController {
     @GetMapping("/{id}")
     public ShopOrderEntity getOrder(@PathVariable("id") int id){
         return orderService.queryOrder(id);
+    }
+
+    @SoulClient(path = "/vehicle/order/del", desc = "删除订单")
+    @GetMapping("/del")
+    public int deleteOrder(@RequestParam("ids") String ids){
+        if (ids.contains(",")){
+            List<Integer> list = new ArrayList<>(8);
+            String[] strings = ids.split(",");
+            for (int i = 0; i < strings.length; i++) {
+                list.add(Integer.valueOf(strings[i]));
+            }
+            return orderService.deleteBatchByIds(list);
+        }
+        return orderService.deleteById(Integer.parseInt(ids));
     }
 }

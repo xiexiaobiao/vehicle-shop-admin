@@ -50,7 +50,7 @@ public class TransListenerImpl implements TransactionListener {
                 OrderDTO orderDTO = objectMapper.readValue(msg.getBody(), OrderDTO.class);
                 logger.debug("orderBo is : {}",orderDTO.toString());
                 //本地transaction
-                shopBusinessService.saveOrderPaid(orderDTO);
+                shopBusinessService.saveOrder(orderDTO);
             }
             return LocalTransactionState.COMMIT_MESSAGE;
         }catch (Exception e){

@@ -49,21 +49,21 @@ public class ShopClientServiceImpl extends ServiceImpl<ShopClientDao, ShopClient
     }
 
     @Override
-    @CacheEvict(cacheNames = "shopClient")
+//    @CacheEvict(cacheNames = "shopClient")
     public int deleteBatchById(Collection<Integer> ids) {
         logger.info("删除Redis缓存");
         return shopClientDao.deleteBatchIds(ids);
     }
 
     @Override
-    @CacheEvict(cacheNames = "shopClient")
+//    @CacheEvict(cacheNames = "shopClient")
     public int deleteById(int id) {
         logger.info("删除Redis缓存");
         return shopClientDao.deleteById(id);
     }
 
     @Override
-    @CacheEvict(cacheNames = "shopClient") // 删除Redis缓存
+//    @CacheEvict(cacheNames = "shopClient") // 删除Redis缓存
     public int deleteByUUid(String uuid) {
         QueryWrapper<ShopClientEntity> qw = new QueryWrapper<>();
         qw.eq(true,"uuid",uuid);
@@ -71,7 +71,7 @@ public class ShopClientServiceImpl extends ServiceImpl<ShopClientDao, ShopClient
     }
 
     @Override
-    @CachePut(cacheNames = "shopClient")  // 更新Redis缓存
+//    @CachePut(cacheNames = "shopClient")  // 更新Redis缓存
     public int updateClient(ShopClientEntity clientEntity) {
         logger.info("更新Redis缓存");
         return shopClientDao.updateById(clientEntity);
@@ -87,7 +87,7 @@ public class ShopClientServiceImpl extends ServiceImpl<ShopClientDao, ShopClient
     }
 
     @Override
-    @Cacheable(cacheNames = "shopClient")
+//    @Cacheable(cacheNames = "shopClient")
     public ShopClientEntity queryByUuId(String uuid) {
         logger.info("queryByUuId 未使用Redis缓存");
         QueryWrapper<ShopClientEntity> qw = new QueryWrapper<>();
@@ -96,14 +96,14 @@ public class ShopClientServiceImpl extends ServiceImpl<ShopClientDao, ShopClient
     }
 
     @Override
-    @Cacheable(cacheNames = "shopClient")
+//    @Cacheable(cacheNames = "shopClient")
     public ShopClientEntity queryById(int id) {
         logger.info("queryById 未使用Redis缓存");
         return shopClientDao.selectById(id);
     }
 
     @Override
-    @Cacheable(cacheNames = "shopClient")
+//    @Cacheable(cacheNames = "shopClient")
     public PageInfo<ShopClientEntity> listClient(Integer current, Integer size, String clientUuid, String name,
                                                  String vehiclePlate, String phone) {
         logger.info("listClient 未使用Redis缓存");
@@ -121,7 +121,7 @@ public class ShopClientServiceImpl extends ServiceImpl<ShopClientDao, ShopClient
 
     // java Stream
     @Override
-    @Cacheable(cacheNames = "shopClient")
+//    @Cacheable(cacheNames = "shopClient")
     public List<String> listPlate() {
         logger.info("listPlate 未使用Redis缓存");
         List<ShopClientEntity> clientEntities =

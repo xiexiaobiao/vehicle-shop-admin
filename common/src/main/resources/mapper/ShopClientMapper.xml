@@ -6,10 +6,11 @@
     <resultMap id="BaseResultMap" type="com.biao.shop.common.entity.ShopClientEntity">
         <id column="id_client" property="idClient" />
         <result column="client_uuid" property="clientUuid" />
-        <result column="name" property="name" />
+        <result column="client_name" property="clientName" />
         <result column="age" property="age" />
         <result column="gender" property="gender" />
         <result column="vehicle_plate" property="vehiclePlate" />
+        <result column="vehicle_series" property="vehicleSeries" />
         <result column="phone" property="phone" />
         <result column="addr" property="addr" />
         <result column="point" property="point" />
@@ -17,7 +18,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id_client, client_uuid, name, age, gender, vehicle_plate, phone, addr,point
+        id_client, client_uuid, client_name, age, gender,vehicle_series, vehicle_plate, phone, addr,point
     </sql>
 
 </mapper>

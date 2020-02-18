@@ -39,4 +39,14 @@ public class ShopOrderRPCServiceImpl implements ShopOrderRPCService {
     public boolean saveBatchItems(Collection<ItemListEntity> itemListEntities) {
         return itemListService.saveBatch(itemListEntities);
     }
+
+    @Override
+    public ShopOrderEntity selectByUuId(String uuid) {
+        return orderService.selectByUuId(uuid);
+    }
+
+    @Override
+    public int deleteItemListByOrderUid(String orderUuid) {
+        return itemListService.deleteByOrderUid(orderUuid);
+    }
 }

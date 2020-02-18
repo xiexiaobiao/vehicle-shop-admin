@@ -19,6 +19,9 @@ public interface OrderService extends IService<ShopOrderEntity>{
 
     int deleteOrderByUuid(String uuid);
     int deleteBatchByIds(Collection<Integer> ids);
+    int deleteById(int id);
+    ShopOrderEntity selectByUuId(String uuid);
+    int paidOrder(int orderId);
     int updateOrder(ShopOrderEntity orderEntity);
     int createOrder(ShopOrderEntity orderEntity);
     ShopOrderEntity queryOrder(int id);

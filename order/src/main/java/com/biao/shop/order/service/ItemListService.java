@@ -3,6 +3,7 @@ package com.biao.shop.order.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.biao.shop.common.entity.ItemListEntity;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -15,7 +16,8 @@ import java.util.List;
  */
 public interface ItemListService extends IService<ItemListEntity> {
     boolean saveDetail(List<ItemListEntity> list);
-    int deleteDetail();
+    int deleteBatchItemList(Collection<Integer> ids);
     int modifyDetail();
     List<ItemListEntity> listDetail(String orderUid);
+    int deleteByOrderUid(String orderUid);
 }

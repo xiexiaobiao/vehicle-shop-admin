@@ -10,4 +10,6 @@ public interface ShopOrderRPCService {
     ShopOrderEntity queryOrder(int id);
     List<ItemListEntity> getOrderItemList(String orderUid);
     boolean saveBatchItems(Collection<ItemListEntity> itemListEntities);
+    ShopOrderEntity selectByUuId(String uuid);
+    int deleteItemListByOrderUid(String orderUuid);
 }

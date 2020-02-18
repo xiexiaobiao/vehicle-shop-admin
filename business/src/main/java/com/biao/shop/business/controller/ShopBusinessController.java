@@ -64,10 +64,16 @@ public class ShopBusinessController {
     }
 
     // 测试mysql数据保存功能
-    @PostMapping(value = "/saveUnpaid") //@PostMapping等价于@RequestMapping(method = RequestMethod.POST)
-    public int saveOrderUnpaid(@RequestBody OrderDTO orderDTO){
-        logger.debug("订单日期：{}", orderDTO.getGenerateDate());
-        return businessService.saveOrderUnpaid(orderDTO);
+    @SoulClient(path = "/vehicle/business/create", desc = "创建一个订单")
+    @PostMapping(value = "/create") //@PostMapping等价于@RequestMapping(method = RequestMethod.POST)
+    public int saveOrderDTO(@RequestBody OrderDTO orderDTO){
+        return businessService.saveOrderDTO(orderDTO);
+    }
+
+    @SoulClient(path = "/vehicle/business/update", desc = "更新一个订单")
+    @PostMapping(value = "/update") //@PostMapping等价于@RequestMapping(method = RequestMethod.POST)
+    public int updateOrderDTO(@RequestBody OrderDTO orderDTO){
+        return businessService.updateOrderDTO(orderDTO);
     }
 
     // 测试RocketMq事务消息功能

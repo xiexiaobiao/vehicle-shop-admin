@@ -1,6 +1,8 @@
 package com.biao.shop.business.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.biao.shop.business.service.ShopBusinessService;
@@ -68,7 +70,7 @@ public class ShopBusinessServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrder
     // 订单的明细单独保存，
     @Override
     @Transactional(propagation = Propagation.NESTED)
-    public int saveOrder(OrderDTO orderDTO) {
+    public int saveOrderDTO(OrderDTO orderDTO) {
 
         /**测试模拟本地事务出错,"sendStatus": "SEND_OK",
          * 但是"localTransactionState": "ROLLBACK_MESSAGE"，半消息不会发送到下游*/
@@ -98,6 +100,10 @@ public class ShopBusinessServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrder
         });
         orderRPCService.saveBatchItems(itemListEntities);
         orderEntity.setAmount(BigDecimal.valueOf(orderAmount.get()));
+        // 已付款的加积分 订单金额直接等价于积分数
+        if (orderEntity.getPaidStatus()){
+            clientRPCService.addPoint(orderEntity.getClientUuid(),orderAmount.get().intValue());
+        }
         /** 测试事务的传播属性，propagation */
         // int j = 1/0;
         return shopOrderDao.insert(orderEntity);
@@ -111,26 +117,33 @@ public class ShopBusinessServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrder
     }
 
     @Override
-    public int paidOrder(String orderId) {
-        ShopOrderEntity orderEntity = this.queryOrder(orderId);
-        if (Objects.isNull(orderEntity))
-            return 0;
-        else
-            orderEntity.setPaidStatus(true);
-        return shopOrderDao.updateById(orderEntity);
+    @Transactional
+    public int updateOrderDTO(OrderDTO orderDTO,String orderUuid) {
+        ShopOrderEntity orderEntity = orderRPCService.selectByUuId(orderUuid);
+        orderEntity.setModifyDate(LocalDateTime.now());
+        List<ItemListEntity> itemListEntities = new ArrayList<>(16);
+        AtomicReference<Double> orderAmount = new AtomicReference<>(0.00);
+        // 先删除订单明细
+        orderRPCService.deleteItemListByOrderUid(orderUuid);
+        // 再保存订单明细
+        orderDTO.getDetail().forEach(itemDTO-> {
+            ItemListEntity listEntity = new ItemListEntity();
+            BeanUtils.copyProperties(itemDTO,listEntity);
+            listEntity.setOrderUuid(orderUuid);
+            itemListEntities.add(listEntity);
+            orderAmount.updateAndGet(v -> v + itemDTO.getDiscountPrice().doubleValue() * itemDTO.getQuantity());
+        });
+        orderRPCService.saveBatchItems(itemListEntities);
+        // 更新订单总金额
+        orderEntity.setAmount(BigDecimal.valueOf(orderAmount.get()));
+        // 已付款的加积分 订单金额直接等价于积分数，因只能修改未付款的，此部分可以删去
+        if (orderEntity.getPaidStatus()){
+            clientRPCService.addPoint(orderEntity.getClientUuid(),orderAmount.get().intValue());
+        }
+        return shopOrderDao.update(orderEntity,
+                new LambdaQueryWrapper<ShopOrderEntity>().eq(ShopOrderEntity::getOrderUuid,orderUuid));
     }
 
-    @Override
-    public int deleteOrder(String orderId) {
-        QueryWrapper<ShopOrderEntity> qw = new QueryWrapper<>();
-        qw.eq(true,"id_order",orderId);
-        return shopOrderDao.delete(qw);
-    }
-
-    @Override
-    public int modifyOrder(ShopOrderEntity order) {
-        return shopOrderDao.updateById(order);
-    }
 
     @Override
     public List<ShopOrderEntity> listOrder(String condition) {

@@ -74,6 +74,14 @@ public class ShopItemServiceImpl extends ServiceImpl<ShopItemDao, ShopItemEntity
         return shopItemDao.updateById(itemEntity);
     }
 
+    @Override
+    public String getMaxItemUuid() {
+        return shopItemDao.selectList(
+                new LambdaQueryWrapper<ShopItemEntity>().isNotNull(ShopItemEntity::getItemUuid)
+                        .orderByDesc(ShopItemEntity::getItemUuid))
+                .get(0).getItemUuid();
+    }
+
     // fixme 一次性查全表，需要改进！！！
     @Override
     public List<String> listCategory(Integer current, Integer size) {

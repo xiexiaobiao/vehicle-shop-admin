@@ -1,7 +1,9 @@
 package com.biao.shop.customer.impl;
 
+import com.alibaba.spring.util.ObjectUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.biao.shop.common.dto.ClientQueryDTO;
 import com.biao.shop.common.entity.ShopClientEntity;
 import com.biao.shop.common.dao.ShopClientDao;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -113,7 +115,7 @@ public class ShopClientServiceImpl extends ServiceImpl<ShopClientDao, ShopClient
         map.put("vehicle_plate",vehiclePlate);
         map.put("phone",phone);
         boolean valid = Objects.isNull(name); // "name" 模糊匹配
-        qw.allEq(true,map,false).like(!valid,"name",name);
+        qw.allEq(true,map,false).like(!valid,"client_name",name);
         PageHelper.startPage(current,size);
         List<ShopClientEntity> clientEntities = shopClientDao.selectList(qw);
         return  PageInfo.of(clientEntities);
@@ -127,5 +129,19 @@ public class ShopClientServiceImpl extends ServiceImpl<ShopClientDao, ShopClient
         List<ShopClientEntity> clientEntities =
                 shopClientDao.selectList(new LambdaQueryWrapper<ShopClientEntity>().isNotNull(ShopClientEntity::getVehiclePlate));
         return clientEntities.stream().map(ShopClientEntity::getVehiclePlate).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ShopClientEntity> listByClientDto(ClientQueryDTO clientQueryDTO) {
+        QueryWrapper<ShopClientEntity> qw = new QueryWrapper<>();
+        boolean phoneFlag = Objects.isNull(clientQueryDTO.getClientName());
+        boolean clientNameFlag = Objects.isNull(clientQueryDTO.getClientName());
+        boolean VehicleSeriesFlag = Objects.isNull(clientQueryDTO.getVehicleSeries());
+        boolean VehiclePlateFlag = Objects.isNull(clientQueryDTO.getVehiclePlate());
+        qw.eq(!phoneFlag,"phone",clientQueryDTO.getPhone())  //如有null的条件直接不参与查询
+                .like(!clientNameFlag,"client_name",clientQueryDTO.getClientName())
+                .like(!VehiclePlateFlag,"vehicle_plate",clientQueryDTO.getVehiclePlate())
+                .like(!VehicleSeriesFlag,"vehicle_series",clientQueryDTO.getVehicleSeries());
+        return shopClientDao.selectList(qw);
     }
 }

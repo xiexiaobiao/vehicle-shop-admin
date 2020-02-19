@@ -32,6 +32,7 @@ public class OrderBO implements Serializable {
     List<ItemListBO> detail;
     // 客户
     private String clientName;
+    private String vehicleSeries;
     private String vehiclePlate;
     private String phone;
     private String addr;
@@ -132,6 +133,14 @@ public class OrderBO implements Serializable {
 
     public void setClientName(String clientName) {
         this.clientName = clientName;
+    }
+
+    public String getVehicleSeries() {
+        return vehicleSeries;
+    }
+
+    public void setVehicleSeries(String vehicleSeries) {
+        this.vehicleSeries = vehicleSeries;
     }
 
     @Data

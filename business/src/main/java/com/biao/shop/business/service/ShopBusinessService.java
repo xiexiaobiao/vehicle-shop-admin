@@ -22,7 +22,7 @@ import java.util.List;
  */
 public interface ShopBusinessService extends IService<ShopOrderEntity> {
     int saveOrderDTO(OrderDTO orderDTO);
-    int updateOrderDTO(OrderDTO orderDTO,String orderUuid);
+    int updateOrderDTO(OrderDTO orderDTO);
     List<ShopOrderEntity> listOrder(String condition);
     ShopOrderEntity queryOrder(String orderId);
     boolean checkOrderSaveStatus(String orderUUID);

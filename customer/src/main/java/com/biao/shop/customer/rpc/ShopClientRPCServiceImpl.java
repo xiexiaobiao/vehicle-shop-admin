@@ -1,10 +1,13 @@
 package com.biao.shop.customer.rpc;
 
+import com.biao.shop.common.dto.ClientQueryDTO;
 import com.biao.shop.common.entity.ShopClientEntity;
 import com.biao.shop.common.rpc.service.ShopClientRPCService;
 import com.biao.shop.customer.service.ShopClientService;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * @ClassName ShopClientDubboServiceImpl
@@ -32,5 +35,10 @@ public class ShopClientRPCServiceImpl implements ShopClientRPCService {
     @Override
     public ShopClientEntity queryById(String uuid) {
         return shopClientService.queryByUuId(uuid);
+    }
+
+    @Override
+    public List<ShopClientEntity> listByClientDto(ClientQueryDTO clientQueryDTO) {
+        return shopClientService.listByClientDto(clientQueryDTO);
     }
 }

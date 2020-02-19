@@ -39,12 +39,16 @@ public class OrderController {
     @SoulClient(path = "/vehicle/order/list", desc = "获取订单列表")
     @GetMapping("/list")
     public PageInfo<ShopOrderEntity> listOrder(@RequestParam("pageNum")Integer current, @RequestParam("pageSize")Integer size,
-                                                @RequestParam(value = "orderUuid",required = false)String clientUuid,
-                                                @RequestParam(value = "clientName",required = false)String name,
-                                                @RequestParam(value = "vehiclePlate",required = false)String startDate,
-                                                @RequestParam(value = "vehiclePlate",required = false)String endDate,
-                                                @RequestParam(value = "status",required = false)String phone){
-        return orderService.listOrder(current,size);
+                                                @RequestParam(value = "orderUuid",required = false) String orderUuid,
+                                                @RequestParam(value = "clientName",required = false) String clientName,
+                                                @RequestParam(value = "phone",required = false) String phone,
+                                                @RequestParam(value = "vehicleSeries",required = false)String vehicleSeries,
+                                                @RequestParam(value = "vehiclePlate",required = false)String vehiclePlate,
+                                                @RequestParam(value = "generateDateStart",required = false)String generateDateStart,
+                                               @RequestParam(value = "generateDateEnd",required = false)String generateDateEnd,
+                                                @RequestParam(value = "paidStatus",required = false)boolean paidStatus){
+        return orderService.listOrder(current,size,orderUuid,clientName,phone,vehicleSeries,
+                vehiclePlate,generateDateStart,generateDateEnd,paidStatus);
     }
 
     @SoulClient(path = "/vehicle/order/itemList", desc = "获取订单商品列表")

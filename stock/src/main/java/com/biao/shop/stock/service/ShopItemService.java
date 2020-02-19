@@ -32,6 +32,8 @@ public interface ShopItemService extends IService<ShopItemEntity> {
 
     int updateItem(ShopItemEntity itemEntity);
 
+    String getMaxItemUuid();
+
     // mbp 的 分页
     Page<String> listBrand(Integer current, Integer size);
 

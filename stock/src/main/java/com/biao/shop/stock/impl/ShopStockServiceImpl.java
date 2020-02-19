@@ -1,5 +1,6 @@
 package com.biao.shop.stock.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.biao.shop.common.dao.ShopStockDao;
@@ -47,6 +48,17 @@ public class ShopStockServiceImpl extends ServiceImpl<ShopStockDao, ShopStockEnt
     @Override
     public List<ShopStockEntity> queryOrder(String condition) {
         return null;
+    }
+
+    @Override
+    public int unfrozenStock(String itemUuid, int unfrozenQuantity) throws Exception {
+        ShopStockEntity shopStockEntity = stockDao.selectOne(
+                new LambdaQueryWrapper<ShopStockEntity>().eq(ShopStockEntity::getItemUuid,itemUuid));
+        if (shopStockEntity.getQuantityLocked() < unfrozenQuantity){
+            throw new Exception("stock has not enough frozenQuantity!!!!");
+        }
+        shopStockEntity.setQuantityLocked(shopStockEntity.getQuantityLocked() - unfrozenQuantity);
+        return stockDao.updateById(shopStockEntity);
     }
 
     @Override

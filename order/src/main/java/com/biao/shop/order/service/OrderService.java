@@ -25,5 +25,7 @@ public interface OrderService extends IService<ShopOrderEntity>{
     int updateOrder(ShopOrderEntity orderEntity);
     int createOrder(ShopOrderEntity orderEntity);
     ShopOrderEntity queryOrder(int id);
-    PageInfo<ShopOrderEntity> listOrder(Integer current, Integer size);
+    PageInfo<ShopOrderEntity> listOrder(Integer current,Integer size,String orderUuid,String clientName, String phone,
+                                        String vehicleSeries,String vehiclePlate,String generateDateStart,
+                                        String generateDateEnd, boolean paidStatus);
 }

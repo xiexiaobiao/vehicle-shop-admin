@@ -1,6 +1,7 @@
 package com.biao.shop.customer.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.biao.shop.common.dto.ClientQueryDTO;
 import com.biao.shop.common.entity.ShopClientEntity;
 import com.biao.shop.common.entity.ShopItemEntity;
 import com.github.pagehelper.PageInfo;
@@ -28,4 +29,5 @@ public interface ShopClientService extends IService<ShopClientEntity> {
     PageInfo<ShopClientEntity> listClient(Integer current, Integer size,String clientUuid,
                                             String name,String vehiclePlate,String phone);
     List<String> listPlate();
+    List<ShopClientEntity> listByClientDto(ClientQueryDTO clientQueryDTO);
 }

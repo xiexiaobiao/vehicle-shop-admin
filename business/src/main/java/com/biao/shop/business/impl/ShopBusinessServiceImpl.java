@@ -56,7 +56,7 @@ public class ShopBusinessServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrder
     private ShopOrderRPCService orderRPCService; // 订单
 
     @Reference(version = "1.0.0",group = "shop",interfaceClass = ShopStockRPCService.class)
-    private ShopStockRPCService stockRPCService; // 商品
+    private ShopStockRPCService stockRPCService; // 商品 + 库存
 
     @Reference(version = "1.0.0",group = "shop",interfaceClass = ShopClientRPCService.class)
     private ShopClientRPCService clientRPCService;
@@ -67,7 +67,7 @@ public class ShopBusinessServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrder
     }
 
     /** */
-    // 订单的明细单独保存，
+    // 保存新订单
     @Override
     @Transactional(propagation = Propagation.NESTED)
     public int saveOrderDTO(OrderDTO orderDTO) {
@@ -97,6 +97,20 @@ public class ShopBusinessServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrder
             listEntity.setOrderUuid(String.valueOf(orderUuid));
             itemListEntities.add(listEntity);
             orderAmount.updateAndGet(v -> v + itemDTO.getDiscountPrice().doubleValue() * itemDTO.getQuantity());
+            if (orderEntity.getPaidStatus()){
+                // 扣减库存
+                try {
+                    stockRPCService.decreaseStock(itemDTO.getItemUuid(),itemDTO.getQuantity());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }else { // 冻结库存，未付款的
+                try {
+                    stockRPCService.frozenStock(itemDTO.getItemUuid(),itemDTO.getQuantity());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         });
         orderRPCService.saveBatchItems(itemListEntities);
         orderEntity.setAmount(BigDecimal.valueOf(orderAmount.get()));
@@ -106,6 +120,7 @@ public class ShopBusinessServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrder
         }
         /** 测试事务的传播属性，propagation */
         // int j = 1/0;
+
         return shopOrderDao.insert(orderEntity);
 
         /**另一种程序结构：这里也可使用manager层的类
@@ -118,8 +133,10 @@ public class ShopBusinessServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrder
 
     @Override
     @Transactional
-    public int updateOrderDTO(OrderDTO orderDTO,String orderUuid) {
+    public int updateOrderDTO(OrderDTO orderDTO) {
+        String orderUuid = orderDTO.getOrderUuid();
         ShopOrderEntity orderEntity = orderRPCService.selectByUuId(orderUuid);
+        BeanUtils.copyProperties(orderDTO,orderEntity);
         orderEntity.setModifyDate(LocalDateTime.now());
         List<ItemListEntity> itemListEntities = new ArrayList<>(16);
         AtomicReference<Double> orderAmount = new AtomicReference<>(0.00);
@@ -132,14 +149,30 @@ public class ShopBusinessServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrder
             listEntity.setOrderUuid(orderUuid);
             itemListEntities.add(listEntity);
             orderAmount.updateAndGet(v -> v + itemDTO.getDiscountPrice().doubleValue() * itemDTO.getQuantity());
+            if (orderEntity.getPaidStatus()){
+                clientRPCService.addPoint(orderEntity.getClientUuid(),orderAmount.get().intValue());
+                // 取消冻结库存
+                try {
+                    stockRPCService.unfrozenStock(itemDTO.getItemUuid(),itemDTO.getQuantity());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                // 扣减库存
+                try {
+                    stockRPCService.decreaseStock(itemDTO.getItemUuid(),itemDTO.getQuantity());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         });
         orderRPCService.saveBatchItems(itemListEntities);
         // 更新订单总金额
         orderEntity.setAmount(BigDecimal.valueOf(orderAmount.get()));
-        // 已付款的加积分 订单金额直接等价于积分数，因只能修改未付款的，此部分可以删去
+        // 已付款的加积分 订单金额直接等价于积分数，
         if (orderEntity.getPaidStatus()){
             clientRPCService.addPoint(orderEntity.getClientUuid(),orderAmount.get().intValue());
         }
+        // 最后更新订单主表
         return shopOrderDao.update(orderEntity,
                 new LambdaQueryWrapper<ShopOrderEntity>().eq(ShopOrderEntity::getOrderUuid,orderUuid));
     }
@@ -183,6 +216,7 @@ public class ShopBusinessServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrder
         return result;
     }
 
+    // 查询一个订单详细
     @Override
     public OrderBO getOrderBO(int idOrder) {
         OrderBO orderBO = new OrderBO();

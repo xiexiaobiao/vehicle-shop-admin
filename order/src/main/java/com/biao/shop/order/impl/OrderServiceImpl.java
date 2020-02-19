@@ -4,23 +4,26 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.biao.shop.common.dao.ShopOrderDao;
+import com.biao.shop.common.dto.ClientQueryDTO;
 import com.biao.shop.common.entity.ItemListEntity;
+import com.biao.shop.common.entity.ShopClientEntity;
+import com.biao.shop.common.entity.ShopItemEntity;
 import com.biao.shop.common.entity.ShopOrderEntity;
 import com.biao.shop.common.rpc.service.ShopClientRPCService;
 import com.biao.shop.order.service.ItemListService;
 import com.biao.shop.order.service.OrderService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -67,6 +70,8 @@ public class OrderServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrderEntity>
         List<Integer> list1 = itemListService.listDetail(orderUuid).stream()
                 .map(ItemListEntity::getIdList).collect(Collectors.toList());
         itemListService.deleteBatchItemList(list1);
+        // todo 库存变化(-冻结)
+
         return shopOrderDao.deleteById(id);
     }
 
@@ -91,9 +96,27 @@ public class OrderServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrderEntity>
     }
 
     @Override
-    public PageInfo<ShopOrderEntity> listOrder(Integer current, Integer size) {
+    public PageInfo<ShopOrderEntity> listOrder(Integer current,Integer size,String orderUuid,String clientName, String phone,
+                                               String vehicleSeries,String vehiclePlate,String generateDateStart,
+                                               String generateDateEnd, boolean paidStatus) {
+        // 先查询客户信息
+        ClientQueryDTO clientQueryDTO = new ClientQueryDTO();
+        clientQueryDTO.setClientName(clientName);
+        clientQueryDTO.setPhone(phone);
+        clientQueryDTO.setVehiclePlate(vehiclePlate);
+        clientQueryDTO.setVehicleSeries(vehicleSeries);
+        List<ShopClientEntity> clientEntities1 = clientRPCService.listByClientDto(clientQueryDTO);
+        List<String> clientUidS = clientEntities1.stream().map(ShopClientEntity::getClientUuid).collect(Collectors.toList());
+        // 再查订单信息
+        boolean flag = clientUidS.size() > 0;
+        boolean dateFlag = StringUtils.isNotEmpty(generateDateStart) && StringUtils.isNotEmpty(generateDateEnd);
         QueryWrapper<ShopOrderEntity> qw = new QueryWrapper<>();
-        qw.isNotNull("id_order");
+        Map<String,Object> map = new HashMap<>(1);
+        map.put("order_uuid",orderUuid);
+        map.put("is_paid", paidStatus);
+        qw.allEq(true,map,false)
+                .between(dateFlag,"generate_date",generateDateStart,generateDateEnd)
+                .in(flag,"client_uuid",clientUidS);
         PageHelper.startPage(current,size);
         List<ShopOrderEntity> orderEntities = shopOrderDao.selectList(qw);
         return PageInfo.of(orderEntities);
@@ -108,6 +131,8 @@ public class OrderServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrderEntity>
             orderEntity.setPaidStatus(true);
             // 加积分
             clientRPCService.addPoint(orderEntity.getClientUuid(),orderEntity.getAmount().intValue());
+            // todo 库存（-冻结+扣减）
+            /***/
         }
         return shopOrderDao.updateById(orderEntity);
     }

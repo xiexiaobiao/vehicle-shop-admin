@@ -1,12 +1,11 @@
 package com.biao.shop.order.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.biao.shop.common.entity.ItemListEntity;
+import com.biao.shop.common.dto.OrderDTO;
 import com.biao.shop.common.entity.ShopOrderEntity;
-import com.github.pagehelper.PageInfo;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * @ClassName OrderService
@@ -25,7 +24,8 @@ public interface OrderService extends IService<ShopOrderEntity>{
     int updateOrder(ShopOrderEntity orderEntity);
     int createOrder(ShopOrderEntity orderEntity);
     ShopOrderEntity queryOrder(int id);
-    PageInfo<ShopOrderEntity> listOrder(Integer current,Integer size,String orderUuid,String clientName, String phone,
-                                        String vehicleSeries,String vehiclePlate,String generateDateStart,
-                                        String generateDateEnd, boolean paidStatus);
+    Page<OrderDTO> listOrderDTO(Integer current, Integer size, String orderUuid, String clientName, String phone,
+                                String vehicleSeries, String vehiclePlate, String generateDateStart,
+                                String generateDateEnd, int paidStatus);
+
 }

@@ -2,12 +2,13 @@ package com.biao.shop.order.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.biao.shop.common.dao.ShopOrderDao;
 import com.biao.shop.common.dto.ClientQueryDTO;
+import com.biao.shop.common.dto.OrderDTO;
 import com.biao.shop.common.entity.ItemListEntity;
 import com.biao.shop.common.entity.ShopClientEntity;
-import com.biao.shop.common.entity.ShopItemEntity;
 import com.biao.shop.common.entity.ShopOrderEntity;
 import com.biao.shop.common.rpc.service.ShopClientRPCService;
 import com.biao.shop.order.service.ItemListService;
@@ -18,10 +19,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -96,9 +97,9 @@ public class OrderServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrderEntity>
     }
 
     @Override
-    public PageInfo<ShopOrderEntity> listOrder(Integer current,Integer size,String orderUuid,String clientName, String phone,
-                                               String vehicleSeries,String vehiclePlate,String generateDateStart,
-                                               String generateDateEnd, boolean paidStatus) {
+    public Page<OrderDTO> listOrderDTO(Integer current, Integer size, String orderUuid, String clientName, String phone,
+                                        String vehicleSeries, String vehiclePlate, String generateDateStart,
+                                        String generateDateEnd, int paidStatus) {
         // 先查询客户信息
         ClientQueryDTO clientQueryDTO = new ClientQueryDTO();
         clientQueryDTO.setClientName(clientName);
@@ -113,13 +114,35 @@ public class OrderServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrderEntity>
         QueryWrapper<ShopOrderEntity> qw = new QueryWrapper<>();
         Map<String,Object> map = new HashMap<>(1);
         map.put("order_uuid",orderUuid);
-        map.put("is_paid", paidStatus);
+        map.put("is_paid", paidStatus == 2 ? null : paidStatus);
         qw.allEq(true,map,false)
                 .between(dateFlag,"generate_date",generateDateStart,generateDateEnd)
                 .in(flag,"client_uuid",clientUidS);
-        PageHelper.startPage(current,size);
+        Page<ShopOrderEntity> orderEntityPage = new Page<>(current,size);
+        orderEntityPage = shopOrderDao.selectPage(orderEntityPage,qw);
+        List<OrderDTO> orderDTOS = orderEntityPage.getRecords().stream().map(orderEntity -> {
+            OrderDTO orderDTO = new OrderDTO();
+            BeanUtils.copyProperties(orderEntity, orderDTO);
+            orderDTO.setClientName(clientRPCService.queryById(orderEntity.getClientUuid()).getClientName());
+            return orderDTO;
+        }).collect(Collectors.toList());
+        Page<OrderDTO> orderDTOPage = new Page<>(current,size);
+        BeanUtils.copyProperties(orderEntityPage,orderDTOPage,"records");
+        return orderDTOPage.setRecords(orderDTOS);
+
+        /** 这里使用 PageInfo 分页，发现有问题，sql只能是 LIMIT (size)，导致无法分页，故改为 mbp 分页*/
+        /*PageHelper.startPage(current,size);
+        logger.debug("current>>>>>>>{}//{}}",current,size);
         List<ShopOrderEntity> orderEntities = shopOrderDao.selectList(qw);
-        return PageInfo.of(orderEntities);
+        PageInfo<ShopOrderEntity> pageInfo = PageInfo.of(orderEntities);
+        List<OrderDTO> orderDTOList = pageInfo.getList().stream().map(orderEntity -> {
+            OrderDTO orderDTO  = new OrderDTO();
+            BeanUtils.copyProperties(orderEntity,orderDTO);
+            orderDTO.setClientName(clientRPCService.queryById(orderEntity.getClientUuid()).getClientName());
+            return orderDTO;
+        }).collect(Collectors.toList());
+        return PageInfo.of(orderDTOList);*/
+
     }
 
     @Override

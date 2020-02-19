@@ -1,5 +1,7 @@
 package com.biao.shop.order.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.biao.shop.common.dto.OrderDTO;
 import com.biao.shop.common.entity.ItemListEntity;
 import com.biao.shop.common.entity.ShopClientEntity;
 import com.biao.shop.common.entity.ShopOrderEntity;
@@ -38,16 +40,17 @@ public class OrderController {
 
     @SoulClient(path = "/vehicle/order/list", desc = "获取订单列表")
     @GetMapping("/list")
-    public PageInfo<ShopOrderEntity> listOrder(@RequestParam("pageNum")Integer current, @RequestParam("pageSize")Integer size,
-                                                @RequestParam(value = "orderUuid",required = false) String orderUuid,
-                                                @RequestParam(value = "clientName",required = false) String clientName,
-                                                @RequestParam(value = "phone",required = false) String phone,
-                                                @RequestParam(value = "vehicleSeries",required = false)String vehicleSeries,
-                                                @RequestParam(value = "vehiclePlate",required = false)String vehiclePlate,
-                                                @RequestParam(value = "generateDateStart",required = false)String generateDateStart,
-                                               @RequestParam(value = "generateDateEnd",required = false)String generateDateEnd,
-                                                @RequestParam(value = "paidStatus",required = false)boolean paidStatus){
-        return orderService.listOrder(current,size,orderUuid,clientName,phone,vehicleSeries,
+    public Page<OrderDTO> listOrder(@RequestParam("pageNum")Integer current, @RequestParam("pageSize")Integer size,
+                                    @RequestParam(value = "orderUuid",required = false) String orderUuid,
+                                    @RequestParam(value = "clientName",required = false) String clientName,
+                                    @RequestParam(value = "phone",required = false) String phone,
+                                    @RequestParam(value = "vehicleSeries",required = false)String vehicleSeries,
+                                    @RequestParam(value = "vehiclePlate",required = false)String vehiclePlate,
+                                    @RequestParam(value = "generateDateStart",required = false)String generateDateStart,
+                                    @RequestParam(value = "generateDateEnd",required = false)String generateDateEnd,
+                                    @RequestParam(value = "paidStatus",required = false)int paidStatus){
+        // 这里的paidStatus最好设计为int，可以接收 0 1 2 ，boolean型，只能是0 1，前端传来都会自带默认0，导致无法查询无此条件限制的
+        return orderService.listOrderDTO(current,size,orderUuid,clientName,phone,vehicleSeries,
                 vehiclePlate,generateDateStart,generateDateEnd,paidStatus);
     }
 

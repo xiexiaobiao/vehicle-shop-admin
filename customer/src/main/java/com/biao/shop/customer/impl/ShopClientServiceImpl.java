@@ -134,7 +134,7 @@ public class ShopClientServiceImpl extends ServiceImpl<ShopClientDao, ShopClient
     @Override
     public List<ShopClientEntity> listByClientDto(ClientQueryDTO clientQueryDTO) {
         QueryWrapper<ShopClientEntity> qw = new QueryWrapper<>();
-        boolean phoneFlag = Objects.isNull(clientQueryDTO.getClientName());
+        boolean phoneFlag = Objects.isNull(clientQueryDTO.getPhone());
         boolean clientNameFlag = Objects.isNull(clientQueryDTO.getClientName());
         boolean VehicleSeriesFlag = Objects.isNull(clientQueryDTO.getVehicleSeries());
         boolean VehiclePlateFlag = Objects.isNull(clientQueryDTO.getVehiclePlate());

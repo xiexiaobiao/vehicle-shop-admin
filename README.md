@@ -21,7 +21,7 @@ a mirco-service framework admin system for vehicle shop
 | Dubbo     | RPC     | 微服务架构，服务间调用     | 已整合
 | Zookeeper     | 注册中心     | 微服务进行注册     | 已整合
 | Nacos     | Config     | 微服务配置中心     | 已整合
-| Nginx     | 反向代理     | 统一系统访问入口；对网关负载均衡；系统前端静态服务器     |
+| Nginx     | 反向代理     | 统一系统访问入口；对网关负载均衡；系统前端静态服务器     |已整合
 | Soul     | 网关     | 路由转发；HTTP访问负载均衡     |已整合
 | JWT     | Token     | 登录认证     |
 | Shiro     | 鉴权     | 系统API访问权限控制     |
@@ -36,12 +36,12 @@ a mirco-service framework admin system for vehicle shop
 | Druid     | JDBC     | 数据库连接池     |已整合
 | Mybatis+     | ORM     | 实体映射和DAO     |已整合
 | Lombok     | POJO     | 实体类简化处理和log     |已整合
-| Logback     | 日志     | 日志类生成     |
+| Logback     | 日志     | 日志类生成     |已整合
 | Mango     | DB     | 文件存储服务器     |
 | Mysql     | DB     | 业务数据存储     |已整合
 | Junit     | Test     | 单元测试     |已整合
 | Pagehelper     | pagination     | 数据分页查询     |已整合
-| FineReport     | Report     | 系统报表功能     |
+| FineReport     | Report     | 系统报表功能     |已整合
 
 ***
 

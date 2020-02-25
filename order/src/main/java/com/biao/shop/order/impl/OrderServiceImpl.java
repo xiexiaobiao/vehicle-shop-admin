@@ -11,10 +11,9 @@ import com.biao.shop.common.entity.ItemListEntity;
 import com.biao.shop.common.entity.ShopClientEntity;
 import com.biao.shop.common.entity.ShopOrderEntity;
 import com.biao.shop.common.rpc.service.ShopClientRPCService;
+import com.biao.shop.common.rpc.service.ShopStockRPCService;
 import com.biao.shop.order.service.ItemListService;
 import com.biao.shop.order.service.OrderService;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.slf4j.Logger;
@@ -24,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -44,6 +44,9 @@ public class OrderServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrderEntity>
 
     @Reference(version = "1.0.0",group = "shop",interfaceClass = ShopClientRPCService.class)
     private ShopClientRPCService clientRPCService;
+
+    @Reference(version = "1.0.0",group = "shop",interfaceClass = ShopStockRPCService.class)
+    private ShopStockRPCService stockRPCService; // 商品 + 库存
 
     @Autowired
     public OrderServiceImpl(ShopOrderDao shopOrderDao,ItemListService itemListService){
@@ -145,17 +148,32 @@ public class OrderServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrderEntity>
 
     }
 
+    // 将未付款订单更新为已付款
     @Override
-    public int paidOrder(int orderId) {
+    public int paidOrder(int orderId,String note) {
         ShopOrderEntity orderEntity = this.queryOrder(orderId);
         if (Objects.isNull(orderEntity))
             return 0;
         else{
             orderEntity.setPaidStatus(true);
+            orderEntity.setModifyDate(LocalDateTime.now());
+            orderEntity.setOrderRemark(StringUtils.isEmpty(orderEntity.getOrderRemark())?"":orderEntity.getOrderRemark() +"/"+ note);
             // 加积分
             clientRPCService.addPoint(orderEntity.getClientUuid(),orderEntity.getAmount().intValue());
-            // todo 库存（-冻结+扣减）
-            /***/
+            // 库存（-冻结+扣减）
+            List<ItemListEntity> itemListEntities = itemListService.listDetail(orderEntity.getOrderUuid());
+            itemListEntities.forEach(itemListEntity -> {
+                try {
+                    stockRPCService.unfrozenStock(itemListEntity.getItemUuid(),itemListEntity.getQuantity());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                try {
+                    stockRPCService.decreaseStock(itemListEntity.getItemUuid(),itemListEntity.getQuantity());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
         }
         return shopOrderDao.updateById(orderEntity);
     }

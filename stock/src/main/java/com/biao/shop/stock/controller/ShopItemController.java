@@ -9,6 +9,7 @@ import com.github.pagehelper.PageInfo;
 import javassist.expr.Instanceof;
 import org.apache.commons.lang3.StringUtils;
 import org.dromara.soul.client.common.annotation.SoulClient;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +28,7 @@ import java.util.Objects;
  */
 @RestController
 @RequestMapping("/stock")
+@MapperScan(basePackages = "com.biao.shop.common.dao")
 public class ShopItemController {
 
     private ShopItemService shopItemService;
@@ -89,8 +91,8 @@ public class ShopItemController {
 
     @SoulClient(path = "/vehicle/stock/item/save", desc = "新增商品")
     @PostMapping("/item/save")
-    public int addItem(@RequestBody String jsonStr) {
-        JSONObject jsonObject = JSONObject.parseObject(jsonStr);
+    public int addItem(@RequestBody ShopItemEntity  itemEntity) {
+        /*JSONObject jsonObject = JSONObject.parseObject(jsonStr);
         ShopItemEntity itemEntity = new ShopItemEntity();
         String brand = (String) jsonObject.get("brandName");
         itemEntity.setBrandName(StringUtils.isEmpty(brand)? null : brand);
@@ -106,7 +108,7 @@ public class ShopItemController {
         String description = (String) jsonObject.get("description");
         itemEntity.setDescription(StringUtils.isEmpty(description)? null : description);
         Boolean shipment = ((Integer) jsonObject.get("shipment") == 1);
-        itemEntity.setShipment(shipment);
+        itemEntity.setShipment(shipment);*/
         return shopItemService.addItem(itemEntity);
     }
 

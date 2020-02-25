@@ -2,7 +2,6 @@ package com.biao.shop.customer.conf;
 
 import com.alibaba.nacos.api.annotation.NacosProperties;
 import com.alibaba.nacos.api.config.annotation.NacosConfigListener;
-import com.alibaba.nacos.spring.context.annotation.EnableNacos;
 import com.alibaba.nacos.spring.context.annotation.config.EnableNacosConfig;
 import com.alibaba.nacos.spring.context.annotation.config.NacosPropertySource;
 import com.alibaba.nacos.spring.context.annotation.discovery.EnableNacosDiscovery;

@@ -30,8 +30,8 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-
     compile project(":common")
+
 }
 
 // build后Dao包里没有mapper.xml

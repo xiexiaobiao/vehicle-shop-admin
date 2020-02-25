@@ -27,15 +27,19 @@ subprojects {
         maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
     }
     dependencies {
-        compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: '2.2.2.RELEASE'
-        compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.2.2.RELEASE'
-        compile group: 'org.springframework.boot', name: 'spring-boot-autoconfigure', version: '2.2.2.RELEASE'
+        compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: '2.2.4.RELEASE'
+        compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.2.4.RELEASE'
+        compile group: 'org.springframework.boot', name: 'spring-boot-autoconfigure', version: '2.2.4.RELEASE'
+        // jetty 比 tomcat 占用更小内存
+        compile group: 'org.springframework.boot', name: 'spring-boot-starter-jetty', version: '2.2.4.RELEASE'
+
         // redis集成
         compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis', version: '2.2.4.RELEASE'
         compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: '2.2.4.RELEASE'
         compile group: 'org.springframework', name: 'spring-tx', version: '5.2.2.RELEASE'
+        // test
         testCompile group: 'org.springframework', name: 'spring-test', version: '5.2.2.RELEASE'
-        testCompile group: 'org.springframework.boot', name: 'spring-boot-test', version: '2.2.2.RELEASE'
+        testCompile group: 'org.springframework.boot', name: 'spring-boot-test', version: '2.2.4.RELEASE'
 
         // mbp
         compile group: 'com.baomidou', name: 'mybatis-plus', version: '3.3.0'
@@ -87,6 +91,14 @@ subprojects {
         // Advanced and thread-safe Redis client for synchronous, asynchronous, and reactive usage
         compile group: 'io.lettuce', name: 'lettuce-core', version: '5.2.2.RELEASE'
 
+        // rocketMQ
+        compile group: 'org.apache.rocketmq', name: 'rocketmq-client', version: '4.6.0'
+        compile group: 'org.apache.rocketmq', name: 'rocketmq-common', version: '4.6.0'
+        compile group: 'org.apache.rocketmq', name: 'rocketmq-remoting', version: '4.6.0'
+        // zk
+        compile group: 'org.apache.curator', name: 'curator-framework', version: '4.2.0'
+        compile group: 'org.apache.zookeeper', name: 'zookeeper', version: '3.5.5'
+        compile group: 'org.apache.curator', name: 'curator-recipes', version: '4.2.0'
 
     }
     //if code include the chinese content
@@ -95,5 +107,8 @@ subprojects {
         options.encoding = "UTF-8"
     }
 
+    configurations {
+        compile.exclude module: "spring-boot-starter-tomcat"
+    }
 
 }

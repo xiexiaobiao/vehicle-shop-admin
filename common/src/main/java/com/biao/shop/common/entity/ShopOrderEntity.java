@@ -55,6 +55,8 @@ public class ShopOrderEntity implements Serializable {
 
     private BigDecimal amount;
 
+    private String capitalAmount;
+
 
     public Integer getIdOrder() {
         return idOrder;
@@ -118,5 +120,13 @@ public class ShopOrderEntity implements Serializable {
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
+    }
+
+    public String getCapitalAmount() {
+        return capitalAmount;
+    }
+
+    public void setCapitalAmount(String capitalAmount) {
+        this.capitalAmount = capitalAmount;
     }
 }

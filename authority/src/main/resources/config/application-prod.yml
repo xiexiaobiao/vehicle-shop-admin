@@ -19,7 +19,7 @@ spring:
   datasource:
     name: druidDatasource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/vehicle_shop?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
+    url: jdbc:mysql://192.168.43.21:3306/vehicle_shop?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
     username: root
     password: 123456
     # 使用druid数据源
@@ -48,6 +48,7 @@ spring:
   application:
     name: authApp
 
+
 ## soul 配置
 soul:
   http:
@@ -55,8 +56,23 @@ soul:
     contextPath: /auth
     appName: authApp
     #register: true
-    #zookeeperUrl: localhost:2181
+    #zookeeperUrl: 192.168.43.21:2181
   dubbo:
     adminUrl: http://localhost:9095
     contextPath: /auth
     appName: authApp
+
+# mybatis sql日志
+logging:
+  level:
+    org:
+      springframework:
+        boot:
+          #SpringBoot去掉CONDITIONS EVALUATION REPORT及自动配置内容的显示
+          autoconfigure: error
+    com:
+      biao: debug
+
+# 打印sql到console
+mybatis-plus:
+  config-location: classpath:config/mybatis-config.xml

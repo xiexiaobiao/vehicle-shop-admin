@@ -2,7 +2,6 @@ package com.biao.shop.business.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.biao.shop.business.service.ShopBusinessService;
@@ -14,8 +13,9 @@ import com.biao.shop.common.entity.ShopClientEntity;
 import com.biao.shop.common.entity.ShopItemEntity;
 import com.biao.shop.common.entity.ShopOrderEntity;
 import com.biao.shop.common.rpc.service.ShopClientRPCService;
-import com.biao.shop.common.rpc.service.ShopStockRPCService;
 import com.biao.shop.common.rpc.service.ShopOrderRPCService;
+import com.biao.shop.common.rpc.service.ShopStockRPCService;
+import com.biao.shop.common.utils.ConvertUpMoney;
 import com.biao.shop.common.utils.SnowFlake;
 import org.apache.dubbo.config.annotation.Reference;
 import org.slf4j.Logger;
@@ -114,6 +114,7 @@ public class ShopBusinessServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrder
         });
         orderRPCService.saveBatchItems(itemListEntities);
         orderEntity.setAmount(BigDecimal.valueOf(orderAmount.get()));
+        orderEntity.setCapitalAmount(ConvertUpMoney.toChinese(String.valueOf(orderEntity.getAmount())));
         // 已付款的加积分 订单金额直接等价于积分数
         if (orderEntity.getPaidStatus()){
             clientRPCService.addPoint(orderEntity.getClientUuid(),orderAmount.get().intValue());
@@ -168,6 +169,7 @@ public class ShopBusinessServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrder
         orderRPCService.saveBatchItems(itemListEntities);
         // 更新订单总金额
         orderEntity.setAmount(BigDecimal.valueOf(orderAmount.get()));
+        orderEntity.setCapitalAmount(ConvertUpMoney.toChinese(String.valueOf(orderEntity.getAmount())));
         // 已付款的加积分 订单金额直接等价于积分数，
         if (orderEntity.getPaidStatus()){
             clientRPCService.addPoint(orderEntity.getClientUuid(),orderAmount.get().intValue());

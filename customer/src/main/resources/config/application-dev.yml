@@ -54,16 +54,18 @@ mybatis-plus:
       # field-strategy: NOT_NULL
     banner: false
   #原生配置
-  configuration:
-    #驼峰
-    map-underscore-to-camel-case: true
-    cache-enabled: false
-    #当查询数据为空时字段返回为null，不加这个查询数据为空时，字段将被隐藏
-    call-setters-on-nulls: true
-    #插入空值时报错
-    jdbc-type-for-null: 'null'
-    # 这个配置会将执行的sql打印出来，在开发或测试的时候可以用
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#  configuration:
+#    #驼峰
+#    map-underscore-to-camel-case: true
+#    cache-enabled: false
+#    #当查询数据为空时字段返回为null，不加这个查询数据为空时，字段将被隐藏
+#    call-setters-on-nulls: true
+#    #插入空值时报错
+#    jdbc-type-for-null: 'null'
+#    # 这个配置会将执行的sql打印出来，在开发或测试的时候可以用
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#    # 解决加入logback后无sql打印的问题
+  config-location: classpath:config/mybatis-config.xml
 
 # mybatis sql日志
 logging:
@@ -77,7 +79,9 @@ dubbo:
   application:
     name: customer-App
   registry:
-    address: nacos://localhost:8848
+    client: curator
+    address: zookeeper://localhost:2181
+    #address: nacos://localhost:8848
   ##如果要使用自己创建的命名空间可以使用下面2种方式
   #dubbo.registry.address = nacos://10.20.153.10:8848?namespace=5cbb70a5-xxx-xxx-xxx-d43479ae0932
   #dubbo.registry.parameters.namespace=5cbb70a5-xxx-xxx-xxx-d43479ae0932
@@ -86,8 +90,9 @@ dubbo:
     port: 20882
   consumer:
     cluster: failover
+    check: false
   provider:
-    cluster: failback
+    cluster: failback #failover
     timeout: 2000
     retries: 2
     loadbalance: consistenthash

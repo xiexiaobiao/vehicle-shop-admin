@@ -15,11 +15,12 @@
         <result column="specification" property="specification" />
         <result column="description" property="description" />
         <result column="is_shipment" property="shipment" />
+        <result column="unit" property="unit" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id_item, item_uuid, category,classification, item_name, sell_price, purchase_price, brandName, specification,description,is_shipment
+        id_item, item_uuid, category,classification, item_name, sell_price, purchase_price, brandName, specification,unit,description,is_shipment
     </sql>
 
 </mapper>

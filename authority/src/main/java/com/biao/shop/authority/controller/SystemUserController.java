@@ -1,11 +1,14 @@
 package com.biao.shop.authority.controller;
 
+import com.biao.shop.authority.service.SystemUserService;
 import com.biao.shop.common.dto.UserDto;
 import com.biao.shop.common.response.ObjectResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.soul.client.common.annotation.SoulClient;
+import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,14 +28,18 @@ import java.util.Map;
 @RestController
 @Slf4j
 @RequestMapping("/admin")
-public class UserAdminController {
+@MapperScan(basePackages = "com.biao.shop.common.dao")
+public class SystemUserController {
 
     @Value("${jwt.tokenHeader}")
     private String tokenHeader;
     @Value("${jwt.tokenHead}")
     private String tokenHead;
 
-    private final Logger logger = LoggerFactory.getLogger(UserAdminController.class);
+    @Autowired
+    SystemUserService systemUserService;
+
+    private final Logger logger = LoggerFactory.getLogger(SystemUserController.class);
 
     //@ApiOperation(value = "登录以后返回token")
     @SoulClient(path = "/vehicle/admin/login", desc = "登录")
@@ -40,7 +47,12 @@ public class UserAdminController {
     public ObjectResponse login(@RequestBody UserDto userDto) {
         //String token = adminService.login(umsAdminLoginParam.getUsername(), umsAdminLoginParam.getPassword());
         logger.info("user info is : {} / {}",userDto.getUsername(),userDto.getPassword());
-        String token = "123456789";
+        String token = null;
+        if (systemUserService.checkPasswd(userDto.getUsername(),userDto.getPassword())){
+            logger.info("用户登录验证通过！");
+            token = "123456789";
+        };
+
         ObjectResponse objectResponse = new ObjectResponse();
         if (token == null) {
             objectResponse.setCode(500);

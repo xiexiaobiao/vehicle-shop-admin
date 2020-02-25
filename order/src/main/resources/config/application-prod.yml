@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8088
   servlet:
     context-path: /vehicle #所有访问该应用的路径前缀
 
@@ -11,7 +11,7 @@ spring:
   datasource:
     name: druidDatasource
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/vehicle_shop?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
+    url: jdbc:mysql://192.168.43.21:3306/vehicle_shop?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
     username: root
     password: 123456
     # 使用druid数据源
@@ -37,23 +37,6 @@ spring:
       filters: stat,wall
       # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
       connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
-
-  # redis缓存配置 ,与springboot集成了,自带 jedis
-  redis:
-    database: 0
-    host: localhost
-    port: 6379
-    jedis:
-      pool: #连接池配置
-        max-active: 8
-        max-wait: 3000ms
-        max-idle: 8
-        min-idle: 0
-    timeout: 2000ms
-  cache:
-    redis:
-      time-to-live: 1d # Entry expiration in milliseconds. By default the entries never expire.
-      use-key-prefix: true  #写入redis时是否使用键前缀
 
 #mybatis
 mybatis-plus:
@@ -81,78 +64,43 @@ mybatis-plus:
     jdbc-type-for-null: 'null'
     # 这个配置会将执行的sql打印出来，在开发或测试的时候可以用
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    # 解决加入logback后无sql打印的问题
+  config-location: classpath:config/mybatis-config.xml
 
 # mybatis sql日志
 logging:
   #打印sql,你的项目包路径
   level:
-    org:
-      springframework:
-        boot:
-          #SpringBoot去掉CONDITIONS EVALUATION REPORT及自动配置内容的显示
-          autoconfigure: error
     com:
       biao: debug
-
-# rocketmq
-rocketmq:
-  producer:
-    #该应用是否启用生产者
-    isOnOff: on
-    #发送同一类消息的设置为同一个group，保证唯一,默认不需要设置，rocketmq会使用ip@pid(pid代表jvm名字)作为唯一标示
-    groupName: shop
-    #mq的nameserver地址
-    namesrvAddr: 192.168.43.224:9876
-    #消息最大长度 默认1024*4(4M)
-    maxMessageSize: 4096
-    sendMsgTimeout: 3000
-    #发送消息失败重试次数，默认2
-    retryTimesWhenSendFailed: 2
-    #### consumer
-  consumer:
-    isOnOff: on
-    groupName: shop
-    namesrvAddr: 192.168.43.224:9876
-    #该消费者订阅的主题和tags("*"号表示订阅该主题下所有的tags),格式：topic~tag1||tag2||tag3;topic2~*;
-    topics: ShopTopic~*
-    consumeThreadMin: 20
-    consumeThreadMax: 64
-    #设置一次消费消息的条数，默认为1条
-    consumeMessageBatchMaxSize: 1
 
 #dubbo的配置
 dubbo:
   application:
-    name: business-app
+    name: order-App
   registry:
-    address: nacos://localhost:8848
+    address: nacos://192.168.43.21:8848
   ##如果要使用自己创建的命名空间可以使用下面2种方式
   #dubbo.registry.address = nacos://10.20.153.10:8848?namespace=5cbb70a5-xxx-xxx-xxx-d43479ae0932
   #dubbo.registry.parameters.namespace=5cbb70a5-xxx-xxx-xxx-d43479ae0932
   protocol:
     name: dubbo
-    port: 20881
+    port: 20888
   consumer:
-    timeout: 1000
-    retries: 2
-    #负载均衡四种策略： random,roundrobin,leastactive,consistenthash
-    loadbalance: roundrobin
     cluster: failover
-    check: false
   provider:
-    timeout: 1000
-    retries: 2
-    loadbalance: roundrobin
     cluster: failback
+    timeout: 2000
+    retries: 2
+    loadbalance: consistenthash
 
 #soul 配置
 soul:
   http:
-    admin-url: http://localhost:9095
-    app-name: businessApp
-    context-path: /business
+    admin-url: http://192.168.43.21:9095
+    app-name: orderApp
+    context-path: /order
   dubbo:
-    admin-url: http://localhost:9095
-    context-path: /business
-    app-name: businessApp
-
+    admin-url: http://192.168.43.21:9095
+    context-path: /order
+    app-name: orderApp

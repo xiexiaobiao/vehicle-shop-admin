@@ -14,7 +14,7 @@ spring:
     url: jdbc:mysql://localhost:3306/vehicle_shop?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
     username: root
     password: 123456
-    # 使用druid数据源
+    # 使用druid数据源 鼎泰汽车
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
       # 配置测试查询语句, #Oracle需要打开注释
@@ -54,16 +54,19 @@ mybatis-plus:
       # field-strategy: NOT_NULL
     banner: false
   #原生配置
-  configuration:
-    #驼峰
-    map-underscore-to-camel-case: true
-    cache-enabled: false
-    #当查询数据为空时字段返回为null，不加这个查询数据为空时，字段将被隐藏
-    call-setters-on-nulls: true
-    #插入空值时报错
-    jdbc-type-for-null: 'null'
-    # 这个配置会将执行的sql打印出来，在开发或测试的时候可以用
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#  configuration: #>>>Property 'configuration' and 'configLocation' can not specified with together
+#    #驼峰
+#    map-underscore-to-camel-case: true
+#    cache-enabled: false
+#    #当查询数据为空时字段返回为null，不加这个查询数据为空时，字段将被隐藏
+#    call-setters-on-nulls: true
+#    #插入空值时报错
+#    jdbc-type-for-null: 'null'
+#    # 这个配置会将执行的sql打印出来，在开发或测试的时候可以用
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#    # 解决加入logback后无sql打印的问题
+  config-location: classpath:config/mybatis-config.xml
+
 
 # mybatis sql日志
 logging:
@@ -145,7 +148,8 @@ dubbo:
   application:
     name: customer-App
   registry:
-    address: nacos://localhost:8848
+    address: zookeeper://localhost:2181
+    #address: nacos://localhost:8848
   ##如果要使用自己创建的命名空间可以使用下面2种方式
   #dubbo.registry.address = nacos://10.20.153.10:8848?namespace=5cbb70a5-xxx-xxx-xxx-d43479ae0932
   #dubbo.registry.parameters.namespace=5cbb70a5-xxx-xxx-xxx-d43479ae0932

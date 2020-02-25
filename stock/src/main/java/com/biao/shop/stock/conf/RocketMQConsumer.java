@@ -30,7 +30,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-@Configuration
+//@Configuration
 public class RocketMQConsumer {
 
     private ShopStockService shopStockService;

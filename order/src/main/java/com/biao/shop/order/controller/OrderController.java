@@ -79,4 +79,11 @@ public class OrderController {
         }
         return orderService.deleteById(Integer.parseInt(ids));
     }
+
+
+    @SoulClient(path = "/vehicle/order/paid", desc = "获取订单商品列表")
+    @GetMapping("/paid")
+    public int paidOrder(@RequestParam("ids") int id,@RequestParam("note") String note){
+        return orderService.paidOrder(id,note);
+    }
 }

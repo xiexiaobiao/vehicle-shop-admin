@@ -59,6 +59,7 @@ public class ShopItemEntity implements Serializable {
      */
     private String specification;
 
+    private String unit;
 
     public Integer getIdItem() {
         return idItem;
@@ -149,5 +150,13 @@ public class ShopItemEntity implements Serializable {
 
     public void setItemName(String itemName) {
         this.itemName = itemName;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
     }
 }

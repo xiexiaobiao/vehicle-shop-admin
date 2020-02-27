@@ -1,12 +1,16 @@
 package com.biao.shop.stock.impl;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.biao.shop.common.bo.OrderBo;
+import com.biao.shop.common.bo.ShopItemEntityBo;
 import com.biao.shop.common.dao.ShopItemDao;
+import com.biao.shop.common.dto.ShopItemEntityDto;
 import com.biao.shop.common.entity.ShopItemEntity;
+import com.biao.shop.common.entity.ShopItemPictureEntity;
+import com.biao.shop.stock.service.ShopItemPictureService;
 import com.biao.shop.stock.service.ShopItemService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -31,6 +35,9 @@ public class ShopItemServiceImpl extends ServiceImpl<ShopItemDao, ShopItemEntity
 
     @Autowired
     private ShopItemDao  shopItemDao;
+    @Autowired
+    ShopItemPictureService itemPictureService;
+
 
     @Override
     public ShopItemEntity queryById(String id) {
@@ -79,6 +86,7 @@ public class ShopItemServiceImpl extends ServiceImpl<ShopItemDao, ShopItemEntity
         return shopItemDao.selectList(
                 new LambdaQueryWrapper<ShopItemEntity>().isNotNull(ShopItemEntity::getItemUuid)
                         .orderByDesc(ShopItemEntity::getItemUuid))
+                .stream().limit(1).collect(Collectors.toList())
                 .get(0).getItemUuid();
     }
 
@@ -120,11 +128,12 @@ public class ShopItemServiceImpl extends ServiceImpl<ShopItemDao, ShopItemEntity
 
     // 使用com.github.pagehelper 实现
     // 只有紧跟在PageHelper.startPage方法后的第一个Mybatis的查询（Select）方法会被分页!!!!
+    /**发现pagehelper中list对象需要修改时，很难转换，故后来又改为mbp方式*/
     @Override
-    public PageInfo<ShopItemEntity> listItem(Integer current, Integer size,
-                                             String itemName,String itemUuid,
-                                             String category,String brandName,
-                                             int shipment) {
+    public Page<ShopItemEntityDto> listItem(Integer current, Integer size,
+                                                String itemName, String itemUuid,
+                                                String category, String brandName,
+                                                int shipment) {
         QueryWrapper<ShopItemEntity> qw = new QueryWrapper<>();
         Map<String,Object> map = new HashMap<>(4);
         map.put("item_uuid",itemUuid);
@@ -133,9 +142,51 @@ public class ShopItemServiceImpl extends ServiceImpl<ShopItemDao, ShopItemEntity
         map.put("is_shipment", shipment == 2 ? null:shipment);
         boolean valid = Objects.isNull(itemName); // "item_name" 模糊匹配
         qw.allEq(true,map,false).like(!valid,"item_name",itemName);
-        PageHelper.startPage(current,size);
-        List<ShopItemEntity> itemEntityList = shopItemDao.selectList(qw);
-        return  PageInfo.of(itemEntityList);
+        Page<ShopItemEntity> itemPage = new Page<>(current,size);
+        itemPage = shopItemDao.selectPage(itemPage,qw);
+        Page<ShopItemEntityDto> itemEntityDtoPage = new Page<>(current,size);
+        BeanUtils.copyProperties(itemPage,itemEntityDtoPage,"records");
+        List<ShopItemEntityDto> itemEntityDtos = itemPage.getRecords().parallelStream().map(itemEntity -> {
+            ShopItemEntityDto itemEntityDto = new ShopItemEntityDto();
+            BeanUtils.copyProperties(itemEntity, itemEntityDto);
+            String firPicAddr = itemPictureService.listItemPictures(itemEntity.getItemUuid()).size() == 0 ? null : itemPictureService.listItemPictures(itemEntity.getItemUuid()).get(0).getPicAddr();
+            itemEntityDto.setPicAddr(firPicAddr);
+            return itemEntityDto;
+        }).collect(Collectors.toList());
+        itemEntityDtoPage.setRecords(itemEntityDtos);
+        return itemEntityDtoPage;
+    }
+
+    @Override
+    public int saveItemDto(ShopItemEntityBo  itemEntityBo) {
+        ShopItemEntity itemEntity = new ShopItemEntity();
+        BeanUtils.copyProperties(itemEntityBo,itemEntity);
+        List<String> strings = itemEntityBo.getAlbumPics();
+        Set<ShopItemPictureEntity> pictureEntitySet = new HashSet<>(8);
+        strings.forEach(str -> {
+            ShopItemPictureEntity pictureEntity = new ShopItemPictureEntity();
+            pictureEntity.setItemUuid(itemEntityBo.getItemUuid());
+            pictureEntity.setPicAddr(str);
+            pictureEntitySet.add(pictureEntity);
+        });
+        itemPictureService.saveItemPictures(pictureEntitySet);
+        return shopItemDao.insert(itemEntity);
+    }
+
+    @Override
+    public int updateItemDto(ShopItemEntityBo itemEntityBo) {
+        ShopItemEntity itemEntity = new ShopItemEntity();
+        BeanUtils.copyProperties(itemEntityBo,itemEntity);
+        List<String> strings = itemEntityBo.getAlbumPics();
+        Set<ShopItemPictureEntity> pictureEntitySet = new HashSet<>(8);
+        strings.forEach(str -> {
+            ShopItemPictureEntity pictureEntity = new ShopItemPictureEntity();
+            pictureEntity.setItemUuid(itemEntityBo.getItemUuid());
+            pictureEntity.setPicAddr(str);
+            pictureEntitySet.add(pictureEntity);
+        });
+        itemPictureService.saveItemPictures(pictureEntitySet);
+        return shopItemDao.updateById(itemEntity);
     }
 
 }

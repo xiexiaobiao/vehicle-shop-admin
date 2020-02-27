@@ -1,6 +1,9 @@
 package com.biao.shop.stock.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.biao.shop.common.bo.OrderBo;
+import com.biao.shop.common.bo.ShopItemEntityBo;
+import com.biao.shop.common.dto.ShopItemEntityDto;
 import com.biao.shop.common.entity.ShopItemEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
@@ -39,9 +42,12 @@ public interface ShopItemService extends IService<ShopItemEntity> {
 
     List<String> listCategory(Integer current, Integer size);
 
-    // pagehelper 的 分页
-    PageInfo<ShopItemEntity> listItem(Integer current, Integer size,
-                                      String itemName,String itemUuid,
-                                      String category,String brandName,
-                                      int shipment);
+    // Mbp 的 分页
+    Page<ShopItemEntityDto> listItem(Integer current, Integer size,
+                                         String itemName, String itemUuid,
+                                         String category, String brandName,
+                                     int shipment);
+    int saveItemDto(ShopItemEntityBo  itemEntityBo);
+
+    int updateItemDto(ShopItemEntityBo  itemEntityBo);
 }

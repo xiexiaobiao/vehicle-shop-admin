@@ -5,9 +5,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.biao.shop.business.service.ShopBusinessService;
-import com.biao.shop.common.bo.OrderBO;
+import com.biao.shop.common.bo.OrderBo;
 import com.biao.shop.common.dao.ShopOrderDao;
-import com.biao.shop.common.dto.OrderDTO;
+import com.biao.shop.common.dto.OrderDto;
 import com.biao.shop.common.entity.ItemListEntity;
 import com.biao.shop.common.entity.ShopClientEntity;
 import com.biao.shop.common.entity.ShopItemEntity;
@@ -70,7 +70,7 @@ public class ShopBusinessServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrder
     // 保存新订单
     @Override
     @Transactional(propagation = Propagation.NESTED)
-    public int saveOrderDTO(OrderDTO orderDTO) {
+    public int saveOrderDTO(OrderDto orderDTO) {
 
         /**测试模拟本地事务出错,"sendStatus": "SEND_OK",
          * 但是"localTransactionState": "ROLLBACK_MESSAGE"，半消息不会发送到下游*/
@@ -134,7 +134,7 @@ public class ShopBusinessServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrder
 
     @Override
     @Transactional
-    public int updateOrderDTO(OrderDTO orderDTO) {
+    public int updateOrderDTO(OrderDto orderDTO) {
         String orderUuid = orderDTO.getOrderUuid();
         ShopOrderEntity orderEntity = orderRPCService.selectByUuId(orderUuid);
         BeanUtils.copyProperties(orderDTO,orderEntity);
@@ -220,15 +220,15 @@ public class ShopBusinessServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrder
 
     // 查询一个订单详细
     @Override
-    public OrderBO getOrderBO(int idOrder) {
-        OrderBO orderBO = new OrderBO();
+    public OrderBo getOrderBO(int idOrder) {
+        OrderBo orderBO = new OrderBo();
         ShopOrderEntity orderEntity = orderRPCService.queryOrder(idOrder);
         BeanUtils.copyProperties(orderEntity,orderBO);
         List<ItemListEntity> itemListEntityList = orderRPCService.getOrderItemList(orderEntity.getOrderUuid());
-        List<OrderBO.ItemListBO> itemListBOList = new ArrayList<>(16);
+        List<OrderBo.ItemListBO> itemListBOList = new ArrayList<>(16);
         itemListEntityList.stream().forEach(
                 itemListEntity -> {
-                    OrderBO.ItemListBO itemListBO = orderBO.new ItemListBO();
+                    OrderBo.ItemListBO itemListBO = orderBO.new ItemListBO();
                     BeanUtils.copyProperties(itemListEntity,itemListBO);
                     ShopItemEntity item = stockRPCService.queryByUuId(itemListEntity.getItemUuid());
                     if ( !Objects.isNull(item)){

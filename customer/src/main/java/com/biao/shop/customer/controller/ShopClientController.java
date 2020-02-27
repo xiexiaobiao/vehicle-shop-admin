@@ -110,5 +110,11 @@ public class ShopClientController {
         return clientService.deleteById(Integer.parseInt(ids));
     }
 
+    @SoulClient(path = "/vehicle/client/maxUid", desc = "获取最大客户uid")
+    @GetMapping("/maxUid")
+    public String getMaxClientUuId(){
+        return clientService.getMaxClientUuId();
+    }
+
 }
 

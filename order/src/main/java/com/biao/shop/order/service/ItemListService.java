@@ -1,6 +1,7 @@
 package com.biao.shop.order.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.biao.shop.common.dto.ItemListEntityDto;
 import com.biao.shop.common.entity.ItemListEntity;
 
 import java.util.Collection;
@@ -20,4 +21,5 @@ public interface ItemListService extends IService<ItemListEntity> {
     int modifyDetail();
     List<ItemListEntity> listDetail(String orderUid);
     int deleteByOrderUid(String orderUid);
+    List<ItemListEntityDto> listDetailName(String orderUid);
 }

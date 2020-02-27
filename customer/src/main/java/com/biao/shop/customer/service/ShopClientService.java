@@ -18,6 +18,7 @@ import java.util.List;
  * @since 2020-01-06
  */
 public interface ShopClientService extends IService<ShopClientEntity> {
+    String getMaxClientUuId();
     int createClient(ShopClientEntity clientEntity);
     int deleteBatchById(Collection<Integer> ids);
     int deleteById(int id);

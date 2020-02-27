@@ -1,6 +1,6 @@
 package com.biao.shop.business.manager;
 
-import com.biao.shop.common.bo.OrderBO;
+import com.biao.shop.common.bo.OrderBo;
 
 /**
  * @Classname OrderManager
@@ -13,5 +13,5 @@ import com.biao.shop.common.bo.OrderBO;
  * @Version 1.0
  **/
 public interface BusinessManager {
-    int saveOrder(OrderBO order);
+    int saveOrder(OrderBo order);
 }

@@ -1,6 +1,6 @@
 package com.biao.shop.business.manager;
 
-import com.biao.shop.common.bo.OrderBO;
+import com.biao.shop.common.bo.OrderBo;
 import com.biao.shop.common.dao.ItemListDao;
 import com.biao.shop.common.dao.ShopOrderDao;
 import com.biao.shop.common.entity.ItemListEntity;
@@ -28,7 +28,7 @@ public class BusinessManagerImpl implements BusinessManager {
     ShopOrderDao shopOrderDao;
 
     @Override
-    public int saveOrder(OrderBO order) {
+    public int saveOrder(OrderBo order) {
         ShopOrderEntity orderEntity = new ShopOrderEntity();
         BeanUtils.copyProperties(order,orderEntity);
         // 可以使用其他算法生成UUID，如雪花，redis等

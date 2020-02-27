@@ -4,8 +4,8 @@ package com.biao.shop.business.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.biao.shop.business.mq.RocketMQTransProducer;
 import com.biao.shop.business.service.ShopBusinessService;
-import com.biao.shop.common.bo.OrderBO;
-import com.biao.shop.common.dto.OrderDTO;
+import com.biao.shop.common.bo.OrderBo;
+import com.biao.shop.common.dto.OrderDto;
 import com.biao.shop.common.entity.ShopOrderEntity;
 import com.biao.shop.common.utils.CustomDateSerializer;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -65,19 +65,19 @@ public class ShopBusinessController {
     // 测试mysql数据保存功能
     @SoulClient(path = "/vehicle/business/create", desc = "创建一个订单")
     @PostMapping(value = "/create") //@PostMapping等价于@RequestMapping(method = RequestMethod.POST)
-    public int saveOrderDTO(@RequestBody OrderDTO orderDTO){
+    public int saveOrderDTO(@RequestBody OrderDto orderDTO){
         return businessService.saveOrderDTO(orderDTO);
     }
 
     @SoulClient(path = "/vehicle/business/update", desc = "更新一个订单")
     @PostMapping(value = "/update") //@PostMapping等价于@RequestMapping(method = RequestMethod.POST)
-    public int updateOrderDTO(@RequestBody OrderDTO orderDTO){
+    public int updateOrderDTO(@RequestBody OrderDto orderDTO){
         return businessService.updateOrderDTO(orderDTO);
     }
 
     // 测试RocketMq事务消息功能
     @PostMapping(value = "/saveMqPaid")
-    public TransactionSendResult saveTransOrder(@RequestBody OrderBO order) throws UnsupportedEncodingException,
+    public TransactionSendResult saveTransOrder(@RequestBody OrderBo order) throws UnsupportedEncodingException,
             MQClientException, JsonProcessingException {
         logger.debug(order.toString());
         //jackson 序列化, 但要注意时间的序列化
@@ -116,7 +116,7 @@ public class ShopBusinessController {
 
     @SoulClient(path = "/vehicle/business/order/**", desc = "获取一个OrderBO")
     @GetMapping(value = "/order/{idOrder}")
-    public OrderBO getOrderBO(@PathVariable("idOrder") int idOrder){
+    public OrderBo getOrderBO(@PathVariable("idOrder") int idOrder){
         logger.info("if this log printed, DB query is invoked.");
         return businessService.getOrderBO(idOrder);
     }

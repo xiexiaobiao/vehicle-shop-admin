@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.biao.shop.common.dao.ShopOrderDao;
 import com.biao.shop.common.dto.ClientQueryDTO;
-import com.biao.shop.common.dto.OrderDTO;
+import com.biao.shop.common.dto.OrderDto;
 import com.biao.shop.common.entity.ItemListEntity;
 import com.biao.shop.common.entity.ShopClientEntity;
 import com.biao.shop.common.entity.ShopOrderEntity;
@@ -100,9 +100,9 @@ public class OrderServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrderEntity>
     }
 
     @Override
-    public Page<OrderDTO> listOrderDTO(Integer current, Integer size, String orderUuid, String clientName, String phone,
-                                        String vehicleSeries, String vehiclePlate, String generateDateStart,
-                                        String generateDateEnd, int paidStatus) {
+    public Page<OrderDto> listOrderDTO(Integer current, Integer size, String orderUuid, String clientName, String phone,
+                                       String vehicleSeries, String vehiclePlate, String generateDateStart,
+                                       String generateDateEnd, int paidStatus) {
         // 先查询客户信息
         ClientQueryDTO clientQueryDTO = new ClientQueryDTO();
         clientQueryDTO.setClientName(clientName);
@@ -123,13 +123,15 @@ public class OrderServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrderEntity>
                 .in(flag,"client_uuid",clientUidS);
         Page<ShopOrderEntity> orderEntityPage = new Page<>(current,size);
         orderEntityPage = shopOrderDao.selectPage(orderEntityPage,qw);
-        List<OrderDTO> orderDTOS = orderEntityPage.getRecords().stream().map(orderEntity -> {
-            OrderDTO orderDTO = new OrderDTO();
+        List<OrderDto> orderDTOS = orderEntityPage.getRecords().stream().map(orderEntity -> {
+            OrderDto orderDTO = new OrderDto();
             BeanUtils.copyProperties(orderEntity, orderDTO);
-            orderDTO.setClientName(clientRPCService.queryById(orderEntity.getClientUuid()).getClientName());
+            ShopClientEntity clientEntity = clientRPCService.queryById(orderEntity.getClientUuid());
+            orderDTO.setClientName(clientEntity.getClientName());
+            orderDTO.setVehiclePlate(clientEntity.getVehiclePlate());
             return orderDTO;
         }).collect(Collectors.toList());
-        Page<OrderDTO> orderDTOPage = new Page<>(current,size);
+        Page<OrderDto> orderDTOPage = new Page<>(current,size);
         BeanUtils.copyProperties(orderEntityPage,orderDTOPage,"records");
         return orderDTOPage.setRecords(orderDTOS);
 

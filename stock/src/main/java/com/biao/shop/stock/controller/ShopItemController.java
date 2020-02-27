@@ -3,6 +3,9 @@ package com.biao.shop.stock.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.biao.shop.common.bo.OrderBo;
+import com.biao.shop.common.bo.ShopItemEntityBo;
+import com.biao.shop.common.dto.ShopItemEntityDto;
 import com.biao.shop.common.entity.ShopItemEntity;
 import com.biao.shop.stock.service.ShopItemService;
 import com.github.pagehelper.PageInfo;
@@ -54,9 +57,10 @@ public class ShopItemController {
         return shopItemService.deleteById(Integer.valueOf(ids));
     }
 
+    /** ShopItemEntityBo内使用List<String>来对应接收前端的String数组，只需名字一致即可自动解析，</>*/
     @SoulClient(path = "/vehicle/stock/item/update", desc = "更新一个商品")
     @PostMapping("/item/update")
-    public int updateItem(@RequestBody ShopItemEntity  itemEntity) {
+    public int updateItem(@RequestBody ShopItemEntityBo itemEntityBo) {
         // 使用json解析方式获取http的内容，当然也可以使用spring的自动解析更简单,与下面的方法对比：addItem(@RequestBody String jsonStr)
         /*System.out.println(jsonStr);
         JSONObject jsonObject = JSONObject.parseObject(jsonStr);
@@ -77,7 +81,7 @@ public class ShopItemController {
         itemEntity.setDescription(StringUtils.isEmpty(description)? null : description);
         Boolean shipment = (Integer) jsonObject.get("shipment") == 1;
         itemEntity.setShipment(shipment);*/
-        return shopItemService.updateItem(itemEntity);
+        return shopItemService.updateItemDto(itemEntityBo);
     }
 
     @SoulClient(path = "/vehicle/stock/item/**", desc = "查询一个商品")
@@ -91,26 +95,29 @@ public class ShopItemController {
 
     @SoulClient(path = "/vehicle/stock/item/save", desc = "新增商品")
     @PostMapping("/item/save")
-    public int addItem(@RequestBody ShopItemEntity  itemEntity) {
-        /*JSONObject jsonObject = JSONObject.parseObject(jsonStr);
-        ShopItemEntity itemEntity = new ShopItemEntity();
-        String brand = (String) jsonObject.get("brandName");
-        itemEntity.setBrandName(StringUtils.isEmpty(brand)? null : brand);
-        itemEntity.setCategory((String) jsonObject.get("category"));//
-        itemEntity.setItemName((String) jsonObject.get("itemName"));//
-        String purPrice = (String) jsonObject.get("purchasePrice");
-        itemEntity.setPurchasePrice( StringUtils.isEmpty(purPrice)? new BigDecimal("0.00") : new BigDecimal(purPrice));
-        String price = (String) jsonObject.get("sellPrice");
-        itemEntity.setSellPrice( StringUtils.isEmpty(price)? new BigDecimal("0.00") : new BigDecimal(price));
-        String specification = (String) jsonObject.get("specification");
-        itemEntity.setSpecification(StringUtils.isEmpty(specification)? null : specification);
-        itemEntity.setItemUuid((String) jsonObject.get("itemUuid"));//
-        String description = (String) jsonObject.get("description");
-        itemEntity.setDescription(StringUtils.isEmpty(description)? null : description);
-        Boolean shipment = ((Integer) jsonObject.get("shipment") == 1);
-        itemEntity.setShipment(shipment);*/
-        return shopItemService.addItem(itemEntity);
+    public int addItem(@RequestBody ShopItemEntityBo itemEntityBo){
+        return shopItemService.saveItemDto(itemEntityBo);
     }
+//    public int addItem(@RequestBody ShopItemEntity  itemEntity) {
+//        /*JSONObject jsonObject = JSONObject.parseObject(jsonStr);
+//        ShopItemEntity itemEntity = new ShopItemEntity();
+//        String brand = (String) jsonObject.get("brandName");
+//        itemEntity.setBrandName(StringUtils.isEmpty(brand)? null : brand);
+//        itemEntity.setCategory((String) jsonObject.get("category"));//
+//        itemEntity.setItemName((String) jsonObject.get("itemName"));//
+//        String purPrice = (String) jsonObject.get("purchasePrice");
+//        itemEntity.setPurchasePrice( StringUtils.isEmpty(purPrice)? new BigDecimal("0.00") : new BigDecimal(purPrice));
+//        String price = (String) jsonObject.get("sellPrice");
+//        itemEntity.setSellPrice( StringUtils.isEmpty(price)? new BigDecimal("0.00") : new BigDecimal(price));
+//        String specification = (String) jsonObject.get("specification");
+//        itemEntity.setSpecification(StringUtils.isEmpty(specification)? null : specification);
+//        itemEntity.setItemUuid((String) jsonObject.get("itemUuid"));//
+//        String description = (String) jsonObject.get("description");
+//        itemEntity.setDescription(StringUtils.isEmpty(description)? null : description);
+//        Boolean shipment = ((Integer) jsonObject.get("shipment") == 1);
+//        itemEntity.setShipment(shipment);*/
+//        return shopItemService.addItem(itemEntity);
+//    }
 
     @SoulClient(path = "/vehicle/stock/brand/list", desc = "获取品牌列表")
     @GetMapping("/brand/list")
@@ -126,14 +133,20 @@ public class ShopItemController {
 
     @SoulClient(path = "/vehicle/stock/item/list", desc = "获取商品列表")
     @GetMapping("/item/list")
-    public PageInfo<ShopItemEntity> listItem(@RequestParam("pageNum") int current, @RequestParam("pageSize")int size,
-                                             @RequestParam(value = "itemName",required = false) String itemName,
-                                             @RequestParam(value = "itemUuid",required = false)String itemUuid,
-                                             @RequestParam(value = "category",required = false) String category,
-                                             @RequestParam(value = "brandName",required = false)String brandName,
-                                             @RequestParam(value = "shipment",required = false) int shipment){
+    public Page<ShopItemEntityDto> listItem(@RequestParam("pageNum") int current, @RequestParam("pageSize")int size,
+                                                @RequestParam(value = "itemName",required = false) String itemName,
+                                                @RequestParam(value = "itemUuid",required = false)String itemUuid,
+                                                @RequestParam(value = "category",required = false) String category,
+                                                @RequestParam(value = "brandName",required = false)String brandName,
+                                                @RequestParam(value = "shipment",required = false) int shipment){
         // 这里的shipment最好设计为int，可以接收 0 1 2 ，boolean型，只能是0 1，前端传来都会自带默认0，导致无法查询无此条件限制的
         return shopItemService.listItem(current,size,itemName,itemUuid,category,brandName,shipment);
+    }
+
+    @SoulClient(path = "/vehicle/stock/item/maxId", desc = "获取商品最大编号值")
+    @GetMapping("/item/maxId")
+    public String maxItemId(){
+        return shopItemService.getMaxItemUuid();
     }
 }
 

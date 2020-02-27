@@ -40,6 +40,7 @@ a mirco-service framework admin system for vehicle shop
 | Lombok     | POJO     | 实体类简化处理和log     |已整合
 | Logback     | 日志     | 日志类生成     |已整合
 | Mango     | DB     | 文件存储服务器     |
+| OSS     | OSS     | 在线文件存储     |
 | Mysql     | DB     | 业务数据存储     |已整合
 | Junit     | Test     | 单元测试     |已整合
 | Pagehelper     | pagination     | 数据分页查询     |已整合

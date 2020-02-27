@@ -1,16 +1,16 @@
 package com.biao.shop.order.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.biao.shop.common.dto.OrderDTO;
+import com.biao.shop.common.dto.ItemListEntityDto;
+import com.biao.shop.common.dto.OrderDto;
 import com.biao.shop.common.entity.ItemListEntity;
-import com.biao.shop.common.entity.ShopClientEntity;
 import com.biao.shop.common.entity.ShopOrderEntity;
 import com.biao.shop.order.service.ItemListService;
 import com.biao.shop.order.service.OrderService;
-import com.github.pagehelper.PageInfo;
 import org.dromara.soul.client.common.annotation.SoulClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,7 +40,7 @@ public class OrderController {
 
     @SoulClient(path = "/vehicle/order/list", desc = "获取订单列表")
     @GetMapping("/list")
-    public Page<OrderDTO> listOrder(@RequestParam("pageNum")Integer current, @RequestParam("pageSize")Integer size,
+    public Page<OrderDto> listOrder(@RequestParam("pageNum")Integer current, @RequestParam("pageSize")Integer size,
                                     @RequestParam(value = "orderUuid",required = false) String orderUuid,
                                     @RequestParam(value = "clientName",required = false) String clientName,
                                     @RequestParam(value = "phone",required = false) String phone,
@@ -56,11 +56,11 @@ public class OrderController {
 
     @SoulClient(path = "/vehicle/order/itemList", desc = "获取订单商品列表")
     @GetMapping("/itemList")
-    public List<ItemListEntity> itemList(@RequestParam("orderUuid")String orderUuid){
-        return itemListService.listDetail(orderUuid);
+    public List<ItemListEntityDto> itemList(@RequestParam("orderUuid")String orderUuid){
+        return itemListService.listDetailName(orderUuid);
     }
 
-    @SoulClient(path = "/vehicle/order/**", desc = "获取订单商品列表")
+    @SoulClient(path = "/vehicle/order/**", desc = "获取一个订单商品")
     @GetMapping("/{id}")
     public ShopOrderEntity getOrder(@PathVariable("id") int id){
         return orderService.queryOrder(id);
@@ -81,7 +81,7 @@ public class OrderController {
     }
 
 
-    @SoulClient(path = "/vehicle/order/paid", desc = "获取订单商品列表")
+    @SoulClient(path = "/vehicle/order/paid", desc = "支付一个订单")
     @GetMapping("/paid")
     public int paidOrder(@RequestParam("ids") int id,@RequestParam("note") String note){
         return orderService.paidOrder(id,note);

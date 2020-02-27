@@ -54,6 +54,8 @@ public class ShopItemEntity implements Serializable {
     @TableField(value = "is_shipment")
     private Boolean shipment;
 
+    private Integer alertQuantity;
+
     /**
      * 规格
      */
@@ -158,5 +160,13 @@ public class ShopItemEntity implements Serializable {
 
     public void setUnit(String unit) {
         this.unit = unit;
+    }
+
+    public Integer getAlertQuantity() {
+        return alertQuantity;
+    }
+
+    public void setAlertQuantity(Integer alertQuantity) {
+        this.alertQuantity = alertQuantity;
     }
 }

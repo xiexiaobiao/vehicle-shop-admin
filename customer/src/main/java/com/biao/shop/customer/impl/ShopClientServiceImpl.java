@@ -46,6 +46,14 @@ public class ShopClientServiceImpl extends ServiceImpl<ShopClientDao, ShopClient
     }
 
     @Override
+    public String getMaxClientUuId() {
+        return shopClientDao.selectList(new LambdaQueryWrapper<ShopClientEntity>()
+                .isNotNull(ShopClientEntity::getClientUuid).orderByDesc(ShopClientEntity::getClientUuid))
+                .stream().limit(1).collect(Collectors.toList())
+                .get(0).getClientUuid();
+    }
+
+    @Override
     public int createClient(ShopClientEntity clientEntity) {
         return shopClientDao.insert(clientEntity);
     }

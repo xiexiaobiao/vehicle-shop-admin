@@ -95,10 +95,24 @@ subprojects {
         compile group: 'org.apache.rocketmq', name: 'rocketmq-client', version: '4.6.0'
         compile group: 'org.apache.rocketmq', name: 'rocketmq-common', version: '4.6.0'
         compile group: 'org.apache.rocketmq', name: 'rocketmq-remoting', version: '4.6.0'
+
         // zk
         compile group: 'org.apache.curator', name: 'curator-framework', version: '4.2.0'
         compile group: 'org.apache.zookeeper', name: 'zookeeper', version: '3.5.5'
         compile group: 'org.apache.curator', name: 'curator-recipes', version: '4.2.0'
+
+        // aliyun-sdk-oss
+        compile group: 'com.aliyun.oss', name: 'aliyun-sdk-oss', version: '3.8.1'
+        compile group: 'com.aliyun', name: 'aliyun-java-sdk-core', version: '4.5.0'
+        compile group: 'com.aliyun', name: 'aliyun-java-sdk-sts', version: '3.0.1'
+
+
+        compile group: 'javax.activation', name: 'activation', version: '1.1.1'
+        // net.sf.json-lib/json-lib,这个包比较特殊，必须加入classifier，否则报错，见百度
+        compile group: 'net.sf.json-lib', name: 'json-lib', version: '2.4', classifier:'jdk15'
+
+
+
 
     }
     //if code include the chinese content

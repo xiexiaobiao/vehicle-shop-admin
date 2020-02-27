@@ -1,6 +1,6 @@
 package com.biao.shop.stock.conf;
 
-import com.biao.shop.common.bo.OrderBO;
+import com.biao.shop.common.bo.OrderBo;
 import com.biao.shop.stock.service.ShopStockService;
 import com.biao.shop.common.utils.CustomDateDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 
@@ -74,8 +73,8 @@ public class RocketMQConsumer {
                         timeModule.addDeserializer(LocalDateTime.class, new CustomDateDeserializer());
                         ObjectMapper objectMapper = new ObjectMapper();
                         objectMapper.registerModule(timeModule);
-                        OrderBO orderBO = objectMapper.readValue(msgExt.getBody(), OrderBO.class);
-                        List<OrderBO.ItemListBO> itemBos = orderBO.getDetail();
+                        OrderBo orderBO = objectMapper.readValue(msgExt.getBody(), OrderBo.class);
+                        List<OrderBo.ItemListBO> itemBos = orderBO.getDetail();
                         // 扣减库存
                         itemBos.forEach(itemBo ->
                         {

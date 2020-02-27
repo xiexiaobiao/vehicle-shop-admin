@@ -1,8 +1,8 @@
 package com.biao.shop.business.mq;
 
-import com.biao.shop.common.bo.OrderBO;
+import com.biao.shop.common.bo.OrderBo;
 import com.biao.shop.business.service.ShopBusinessService;
-import com.biao.shop.common.dto.OrderDTO;
+import com.biao.shop.common.dto.OrderDto;
 import com.biao.shop.common.utils.CustomDateDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -47,7 +47,7 @@ public class TransListenerImpl implements TransactionListener {
                 timeModule.addDeserializer(LocalDateTime.class,new CustomDateDeserializer());
                 ObjectMapper objectMapper = new ObjectMapper();
                 objectMapper.registerModule(timeModule);
-                OrderDTO orderDTO = objectMapper.readValue(msg.getBody(), OrderDTO.class);
+                OrderDto orderDTO = objectMapper.readValue(msg.getBody(), OrderDto.class);
                 logger.debug("orderBo is : {}",orderDTO.toString());
                 //本地transaction
                 shopBusinessService.saveOrderDTO(orderDTO);
@@ -66,9 +66,9 @@ public class TransListenerImpl implements TransactionListener {
         timeModule.addDeserializer(LocalDateTime.class,new CustomDateDeserializer());
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(timeModule);
-        OrderBO orderBo = null;
+        OrderBo orderBo = null;
         try {
-            orderBo = objectMapper.readValue(msg.getBody(), OrderBO.class);
+            orderBo = objectMapper.readValue(msg.getBody(), OrderBo.class);
         } catch (IOException e) {
             e.printStackTrace();
     }

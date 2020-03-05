@@ -67,12 +67,9 @@ mybatis-plus:
 #    # 解决加入logback后无sql打印的问题
   config-location: classpath:config/mybatis-config.xml
 
-# mybatis sql日志
+# 使用logback做日志替换默认日志系统，并指定logback 配置文件地址
 logging:
-  #打印sql,你的项目包路径
-  level:
-    com:
-      biao: debug
+  config: "classpath:config/logback-dev.xml"
 
 #dubbo的配置
 dubbo:

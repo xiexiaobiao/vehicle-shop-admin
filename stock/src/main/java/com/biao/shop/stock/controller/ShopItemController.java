@@ -6,7 +6,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.biao.shop.common.bo.OrderBo;
 import com.biao.shop.common.bo.ShopItemEntityBo;
 import com.biao.shop.common.dto.ShopItemEntityDto;
+import com.biao.shop.common.entity.ShopClientEntity;
 import com.biao.shop.common.entity.ShopItemEntity;
+import com.biao.shop.common.enums.RespStatusEnum;
+import com.biao.shop.common.response.ObjectResponse;
 import com.biao.shop.stock.service.ShopItemService;
 import com.github.pagehelper.PageInfo;
 import javassist.expr.Instanceof;
@@ -84,7 +87,7 @@ public class ShopItemController {
         return shopItemService.updateItemDto(itemEntityBo);
     }
 
-    @SoulClient(path = "/vehicle/stock/item/**", desc = "查询一个商品")
+    @SoulClient(path = "/vehicle/stock/item/**", desc = "由id查询一个商品")
     @GetMapping("/item/{id}")
     public ShopItemEntity queryById(@PathVariable("id") String id) {
         return shopItemService.queryById(id);
@@ -93,10 +96,32 @@ public class ShopItemController {
     //@GetMapping("/path/{id}/name")
     //@SoulClient(path = "/test/path/**/name", desc = "test restful风格支持")
 
+    @SoulClient(path = "/vehicle/stock/item/uid/**", desc = "由uid查询一个商品")
+    @GetMapping("/item/uid/{uid}")
+    public ObjectResponse<ShopItemEntityDto> queryByUId(@PathVariable("uid") String uid) {
+        ShopItemEntity itemEntity = shopItemService.queryByUUid(uid);
+        ObjectResponse<ShopItemEntity> response = new ObjectResponse<>();
+        response.setCode(RespStatusEnum.SUCCESS.getCode());
+        response.setMessage(RespStatusEnum.SUCCESS.getMessage());
+        response.setData(itemEntity);
+        return response;
+    }
+
     @SoulClient(path = "/vehicle/stock/item/save", desc = "新增商品")
     @PostMapping("/item/save")
     public int addItem(@RequestBody ShopItemEntityBo itemEntityBo){
         return shopItemService.saveItemDto(itemEntityBo);
+    }
+
+    @SoulClient(path = "/vehicle/stock/item/categories", desc = "商品类别列表")
+    @GetMapping("/item/categories")
+    public ObjectResponse<List<String>> listCategory(){
+        List<String> list = shopItemService.listCategory(1,100);
+        ObjectResponse<List<String>> response = new ObjectResponse<>();
+        response.setCode(RespStatusEnum.SUCCESS.getCode());
+        response.setMessage(RespStatusEnum.SUCCESS.getMessage());
+        response.setData(list);
+        return response;
     }
 //    public int addItem(@RequestBody ShopItemEntity  itemEntity) {
 //        /*JSONObject jsonObject = JSONObject.parseObject(jsonStr);
@@ -119,34 +144,51 @@ public class ShopItemController {
 //        return shopItemService.addItem(itemEntity);
 //    }
 
-    @SoulClient(path = "/vehicle/stock/brand/list", desc = "获取品牌列表")
+    //
+/*    @SoulClient(path = "/vehicle/stock/brand/list", desc = "获取品牌列表")
     @GetMapping("/brand/list")
     public Page<String> listBrand(@RequestParam("pageNum") int current,@RequestParam("pageSize")int size){
         return shopItemService.listBrand(current,size);
-    }
+    }*/
 
-    @SoulClient(path = "/vehicle/stock/category/list", desc = "获取类别列表")
+    /*@SoulClient(path = "/vehicle/stock/category/list", desc = "获取类别列表")
     @GetMapping("/category/list")
     public List<String> listCategory(@RequestParam("pageNum") int current,@RequestParam("pageSize")int size){
         return shopItemService.listCategory(current,size);
-    }
+    }*/
 
     @SoulClient(path = "/vehicle/stock/item/list", desc = "获取商品列表")
     @GetMapping("/item/list")
-    public Page<ShopItemEntityDto> listItem(@RequestParam("pageNum") int current, @RequestParam("pageSize")int size,
+    public ObjectResponse<Page<ShopItemEntityDto>> listItem(@RequestParam("pageNum") int current, @RequestParam("pageSize")int size,
                                                 @RequestParam(value = "itemName",required = false) String itemName,
                                                 @RequestParam(value = "itemUuid",required = false)String itemUuid,
                                                 @RequestParam(value = "category",required = false) String category,
                                                 @RequestParam(value = "brandName",required = false)String brandName,
-                                                @RequestParam(value = "shipment",required = false) int shipment){
+                                                @RequestParam(value = "shipment",required = false) Integer shipment){
+        int shipmentTemp = Objects.isNull(shipment)? 2: shipment;
         // 这里的shipment最好设计为int，可以接收 0 1 2 ，boolean型，只能是0 1，前端传来都会自带默认0，导致无法查询无此条件限制的
-        return shopItemService.listItem(current,size,itemName,itemUuid,category,brandName,shipment);
+        Page<ShopItemEntityDto> pageInfo = shopItemService.listItem(current,size,itemName,itemUuid,category,brandName,shipmentTemp);
+        ObjectResponse<Page<ShopItemEntityDto>> response = new ObjectResponse<>();
+            response.setCode(RespStatusEnum.SUCCESS.getCode());
+            response.setMessage(RespStatusEnum.SUCCESS.getMessage());
+            response.setData(pageInfo);
+        return response;
     }
 
     @SoulClient(path = "/vehicle/stock/item/maxId", desc = "获取商品最大编号值")
     @GetMapping("/item/maxId")
-    public String maxItemId(){
-        return shopItemService.getMaxItemUuid();
+    public ObjectResponse<String> maxItemId(){
+        ObjectResponse<String> response = new ObjectResponse<>();
+        String maxId = shopItemService.getMaxItemUuid();
+        if (StringUtils.isBlank(maxId)){
+            response.setCode(RespStatusEnum.FAIL.getCode());
+            response.setMessage(RespStatusEnum.FAIL.getMessage());
+        }else {
+            response.setCode(RespStatusEnum.SUCCESS.getCode());
+            response.setMessage(RespStatusEnum.SUCCESS.getMessage());
+            response.setData(maxId);
+        }
+        return response;
     }
 }
 

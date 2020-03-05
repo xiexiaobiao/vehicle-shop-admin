@@ -7,10 +7,13 @@ import com.alibaba.nacos.api.exception.NacosException;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.biao.shop.common.entity.ShopClientEntity;
+import com.biao.shop.common.enums.RespStatusEnum;
+import com.biao.shop.common.response.ObjectResponse;
 import com.biao.shop.customer.impl.ShopClientServiceImpl;
 import com.biao.shop.customer.service.ShopClientService;
 import com.biao.shop.customer.nacos.NacosConfTest;
 import com.github.pagehelper.PageInfo;
+import org.apache.commons.lang3.StringUtils;
 import org.dromara.soul.client.common.annotation.SoulClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,12 +67,17 @@ public class ShopClientController {
 
     @SoulClient(path = "/vehicle/client/list", desc = "获取客户列表")
     @GetMapping("/list")
-    public PageInfo<ShopClientEntity> listClient(@RequestParam("pageNum")Integer current, @RequestParam("pageSize")Integer size,
+    public ObjectResponse<PageInfo<ShopClientEntity>> listClient(@RequestParam("pageNum")Integer current, @RequestParam("pageSize")Integer size,
                                                  @RequestParam(value = "clientUuid",required = false)String clientUuid,
                                                  @RequestParam(value = "name",required = false)String name,
                                                  @RequestParam(value = "vehiclePlate",required = false)String vehiclePlate,
                                                  @RequestParam(value = "phone",required = false)String phone){
-        return clientService.listClient( current,size,clientUuid,name,vehiclePlate,phone);
+        PageInfo<ShopClientEntity> pageInfo = clientService.listClient( current,size,clientUuid,name,vehiclePlate,phone);
+        ObjectResponse<PageInfo<ShopClientEntity>> response = new ObjectResponse<>();
+            response.setCode(RespStatusEnum.SUCCESS.getCode());
+            response.setMessage(RespStatusEnum.SUCCESS.getMessage());
+            response.setData(pageInfo);
+        return response;
     }
 
     @SoulClient(path = "/vehicle/client/**", desc = "查询一个客户")
@@ -86,8 +94,18 @@ public class ShopClientController {
 
     @SoulClient(path = "/vehicle/client/create", desc = "创建一个客户")
     @PostMapping("/create")
-    public int createClient(@RequestBody ShopClientEntity client){
-        return clientService.createClient(client);
+    public ObjectResponse<String> createClient(@RequestBody ShopClientEntity client){
+        ObjectResponse<String> response = new ObjectResponse<>();
+        int result =  clientService.createClient(client);
+        if (StringUtils.isBlank(String.valueOf(result))){
+            response.setCode(RespStatusEnum.FAIL.getCode());
+            response.setMessage(RespStatusEnum.FAIL.getMessage());
+        }else {
+            response.setCode(RespStatusEnum.SUCCESS.getCode());
+            response.setMessage(RespStatusEnum.SUCCESS.getMessage());
+            response.setData(String.valueOf(result));
+        }
+        return response;
     }
 
     @SoulClient(path = "/vehicle/client/plates", desc = "获取车牌列表")
@@ -112,8 +130,18 @@ public class ShopClientController {
 
     @SoulClient(path = "/vehicle/client/maxUid", desc = "获取最大客户uid")
     @GetMapping("/maxUid")
-    public String getMaxClientUuId(){
-        return clientService.getMaxClientUuId();
+    public ObjectResponse<String> getMaxClientUuId(){
+        ObjectResponse<String> response = new ObjectResponse<>();
+        String maxId = clientService.getMaxClientUuId();
+        if (StringUtils.isBlank(maxId)){
+            response.setCode(RespStatusEnum.FAIL.getCode());
+            response.setMessage(RespStatusEnum.FAIL.getMessage());
+        }else {
+            response.setCode(RespStatusEnum.SUCCESS.getCode());
+            response.setMessage(RespStatusEnum.SUCCESS.getMessage());
+            response.setData(maxId);
+        }
+        return response;
     }
 
 }

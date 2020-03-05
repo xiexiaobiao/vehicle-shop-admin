@@ -2,6 +2,6 @@ spring:
   profiles:
     active: dev
 
-#指定log配置文件地址
-logging:
-  config: "classpath:config/logback-dev.xml"
+#指定log配置文件地址 放到具体profile中指定
+#logging:
+#  config: "classpath:config/logback-dev.xml"

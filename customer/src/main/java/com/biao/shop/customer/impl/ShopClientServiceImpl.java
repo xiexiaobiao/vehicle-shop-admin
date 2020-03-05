@@ -1,27 +1,20 @@
 package com.biao.shop.customer.impl;
 
-import com.alibaba.spring.util.ObjectUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.biao.shop.common.dao.ShopClientDao;
 import com.biao.shop.common.dto.ClientQueryDTO;
 import com.biao.shop.common.entity.ShopClientEntity;
-import com.biao.shop.common.dao.ShopClientDao;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.biao.shop.common.entity.ShopItemEntity;
 import com.biao.shop.customer.service.ShopClientService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.dubbo.config.annotation.Service;
-import org.dromara.soul.client.common.annotation.SoulClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -55,6 +48,7 @@ public class ShopClientServiceImpl extends ServiceImpl<ShopClientDao, ShopClient
 
     @Override
     public int createClient(ShopClientEntity clientEntity) {
+        clientEntity.setGenerateDate(LocalDateTime.now());
         return shopClientDao.insert(clientEntity);
     }
 
@@ -83,7 +77,8 @@ public class ShopClientServiceImpl extends ServiceImpl<ShopClientDao, ShopClient
     @Override
 //    @CachePut(cacheNames = "shopClient")  // 更新Redis缓存
     public int updateClient(ShopClientEntity clientEntity) {
-        logger.info("更新Redis缓存");
+//        logger.info("更新Redis缓存");
+        clientEntity.setModifyDate(LocalDateTime.now());
         return shopClientDao.updateById(clientEntity);
     }
 

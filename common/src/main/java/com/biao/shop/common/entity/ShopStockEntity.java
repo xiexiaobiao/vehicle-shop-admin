@@ -33,6 +33,8 @@ public class ShopStockEntity implements Serializable {
 
     private Integer quantityLocked;
 
+    private Integer sales;
+
 
     public Integer getIdStock() {
         return idStock;
@@ -64,5 +66,13 @@ public class ShopStockEntity implements Serializable {
 
     public void setQuantityLocked(Integer quantityLocked) {
         this.quantityLocked = quantityLocked;
+    }
+
+    public Integer getSales() {
+        return sales;
+    }
+
+    public void setSales(Integer sales) {
+        this.sales = sales;
     }
 }

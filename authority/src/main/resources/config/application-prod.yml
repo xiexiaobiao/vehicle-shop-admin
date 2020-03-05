@@ -63,15 +63,19 @@ soul:
     appName: authApp
 
 # mybatis sql日志
+#logging:
+#  level:
+#    org:
+#      springframework:
+#        boot:
+#          #SpringBoot去掉CONDITIONS EVALUATION REPORT及自动配置内容的显示
+#          autoconfigure: error
+#    com:
+#      biao: debug
+
+# 使用logback做日志替换默认日志系统，并指定logback 配置文件地址
 logging:
-  level:
-    org:
-      springframework:
-        boot:
-          #SpringBoot去掉CONDITIONS EVALUATION REPORT及自动配置内容的显示
-          autoconfigure: error
-    com:
-      biao: debug
+  config: "classpath:config/logback-dev.xml"
 
 # 打印sql到console
 mybatis-plus:

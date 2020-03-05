@@ -163,13 +163,15 @@ public class ShopItemServiceImpl extends ServiceImpl<ShopItemDao, ShopItemEntity
         BeanUtils.copyProperties(itemEntityBo,itemEntity);
         List<String> strings = itemEntityBo.getAlbumPics();
         Set<ShopItemPictureEntity> pictureEntitySet = new HashSet<>(8);
-        strings.forEach(str -> {
-            ShopItemPictureEntity pictureEntity = new ShopItemPictureEntity();
-            pictureEntity.setItemUuid(itemEntityBo.getItemUuid());
-            pictureEntity.setPicAddr(str);
-            pictureEntitySet.add(pictureEntity);
-        });
-        itemPictureService.saveItemPictures(pictureEntitySet);
+        if (!Objects.isNull(strings)){
+            strings.forEach(str -> {
+                ShopItemPictureEntity pictureEntity = new ShopItemPictureEntity();
+                pictureEntity.setItemUuid(itemEntityBo.getItemUuid());
+                pictureEntity.setPicAddr(str);
+                pictureEntitySet.add(pictureEntity);
+            });
+            itemPictureService.saveItemPictures(pictureEntitySet);
+        }
         return shopItemDao.insert(itemEntity);
     }
 
@@ -179,13 +181,15 @@ public class ShopItemServiceImpl extends ServiceImpl<ShopItemDao, ShopItemEntity
         BeanUtils.copyProperties(itemEntityBo,itemEntity);
         List<String> strings = itemEntityBo.getAlbumPics();
         Set<ShopItemPictureEntity> pictureEntitySet = new HashSet<>(8);
-        strings.forEach(str -> {
-            ShopItemPictureEntity pictureEntity = new ShopItemPictureEntity();
-            pictureEntity.setItemUuid(itemEntityBo.getItemUuid());
-            pictureEntity.setPicAddr(str);
-            pictureEntitySet.add(pictureEntity);
-        });
-        itemPictureService.saveItemPictures(pictureEntitySet);
+        if (!Objects.isNull(strings)){
+            strings.forEach(str -> {
+                ShopItemPictureEntity pictureEntity = new ShopItemPictureEntity();
+                pictureEntity.setItemUuid(itemEntityBo.getItemUuid());
+                pictureEntity.setPicAddr(str);
+                pictureEntitySet.add(pictureEntity);
+            });
+            itemPictureService.saveItemPictures(pictureEntitySet);
+        }
         return shopItemDao.updateById(itemEntity);
     }
 

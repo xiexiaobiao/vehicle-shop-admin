@@ -90,5 +90,25 @@ CREATE TABLE `system_user` (
   PRIMARY KEY (`user_uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='系统管理员表';
 
+CREATE TABLE `shop_item_brand` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `brand_id` varchar(45) DEFAULT NULL,
+  `brand_name` varchar(45) DEFAULT NULL,
+  `generate_date` datetime DEFAULT NULL,
+  `modify_date` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `brand_id_UNIQUE` (`brand_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='商品品牌表';
+
+CREATE TABLE `shop_item_category` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `category_id` varchar(45) DEFAULT NULL,
+  `category_name` varchar(45) DEFAULT NULL,
+  `generate_date` datetime DEFAULT NULL,
+  `modify_date` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `category_id_UNIQUE` (`category_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='商品类别表'
+
 INSERT INTO `system_user` (`user_uuid`,`user_name`,`user_passwd`) VALUES ('admin','admin','admin123');
 --

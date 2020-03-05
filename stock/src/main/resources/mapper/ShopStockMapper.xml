@@ -8,11 +8,12 @@
         <result column="item_uuid" property="itemUuid" />
         <result column="quantity" property="quantity" />
         <result column="quantity_locked" property="quantityLocked" />
+        <result column="sales" property="sales" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id_stock, item_uuid, quantity, quantity_locked
+        id_stock, item_uuid, quantity, quantity_locked,sales
     </sql>
 
 </mapper>

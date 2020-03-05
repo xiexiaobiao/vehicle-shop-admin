@@ -12,18 +12,18 @@
     </appender>
 
     <!--appender让我们的应用知道怎么打、打印到哪里、打印成什么样-->
-    <appender name="FILE_APPENDER"
-              class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="FILE_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <append>true</append>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level> INFO </level>
+            <level> DEBUG </level>
         </filter>
-        <file>
-            ${logging.path}/authority/authorityApp.log
-        </file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>${logging.path}/authority/logback.log.%d{yyyy-MM-dd}</FileNamePattern>
-            <MaxHistory>30</MaxHistory>
+        <file>${logging.path}/authority/authorityApp.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <FileNamePattern>${logging.path}/authority/authorityApp.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+            <!-- each file should be at most 5MB, keep 60 days worth of history, but at most 10GB -->
+            <maxFileSize>5MB</maxFileSize>
+            <maxHistory>60</maxHistory>
+            <totalSizeCap>10GB</totalSizeCap>
         </rollingPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
@@ -43,7 +43,7 @@
         <!-- 每天生成一个日志文件，保存30天的日志文件 -->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--日志文件输出的文件名:按天回滚 daily -->
-            <FileNamePattern>${logging.path}/authority/logback-error.log.%d{yyyy-MM-dd}</FileNamePattern>
+            <FileNamePattern>${logging.path}/authority/logback-error.%d{yyyy-MM-dd}.log</FileNamePattern>
             <!--日志文件保留天数-->
             <MaxHistory>30</MaxHistory>
         </rollingPolicy>
@@ -56,8 +56,7 @@
     </appender>
 
     <!--自定义logger，logger告诉应用哪些部分需要记录日志-->
-    <logger name="com.biao.shop" level= "INFO"
-            additivity="false">
+    <logger name="com.biao.shop" level= "DEBUG" additivity="false">
         <appender-ref ref="FILE_APPENDER" />
     </logger>
 
@@ -67,8 +66,9 @@
     </logger>
 
     <!--根logger-->
-    <root level="info">
+    <root level="INFO">
         <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE_APPENDER" />
     </root>
 
     <!--不打印sql语句的问题，需定义mybatis-config.xml文件，再-->

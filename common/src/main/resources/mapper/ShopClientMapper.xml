@@ -13,12 +13,14 @@
         <result column="vehicle_series" property="vehicleSeries" />
         <result column="phone" property="phone" />
         <result column="addr" property="addr" />
+        <result column="generate_date" property="generateDate" />
+        <result column="modify_date" property="modifyDate" />
         <result column="point" property="point" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id_client, client_uuid, client_name, age, gender,vehicle_series, vehicle_plate, phone, addr,point
+        id_client, client_uuid, client_name, age, gender,vehicle_series, vehicle_plate, phone, addr,generate_date,modify_date,point
     </sql>
 
 </mapper>

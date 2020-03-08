@@ -11,7 +11,7 @@ a mirco-service framework admin system for vehicle shop
 
 ## Framework架构图:
 
-![Image text](https://github.com/xiexiaobiao/vehicle-shop-admin/blob/master/resource/framework.PNG)
+![Image text](https://github.com/xiexiaobiao/vehicle-shop-admin/blob/master/devDocument/framework.PNG)
 
 ***
 

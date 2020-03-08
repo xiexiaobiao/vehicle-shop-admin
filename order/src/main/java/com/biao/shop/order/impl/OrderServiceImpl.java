@@ -115,7 +115,7 @@ public class OrderServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrderEntity>
         boolean flag = clientUidS.size() > 0;
         boolean dateFlag = StringUtils.isNotEmpty(generateDateStart) && StringUtils.isNotEmpty(generateDateEnd);
         QueryWrapper<ShopOrderEntity> qw = new QueryWrapper<>();
-        Map<String,Object> map = new HashMap<>(1);
+        Map<String,Object> map = new HashMap<>(2);
         map.put("order_uuid",orderUuid);
         map.put("is_paid", paidStatus == 2 ? null : paidStatus);
         qw.allEq(true,map,false)

@@ -3,14 +3,16 @@ package com.biao.shop.order.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.biao.shop.common.dto.ItemListEntityDto;
 import com.biao.shop.common.dto.OrderDto;
-import com.biao.shop.common.entity.ItemListEntity;
+import com.biao.shop.common.dto.ShopItemAppDTO;
 import com.biao.shop.common.entity.ShopOrderEntity;
+import com.biao.shop.common.enums.RespStatusEnum;
+import com.biao.shop.common.response.ObjectResponse;
+import com.biao.shop.order.manager.OrderManager;
 import com.biao.shop.order.service.ItemListService;
 import com.biao.shop.order.service.OrderService;
 import org.dromara.soul.client.common.annotation.SoulClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,11 +33,13 @@ public class OrderController {
 
     private OrderService orderService;
     private ItemListService itemListService;
+    private OrderManager orderManager;
 
     @Autowired
-    public OrderController(OrderService orderService,ItemListService itemListService){
+    public OrderController(OrderService orderService, ItemListService itemListService, OrderManager orderManager){
         this.orderService = orderService;
         this.itemListService =  itemListService;
+        this.orderManager = orderManager;
     }
 
     @SoulClient(path = "/vehicle/order/list", desc = "获取订单列表")
@@ -52,6 +56,22 @@ public class OrderController {
         // 这里的paidStatus最好设计为int，可以接收 0 1 2 ，boolean型，只能是0 1，前端传来都会自带默认0，导致无法查询无此条件限制的
         return orderService.listOrderDTO(current,size,orderUuid,clientName,phone,vehicleSeries,
                 vehiclePlate,generateDateStart,generateDateEnd,paidStatus);
+    }
+
+    @SoulClient(path = "/vehicle/order/list/uniapp", desc = "移动端获取订单列表")
+    @GetMapping("/list/uniapp")
+    public ObjectResponse<Page<ShopItemAppDTO>> listOrderApp(@RequestParam("pageNum")int current, @RequestParam("pageSize")int size,
+                                    @RequestParam(value = "clientName",required = false) String clientName,
+                                    @RequestParam(value = "generateDateStart",required = false)String generateDateStart,
+                                    @RequestParam(value = "generateDateEnd",required = false)String generateDateEnd,
+                                    @RequestParam(value = "paidStatus",required = false)int paidStatus){
+        // 这里的paidStatus最好设计为int，可以接收 0 1 2 ，boolean型，只能是0 1，前端传来都会自带默认0，导致无法查询无此条件限制的
+        Page<ShopItemAppDTO> itemAppDTOPage = orderManager.listItemAppDto(current, size,paidStatus);
+        ObjectResponse<Page<ShopItemAppDTO>> response = new ObjectResponse<>();
+        response.setCode(RespStatusEnum.SUCCESS.getCode());
+        response.setMessage(RespStatusEnum.SUCCESS.getMessage());
+        response.setData(itemAppDTOPage);
+        return response;
     }
 
     @SoulClient(path = "/vehicle/order/itemList", desc = "获取订单商品列表")

@@ -31,7 +31,6 @@ public class ShopItemPictureEntity implements Serializable {
 
     private String picAddr;
 
-
     public Integer getId() {
         return id;
     }

@@ -94,7 +94,7 @@ public class ShopClientServiceImpl extends ServiceImpl<ShopClientDao, ShopClient
     @Override
 //    @Cacheable(cacheNames = "shopClient")
     public ShopClientEntity queryByUuId(String uuid) {
-        logger.info("queryByUuId 未使用Redis缓存");
+//        logger.info("queryByUuId 未使用Redis缓存");
         QueryWrapper<ShopClientEntity> qw = new QueryWrapper<>();
         qw.eq(true,"client_uuid",uuid);
         return shopClientDao.selectOne(qw);

@@ -6,7 +6,10 @@ import com.biao.shop.business.mq.RocketMQTransProducer;
 import com.biao.shop.business.service.ShopBusinessService;
 import com.biao.shop.common.bo.OrderBo;
 import com.biao.shop.common.dto.OrderDto;
+import com.biao.shop.common.dto.ShopItemEntityDto;
 import com.biao.shop.common.entity.ShopOrderEntity;
+import com.biao.shop.common.enums.RespStatusEnum;
+import com.biao.shop.common.response.ObjectResponse;
 import com.biao.shop.common.utils.CustomDateSerializer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -65,8 +68,13 @@ public class ShopBusinessController {
     // 测试mysql数据保存功能
     @SoulClient(path = "/vehicle/business/create", desc = "创建一个订单")
     @PostMapping(value = "/create") //@PostMapping等价于@RequestMapping(method = RequestMethod.POST)
-    public int saveOrderDTO(@RequestBody OrderDto orderDTO){
-        return businessService.saveOrderDTO(orderDTO);
+    public ObjectResponse<Integer> saveOrderDTO(@RequestBody OrderDto orderDTO){
+        int result  = businessService.saveOrderDTO(orderDTO);
+        ObjectResponse<Integer> response = new ObjectResponse<>();
+        response.setCode(RespStatusEnum.SUCCESS.getCode());
+        response.setMessage(RespStatusEnum.SUCCESS.getMessage());
+        response.setData(result);
+        return response;
     }
 
     @SoulClient(path = "/vehicle/business/update", desc = "更新一个订单")

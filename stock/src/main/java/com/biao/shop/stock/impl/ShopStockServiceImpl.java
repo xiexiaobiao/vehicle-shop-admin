@@ -31,8 +31,7 @@ public class ShopStockServiceImpl extends ServiceImpl<ShopStockDao, ShopStockEnt
 
     @Override
     public int saveStock(ShopStockEntity Stock) {
-        System.out.println("saveStock method called >>>");
-        return 0;
+        return stockDao.insert(Stock);
     }
 
     @Override

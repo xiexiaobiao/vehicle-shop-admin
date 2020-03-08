@@ -10,10 +10,14 @@ import com.biao.shop.common.dao.ShopItemDao;
 import com.biao.shop.common.dto.ShopItemEntityDto;
 import com.biao.shop.common.entity.ShopItemEntity;
 import com.biao.shop.common.entity.ShopItemPictureEntity;
+import com.biao.shop.common.entity.ShopStockEntity;
 import com.biao.shop.stock.service.ShopItemPictureService;
 import com.biao.shop.stock.service.ShopItemService;
+import com.biao.shop.stock.service.ShopStockService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import lombok.SneakyThrows;
+import org.apache.rocketmq.client.exception.MQClientException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +41,8 @@ public class ShopItemServiceImpl extends ServiceImpl<ShopItemDao, ShopItemEntity
     private ShopItemDao  shopItemDao;
     @Autowired
     ShopItemPictureService itemPictureService;
+    @Autowired
+    ShopStockService stockService;
 
 
     @Override
@@ -157,11 +163,13 @@ public class ShopItemServiceImpl extends ServiceImpl<ShopItemDao, ShopItemEntity
         return itemEntityDtoPage;
     }
 
+    @SneakyThrows
     @Override
-    public int saveItemDto(ShopItemEntityBo  itemEntityBo) {
+    public int saveItemDto(ShopItemEntityBo  itemEntityBo) throws MQClientException {
         ShopItemEntity itemEntity = new ShopItemEntity();
         BeanUtils.copyProperties(itemEntityBo,itemEntity);
         List<String> strings = itemEntityBo.getAlbumPics();
+        // 保存相册
         Set<ShopItemPictureEntity> pictureEntitySet = new HashSet<>(8);
         if (!Objects.isNull(strings)){
             strings.forEach(str -> {
@@ -172,6 +180,14 @@ public class ShopItemServiceImpl extends ServiceImpl<ShopItemDao, ShopItemEntity
             });
             itemPictureService.saveItemPictures(pictureEntitySet);
         }
+        // 保存初始库存
+        ShopStockEntity stockEntity = new ShopStockEntity();
+        stockEntity.setItemUuid(itemEntityBo.getItemUuid());
+        stockEntity.setQuantity(itemEntityBo.getInitStock());
+        stockEntity.setQuantityLocked(0);
+        stockEntity.setSales(0);
+        stockService.saveStock(stockEntity);
+        // 保存商品
         return shopItemDao.insert(itemEntity);
     }
 

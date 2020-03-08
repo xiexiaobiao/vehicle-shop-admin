@@ -10,10 +10,12 @@ import com.biao.shop.common.entity.ShopClientEntity;
 import com.biao.shop.common.entity.ShopItemEntity;
 import com.biao.shop.common.enums.RespStatusEnum;
 import com.biao.shop.common.response.ObjectResponse;
+import com.biao.shop.stock.manager.ShopItemManager;
 import com.biao.shop.stock.service.ShopItemService;
 import com.github.pagehelper.PageInfo;
 import javassist.expr.Instanceof;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.rocketmq.client.exception.MQClientException;
 import org.dromara.soul.client.common.annotation.SoulClient;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,9 +41,12 @@ public class ShopItemController {
 
     private ShopItemService shopItemService;
 
+    private ShopItemManager shopItemManager;
+
     @Autowired
-    public ShopItemController(ShopItemService shopItemService){
+    public ShopItemController(ShopItemService shopItemService,ShopItemManager shopItemManager){
         this.shopItemService = shopItemService;
+        this.shopItemManager = shopItemManager;
     }
 
     @SoulClient(path = "/vehicle/stock/item/del", desc = "删除一个商品")
@@ -99,17 +104,17 @@ public class ShopItemController {
     @SoulClient(path = "/vehicle/stock/item/uid/**", desc = "由uid查询一个商品")
     @GetMapping("/item/uid/{uid}")
     public ObjectResponse<ShopItemEntityDto> queryByUId(@PathVariable("uid") String uid) {
-        ShopItemEntity itemEntity = shopItemService.queryByUUid(uid);
-        ObjectResponse<ShopItemEntity> response = new ObjectResponse<>();
+        ShopItemEntityDto itemEntityDto = shopItemManager.queryByUId(uid);
+        ObjectResponse<ShopItemEntityDto> response = new ObjectResponse<>();
         response.setCode(RespStatusEnum.SUCCESS.getCode());
         response.setMessage(RespStatusEnum.SUCCESS.getMessage());
-        response.setData(itemEntity);
+        response.setData(itemEntityDto);
         return response;
     }
 
     @SoulClient(path = "/vehicle/stock/item/save", desc = "新增商品")
     @PostMapping("/item/save")
-    public int addItem(@RequestBody ShopItemEntityBo itemEntityBo){
+    public int addItem(@RequestBody ShopItemEntityBo itemEntityBo) throws MQClientException {
         return shopItemService.saveItemDto(itemEntityBo);
     }
 

@@ -82,8 +82,19 @@ public class ShopClientController {
 
     @SoulClient(path = "/vehicle/client/**", desc = "查询一个客户")
     @GetMapping("/{id}")
-    public ShopClientEntity listClient(@PathVariable("id") int id){
+    public ShopClientEntity queryById(@PathVariable("id") int id){
         return clientService.queryById(id);
+    }
+
+    @SoulClient(path = "/vehicle/client/uid", desc = "uid查询一个客户")
+    @GetMapping("/uid")
+    public ObjectResponse<ShopClientEntity> queryByUuId(@RequestParam("uid") String uid){
+        ShopClientEntity clientEntity = clientService.queryByUuId(uid);
+        ObjectResponse<ShopClientEntity> response = new ObjectResponse<>();
+        response.setCode(RespStatusEnum.SUCCESS.getCode());
+        response.setMessage(RespStatusEnum.SUCCESS.getMessage());
+        response.setData(clientEntity);
+        return response;
     }
 
     @SoulClient(path = "/vehicle/client/update", desc = "更新一个客户")

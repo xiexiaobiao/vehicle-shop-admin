@@ -7,6 +7,7 @@ import com.biao.shop.common.dto.ShopItemEntityDto;
 import com.biao.shop.common.entity.ShopItemEntity;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.github.pagehelper.PageInfo;
+import org.apache.rocketmq.client.exception.MQClientException;
 
 import java.util.List;
 import java.util.Set;
@@ -47,7 +48,7 @@ public interface ShopItemService extends IService<ShopItemEntity> {
                                          String itemName, String itemUuid,
                                          String category, String brandName,
                                      int shipment);
-    int saveItemDto(ShopItemEntityBo  itemEntityBo);
+    int saveItemDto(ShopItemEntityBo  itemEntityBo) throws MQClientException;
 
     int updateItemDto(ShopItemEntityBo  itemEntityBo);
 }

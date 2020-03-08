@@ -13,6 +13,7 @@ import java.util.List;
  **/
 public class ShopItemEntityBo extends ShopItemEntity {
     private List<String> albumPics;
+    private Integer initStock;
 
     public List<String> getAlbumPics() {
         return albumPics;
@@ -28,5 +29,13 @@ public class ShopItemEntityBo extends ShopItemEntity {
                 "ShopItemEntityBo{" +
                 "albumPics=" + albumPics +
                 '}';
+    }
+
+    public Integer getInitStock() {
+        return initStock;
+    }
+
+    public void setInitStock(Integer initStock) {
+        this.initStock = initStock;
     }
 }

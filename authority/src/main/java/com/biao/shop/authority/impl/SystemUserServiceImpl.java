@@ -18,7 +18,7 @@ import java.util.Objects;
  * @author XieXiaobiao
  * @since 2020-02-21
  */
-@Service
+@Service()
 public class SystemUserServiceImpl extends ServiceImpl<SystemUserDao, SystemUserEntity> implements SystemUserService {
 
     @Autowired

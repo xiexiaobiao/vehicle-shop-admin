@@ -57,6 +57,9 @@ public class ShopOrderEntity implements Serializable {
 
     private String capitalAmount;
 
+    @TableField("is_canceled")
+    private Boolean cancelStatus;
+
 
     public Integer getIdOrder() {
         return idOrder;
@@ -128,5 +131,13 @@ public class ShopOrderEntity implements Serializable {
 
     public void setCapitalAmount(String capitalAmount) {
         this.capitalAmount = capitalAmount;
+    }
+
+    public Boolean getCancelStatus() {
+        return cancelStatus;
+    }
+
+    public void setCancelStatus(Boolean cancelStatus) {
+        this.cancelStatus = cancelStatus;
     }
 }

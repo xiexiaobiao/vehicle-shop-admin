@@ -9,13 +9,18 @@ drop table if exists shop_item;
 drop table if exists shop_client;
 drop table if exists item_list;
 drop table if exists system_user;
+drop table if exists shop_item_brand;
+drop table if exists shop_item_category;
+drop table if exists shop_item_picture;
 
 CREATE TABLE `shop_stock` (
   `id_stock` int(11) NOT NULL AUTO_INCREMENT,
   `item_uuid` varchar(45) DEFAULT NULL,
   `quantity` int(11) DEFAULT NULL,
   `quantity_locked` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id_stock`)
+  `sales` int(11) DEFAULT NULL COMMENT '销量',
+  PRIMARY KEY (`id_stock`),
+  UNIQUE KEY `item_uuid_UNIQUE` (`item_uuid`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='库存表';
 
 
@@ -26,12 +31,13 @@ CREATE TABLE `shop_order` (
   `generate_date` datetime DEFAULT NULL,
   `modify_date` datetime DEFAULT NULL,
   `is_paid` tinyint(1) DEFAULT NULL,
-  `order_remark` varchar(45) DEFAULT NULL,
+  `order_remark` varchar(450) DEFAULT NULL,
   `amount` decimal(8,2) DEFAULT NULL,
   `capital_amount` varchar(45) DEFAULT NULL,
+  `is_canceled` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id_order`),
   UNIQUE KEY `order_uuid_UNIQUE` (`order_uuid`)
-) ENGINE=InnoDB   DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='订单表';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='订单表';
 
 CREATE TABLE `shop_item` (
   `id_item` int(11) NOT NULL AUTO_INCREMENT,
@@ -49,7 +55,7 @@ CREATE TABLE `shop_item` (
   `alert_quantity` int(3) DEFAULT NULL,
   PRIMARY KEY (`id_item`),
   UNIQUE KEY `item_uuid_UNIQUE` (`item_uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='商品表';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='商品表';
 
 CREATE TABLE `shop_client` (
   `id_client` int(11) NOT NULL AUTO_INCREMENT,
@@ -61,10 +67,12 @@ CREATE TABLE `shop_client` (
   `vehicle_plate` varchar(45) DEFAULT NULL,
   `phone` varchar(45) DEFAULT NULL,
   `addr` varchar(45) DEFAULT NULL,
+  `generate_date` datetime DEFAULT NULL,
+  `modify_date` datetime DEFAULT NULL,
   `point` int(11) DEFAULT NULL,
   PRIMARY KEY (`id_client`),
   UNIQUE KEY `client_uuid_UNIQUE` (`client_uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='客户表';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='客户表';
 
 CREATE TABLE `item_list` (
   `id_list` int(11) NOT NULL AUTO_INCREMENT,
@@ -74,21 +82,22 @@ CREATE TABLE `item_list` (
   `discount_price` decimal(8,2) DEFAULT NULL,
   `remark` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id_list`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='订单商品明细清单';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='订单商品明细清单';
 
 CREATE TABLE `shop_item_picture` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `item_uuid` varchar(45) DEFAULT NULL,
-  `pic_addr` varchar(100) DEFAULT NULL,
+  `pic_addr` varchar(200) DEFAULT NULL,
+  `generate_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='商品图片';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='商品图片';
 
 CREATE TABLE `system_user` (
   `user_uuid` varchar(45) NOT NULL,
   `user_name` varchar(45) DEFAULT NULL,
   `user_passwd` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`user_uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='系统管理员表';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='系统管理员表';
 
 CREATE TABLE `shop_item_brand` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -98,7 +107,7 @@ CREATE TABLE `shop_item_brand` (
   `modify_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `brand_id_UNIQUE` (`brand_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='商品品牌表';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='商品品牌表';
 
 CREATE TABLE `shop_item_category` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -108,7 +117,7 @@ CREATE TABLE `shop_item_category` (
   `modify_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `category_id_UNIQUE` (`category_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='商品类别表'
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='商品类别表';
 
 INSERT INTO `system_user` (`user_uuid`,`user_name`,`user_passwd`) VALUES ('admin','admin','admin123');
 --

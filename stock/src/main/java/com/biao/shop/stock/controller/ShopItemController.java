@@ -114,8 +114,13 @@ public class ShopItemController {
 
     @SoulClient(path = "/vehicle/stock/item/save", desc = "新增商品")
     @PostMapping("/item/save")
-    public int addItem(@RequestBody ShopItemEntityBo itemEntityBo) throws MQClientException {
-        return shopItemService.saveItemDto(itemEntityBo);
+    public ObjectResponse<Integer> addItem(@RequestBody ShopItemEntityBo itemEntityBo) throws MQClientException {
+        int result = shopItemService.saveItemDto(itemEntityBo);
+        ObjectResponse<Integer> response = new ObjectResponse<>();
+        response.setCode(RespStatusEnum.SUCCESS.getCode());
+        response.setMessage(RespStatusEnum.SUCCESS.getMessage());
+        response.setData(result);
+        return response;
     }
 
     @SoulClient(path = "/vehicle/stock/item/categories", desc = "商品类别列表")

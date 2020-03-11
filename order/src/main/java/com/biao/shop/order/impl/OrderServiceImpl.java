@@ -71,13 +71,21 @@ public class OrderServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrderEntity>
         ShopOrderEntity shopOrderEntity = shopOrderDao.selectById(id);
         String orderUuid = shopOrderEntity.getOrderUuid();
         // 删除订单详细
-        List<Integer> list1 = itemListService.listDetail(orderUuid).stream()
+        List<Integer> list = itemListService.listDetail(orderUuid).stream()
                 .map(ItemListEntity::getIdList).collect(Collectors.toList());
-        itemListService.deleteBatchItemList(list1);
-        // todo 库存变化(-冻结)
-
+        itemListService.deleteBatchItemList(list);
+        // 库存（-冻结）
+        List<ItemListEntity> itemListEntities = itemListService.listDetail(shopOrderEntity.getOrderUuid());
+        itemListEntities.forEach(itemListEntity -> {
+            try {
+                stockRPCService.unfrozenStock(itemListEntity.getItemUuid(),itemListEntity.getQuantity());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
         return shopOrderDao.deleteById(id);
     }
+
 
     @Override
     public ShopOrderEntity selectByUuId(String uuid) {
@@ -152,14 +160,19 @@ public class OrderServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrderEntity>
 
     // 将未付款订单更新为已付款
     @Override
-    public int paidOrder(int orderId,String note) {
-        ShopOrderEntity orderEntity = this.queryOrder(orderId);
+    public int paidOrder(String orderUId,String note) throws Exception {
+        ShopOrderEntity orderEntity = this.selectByUuId(orderUId);
         if (Objects.isNull(orderEntity))
             return 0;
         else{
+            if (orderEntity.getPaidStatus()){
+                throw new Exception("paid order can't be paid again");
+            }
             orderEntity.setPaidStatus(true);
             orderEntity.setModifyDate(LocalDateTime.now());
-            orderEntity.setOrderRemark(StringUtils.isEmpty(orderEntity.getOrderRemark())?"":orderEntity.getOrderRemark() +"/"+ note);
+            if(!Objects.isNull(note)){
+                orderEntity.setOrderRemark(StringUtils.isEmpty(orderEntity.getOrderRemark())?"":orderEntity.getOrderRemark() +"/"+ note);
+            }
             // 加积分
             clientRPCService.addPoint(orderEntity.getClientUuid(),orderEntity.getAmount().intValue());
             // 库存（-冻结+扣减）
@@ -172,6 +185,33 @@ public class OrderServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrderEntity>
                 }
                 try {
                     stockRPCService.decreaseStock(itemListEntity.getItemUuid(),itemListEntity.getQuantity());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+        return shopOrderDao.updateById(orderEntity);
+    }
+
+    @Override
+    public int cancelOrder(String UuId, String note) throws Exception {
+        ShopOrderEntity orderEntity = this.selectByUuId(UuId);
+        if (Objects.isNull(orderEntity))
+            return 0;
+        else{
+            if (orderEntity.getPaidStatus()){
+                throw new Exception("paid order can't be canceled");
+            }
+            orderEntity.setCancelStatus(true);
+            orderEntity.setModifyDate(LocalDateTime.now());
+            if(!Objects.isNull(note)){
+                orderEntity.setOrderRemark(StringUtils.isEmpty(orderEntity.getOrderRemark())?"":orderEntity.getOrderRemark() +"/"+ note);
+            }
+            // 库存（-冻结）
+            List<ItemListEntity> itemListEntities = itemListService.listDetail(orderEntity.getOrderUuid());
+            itemListEntities.forEach(itemListEntity -> {
+                try {
+                    stockRPCService.unfrozenStock(itemListEntity.getItemUuid(),itemListEntity.getQuantity());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -100,10 +100,37 @@ public class OrderController {
         return orderService.deleteById(Integer.parseInt(ids));
     }
 
+    @SoulClient(path = "/vehicle/order/del/uid", desc = "删除订单")
+    @GetMapping("/del/uid")
+    public ObjectResponse<Integer> deleteOrderByUid(@RequestParam("uid") String uid){
+        int result =  orderService.deleteOrderByUuid(uid);
+        ObjectResponse<Integer> response = new ObjectResponse<>();
+        response.setCode(RespStatusEnum.SUCCESS.getCode());
+        response.setMessage(RespStatusEnum.SUCCESS.getMessage());
+        response.setData(result);
+        return response;
+    }
+
 
     @SoulClient(path = "/vehicle/order/paid", desc = "支付一个订单")
     @GetMapping("/paid")
-    public int paidOrder(@RequestParam("ids") int id,@RequestParam("note") String note){
-        return orderService.paidOrder(id,note);
+    public ObjectResponse<Integer> paidOrder(@RequestParam("Uid") String Uid,@RequestParam(value = "note",required = false) String note) throws Exception {
+        int result =  orderService.paidOrder(Uid,note);
+        ObjectResponse<Integer> response = new ObjectResponse<>();
+        response.setCode(RespStatusEnum.SUCCESS.getCode());
+        response.setMessage(RespStatusEnum.SUCCESS.getMessage());
+        response.setData(result);
+        return response;
+    }
+
+    @SoulClient(path = "/vehicle/order/cancel", desc = "取消一个未支付订单")
+    @GetMapping("/cancel")
+    public ObjectResponse<Integer> cancelOrder(@RequestParam("Uuid") String Uuid,@RequestParam(value = "note",required = false) String note) throws Exception {
+        int result =  orderService.cancelOrder(Uuid,note);
+        ObjectResponse<Integer> response = new ObjectResponse<>();
+        response.setCode(RespStatusEnum.SUCCESS.getCode());
+        response.setMessage(RespStatusEnum.SUCCESS.getMessage());
+        response.setData(result);
+        return response;
     }
 }

@@ -20,7 +20,8 @@ public interface OrderService extends IService<ShopOrderEntity>{
     int deleteBatchByIds(Collection<Integer> ids);
     int deleteById(int id);
     ShopOrderEntity selectByUuId(String uuid);
-    int paidOrder(int orderId,String note);
+    int paidOrder(String UuId,String note) throws Exception;
+    int cancelOrder(String UuId,String note) throws Exception;
     int updateOrder(ShopOrderEntity orderEntity);
     int createOrder(ShopOrderEntity orderEntity);
     ShopOrderEntity queryOrder(int id);

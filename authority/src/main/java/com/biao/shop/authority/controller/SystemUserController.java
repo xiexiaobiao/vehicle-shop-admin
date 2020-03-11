@@ -2,7 +2,10 @@ package com.biao.shop.authority.controller;
 
 import com.biao.shop.authority.service.SystemUserService;
 import com.biao.shop.common.dto.UserDto;
+import com.biao.shop.common.enums.RespStatusEnum;
 import com.biao.shop.common.response.ObjectResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.soul.client.common.annotation.SoulClient;
 import org.mybatis.spring.annotation.MapperScan;
@@ -36,6 +39,8 @@ public class SystemUserController {
     @Value("${jwt.tokenHead}")
     private String tokenHead;
 
+
+
     @Autowired
     SystemUserService systemUserService;
 
@@ -44,16 +49,16 @@ public class SystemUserController {
     //@ApiOperation(value = "登录以后返回token")
     @SoulClient(path = "/vehicle/admin/login", desc = "登录")
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ObjectResponse login(@RequestBody UserDto userDto) {
+    public ObjectResponse<String> login(@RequestBody UserDto userDto) throws JsonProcessingException {
         //String token = adminService.login(umsAdminLoginParam.getUsername(), umsAdminLoginParam.getPassword());
         logger.info("user info is : {} / {}",userDto.getUsername(),userDto.getPassword());
         String token = null;
         if (systemUserService.checkPasswd(userDto.getUsername(),userDto.getPassword())){
             logger.info("用户登录验证通过！");
-            token = "123456789";
+            token = "vehicleAdminToken";
         };
 
-        ObjectResponse objectResponse = new ObjectResponse();
+        ObjectResponse<String> objectResponse = new ObjectResponse();
         if (token == null) {
             objectResponse.setCode(500);
             objectResponse.setMessage("用户名或密码错误");
@@ -62,34 +67,44 @@ public class SystemUserController {
         Map<String, String> tokenMap = new HashMap<>();
         tokenMap.put("token", token);
         tokenMap.put("tokenHead", tokenHead);
-        objectResponse.setCode(200);
-        objectResponse.setMessage( "操作成功");
-        objectResponse.setData(tokenMap);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String res = objectMapper.writeValueAsString(tokenMap);
+        objectResponse.setCode(RespStatusEnum.SUCCESS.getCode());
+        objectResponse.setMessage(RespStatusEnum.SUCCESS.getMessage());
+        objectResponse.setData(res);
         return objectResponse;
     }
 
     // @ApiOperation(value = "获取当前登录用户信息")
     @SoulClient(path = "/vehicle/admin/info", desc = "获取用户信息")
     @RequestMapping(value = "/info", method = RequestMethod.GET)
-    public ObjectResponse getAdminInfo() {
-        ObjectResponse objectResponse = new ObjectResponse();
+    public ObjectResponse<Map<String, Object>> getAdminInfo() throws JsonProcessingException {
+        ObjectResponse<Map<String, Object>> objectResponse = new ObjectResponse();
         objectResponse.setCode(200);
         objectResponse.setMessage( "操作成功");
         Map<String, Object> data = new HashMap<>();
         data.put("username", "admin");
         data.put("roles", new String[]{"TEST"});
         data.put("icon", "");
+        objectResponse.setCode(RespStatusEnum.SUCCESS.getCode());
+        objectResponse.setMessage(RespStatusEnum.SUCCESS.getMessage());
+//        ObjectMapper objectMapper = new ObjectMapper();
+////        String res = objectMapper.writeValueAsString(data);
         objectResponse.setData(data);
         return objectResponse;
     }
 
     @SoulClient(path = "/vehicle/admin/logout", desc = "用户注销")
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
-    public ObjectResponse logout() {
-        ObjectResponse objectResponse = new ObjectResponse();
-        objectResponse.setCode(200);
-        objectResponse.setMessage( "操作成功");
+    public ObjectResponse<String> logout() {
+        ObjectResponse<String> objectResponse = new ObjectResponse();
+        objectResponse.setCode(RespStatusEnum.SUCCESS.getCode());
+        objectResponse.setMessage(RespStatusEnum.SUCCESS.getMessage());
         objectResponse.setData(null);
         return objectResponse;
+    }
+
+    public void print(){
+
     }
 }

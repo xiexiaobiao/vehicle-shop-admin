@@ -30,6 +30,7 @@ public class OrderDto implements Serializable {
     private LocalDateTime generateDate;
     private LocalDateTime modifyDate;
     private Boolean paidStatus;
+    private Boolean cancelStatus;
     private String orderRemark;
     private BigDecimal amount;
     // 订单明细
@@ -121,6 +122,14 @@ public class OrderDto implements Serializable {
 
     public void setVehiclePlate(String vehiclePlate) {
         this.vehiclePlate = vehiclePlate;
+    }
+
+    public Boolean getCancelStatus() {
+        return cancelStatus;
+    }
+
+    public void setCancelStatus(Boolean cancelStatus) {
+        this.cancelStatus = cancelStatus;
     }
 
     //    @Data

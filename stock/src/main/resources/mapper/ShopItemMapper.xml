@@ -17,11 +17,15 @@
         <result column="is_shipment" property="shipment" />
         <result column="unit" property="unit" />
         <result column="alert_quantity" property="alertQuantity" />
+        <result column="origin_place" property="originPlace" />
+        <result column="labour_fee" property="labourFee" />
+        <result column="material_fee" property="materialFee" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id_item, item_uuid, category,classification, item_name, sell_price, purchase_price, brandName, specification,unit,description,is_shipment,alert_quantity
+        id_item, item_uuid, category,classification, item_name, sell_price, purchase_price, brandName,
+        specification,unit,description,is_shipment,alert_quantity,origin_place,labour_fee,material_fee
     </sql>
 
 </mapper>

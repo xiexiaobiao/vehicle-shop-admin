@@ -63,6 +63,12 @@ public class ShopItemEntity implements Serializable {
 
     private String unit;
 
+    private BigDecimal labourFee;
+
+    private BigDecimal materialFee;
+
+    private String originPlace;
+
     public Integer getIdItem() {
         return idItem;
     }
@@ -168,5 +174,29 @@ public class ShopItemEntity implements Serializable {
 
     public void setAlertQuantity(Integer alertQuantity) {
         this.alertQuantity = alertQuantity;
+    }
+
+    public BigDecimal getLabourFee() {
+        return labourFee;
+    }
+
+    public void setLabourFee(BigDecimal labourFee) {
+        this.labourFee = labourFee;
+    }
+
+    public BigDecimal getMaterialFee() {
+        return materialFee;
+    }
+
+    public void setMaterialFee(BigDecimal materialFee) {
+        this.materialFee = materialFee;
+    }
+
+    public String getOriginPlace() {
+        return originPlace;
+    }
+
+    public void setOriginPlace(String originPlace) {
+        this.originPlace = originPlace;
     }
 }

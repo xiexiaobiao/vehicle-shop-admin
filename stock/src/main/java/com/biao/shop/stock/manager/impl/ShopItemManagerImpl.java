@@ -13,6 +13,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -45,8 +46,9 @@ public class ShopItemManagerImpl implements ShopItemManager {
         }
         String itemUuid = itemEntity.getItemUuid();
         ShopStockEntity stockEntity = stockDao.selectOne(new LambdaQueryWrapper<ShopStockEntity>().eq(ShopStockEntity::getItemUuid,itemUuid));
-        String picAddr = itemPictureDao.selectList(new LambdaQueryWrapper<ShopItemPictureEntity>().eq(ShopItemPictureEntity::getItemUuid,itemUuid).orderByAsc(ShopItemPictureEntity::getId))
-                .parallelStream().limit(1).collect(Collectors.toList()).get(0).getPicAddr();
+        List<ShopItemPictureEntity> list = itemPictureDao.selectList(new LambdaQueryWrapper<ShopItemPictureEntity>().eq(ShopItemPictureEntity::getItemUuid, itemUuid).orderByAsc(ShopItemPictureEntity::getId))
+                .parallelStream().limit(1).collect(Collectors.toList());
+        String picAddr = list.size() == 0 ? "": list.get(0).getPicAddr();
         ShopItemEntityDto itemEntityDto = new ShopItemEntityDto();
         BeanUtils.copyProperties(itemEntity,itemEntityDto);
         itemEntityDto.setPicAddr(picAddr);

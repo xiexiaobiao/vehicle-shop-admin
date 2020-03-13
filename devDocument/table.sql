@@ -53,9 +53,12 @@ CREATE TABLE `shop_item` (
   `description` varchar(200) DEFAULT NULL,
   `is_shipment` tinyint(1) DEFAULT NULL,
   `alert_quantity` int(3) DEFAULT NULL,
+  `origin_place` varchar(45) DEFAULT NULL,
+  `labour_fee` decimal(8,2) DEFAULT NULL,
+  `material_fee` decimal(8,2) DEFAULT NULL,
   PRIMARY KEY (`id_item`),
   UNIQUE KEY `item_uuid_UNIQUE` (`item_uuid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='商品表';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='商品表'
 
 CREATE TABLE `shop_client` (
   `id_client` int(11) NOT NULL AUTO_INCREMENT,

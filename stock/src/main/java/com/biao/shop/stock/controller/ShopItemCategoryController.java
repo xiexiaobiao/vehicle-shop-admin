@@ -2,7 +2,10 @@ package com.biao.shop.stock.controller;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.biao.shop.common.dto.ShopOrderAppDTO;
 import com.biao.shop.common.entity.ShopItemCategoryEntity;
+import com.biao.shop.common.enums.RespStatusEnum;
+import com.biao.shop.common.response.ObjectResponse;
 import com.biao.shop.stock.service.ShopItemCategoryService;
 import org.dromara.soul.client.common.annotation.SoulClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,8 +56,13 @@ public class ShopItemCategoryController {
 
     @SoulClient(path = "/vehicle/stock/category/list", desc = "获取类别列表")
     @GetMapping("/category/list")
-    public Page<String> listCate(@RequestParam("pageNum") int current, @RequestParam("pageSize")int size){
-        return categoryService.listCate(current,size);
+    public ObjectResponse<Page<String>> listCate(@RequestParam("pageNum") int current, @RequestParam("pageSize")int size){
+        Page<String> stringPage =  categoryService.listCate(current,size);
+        ObjectResponse<Page<String>> response = new ObjectResponse<>();
+        response.setCode(RespStatusEnum.SUCCESS.getCode());
+        response.setMessage(RespStatusEnum.SUCCESS.getMessage());
+        response.setData(stringPage);
+        return response;
     }
 }
 

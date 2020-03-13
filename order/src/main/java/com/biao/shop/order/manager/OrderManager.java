@@ -1,8 +1,8 @@
 package com.biao.shop.order.manager;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.biao.shop.common.dto.ShopItemAppDTO;
+import com.biao.shop.common.dto.ShopOrderAppDTO;
 
 public interface OrderManager {
-    Page<ShopItemAppDTO> listItemAppDto(int current, int size,int paidStatus);
+    Page<ShopOrderAppDTO> listOrderAppDto(int current, int size, int paidStatus,String clientName,String vehiclePlate);
 }

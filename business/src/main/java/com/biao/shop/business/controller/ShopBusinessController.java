@@ -79,8 +79,13 @@ public class ShopBusinessController {
 
     @SoulClient(path = "/vehicle/business/update", desc = "更新一个订单")
     @PostMapping(value = "/update") //@PostMapping等价于@RequestMapping(method = RequestMethod.POST)
-    public int updateOrderDTO(@RequestBody OrderDto orderDTO){
-        return businessService.updateOrderDTO(orderDTO);
+    public ObjectResponse<Integer> updateOrderDTO(@RequestBody OrderDto orderDTO){
+        int result  = businessService.updateOrderDTO(orderDTO);
+        ObjectResponse<Integer> response = new ObjectResponse<>();
+        response.setCode(RespStatusEnum.SUCCESS.getCode());
+        response.setMessage(RespStatusEnum.SUCCESS.getMessage());
+        response.setData(result);
+        return response;
     }
 
     // 测试RocketMq事务消息功能

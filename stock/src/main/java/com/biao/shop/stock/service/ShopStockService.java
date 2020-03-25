@@ -23,4 +23,6 @@ public interface ShopStockService extends IService<ShopStockEntity> {
     int unfrozenStock(String itemUuid, int frozenQuantity) throws Exception;
     int frozenStock(String itemUuid, int frozenQuantity) throws Exception;
     int decreaseStock(String itemUuid, int decreaseQuantity) throws Exception;
+
+    int increaseSale(String itemUuid, int saleQuantity);
 }

@@ -32,14 +32,25 @@ public class ShopItemCategoryController {
 
     @SoulClient(path = "/vehicle/stock/category/save", desc = "新增类别")
     @PostMapping("/category/save")
-    public int createItemCate(@RequestBody ShopItemCategoryEntity categoryEntity){
-        return categoryService.createItemCate(categoryEntity);
+    public ObjectResponse<Integer> createItemCate(@RequestBody ShopItemCategoryEntity categoryEntity){
+        int result =  categoryService.createItemCate(categoryEntity);
+        ObjectResponse<Integer> response = new ObjectResponse<>();
+        response.setCode(RespStatusEnum.SUCCESS.getCode());
+        response.setMessage(RespStatusEnum.SUCCESS.getMessage());
+        response.setData(result);
+        return response;
+
     }
 
     @SoulClient(path = "/vehicle/stock/max/categoryUId", desc = "查询最大类别id")
     @GetMapping("/max/categoryUId")
-    public String getMaxCateId(){
-        return categoryService.getMaxCateId();
+    public ObjectResponse<String> getMaxCateId(){
+        String str =  categoryService.getMaxCateId();
+        ObjectResponse<String> response = new ObjectResponse<>();
+        response.setCode(RespStatusEnum.SUCCESS.getCode());
+        response.setMessage(RespStatusEnum.SUCCESS.getMessage());
+        response.setData(str);
+        return response;
     }
 
     @SoulClient(path = "/vehicle/stock/category/**", desc = "根据id查询")

@@ -53,6 +53,11 @@ public class ShopStockRPCServiceImpl implements ShopStockRPCService {
     }
 
     @Override
+    public int increaseSale(String itemUuid, int saleQuantity) {
+        return stockService.increaseSale(itemUuid,saleQuantity);
+    }
+
+    @Override
     public List<ShopItemPictureEntity> listItemPictures(String itemUuid) {
         return itemPictureService.listItemPictures(itemUuid);
     }

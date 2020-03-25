@@ -99,8 +99,13 @@ public class ShopClientController {
 
     @SoulClient(path = "/vehicle/client/update", desc = "更新一个客户")
     @PostMapping("/update")
-    public int listClient(@RequestBody ShopClientEntity client){
-        return clientService.updateClient(client);
+    public ObjectResponse<Integer> listClient(@RequestBody ShopClientEntity client){
+        int result =  clientService.updateClient(client);
+        ObjectResponse<Integer> response = new ObjectResponse<>();
+        response.setCode(RespStatusEnum.SUCCESS.getCode());
+        response.setMessage(RespStatusEnum.SUCCESS.getMessage());
+        response.setData(result);
+        return response;
     }
 
     @SoulClient(path = "/vehicle/client/create", desc = "创建一个客户")

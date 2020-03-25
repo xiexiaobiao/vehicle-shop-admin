@@ -3,9 +3,10 @@ package com.biao.shop.authority.conf;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 @Configuration
-public class WebConf {
+public class WebConf{
 
     // 另一种注入CorsFilter的方式
     /*@Bean

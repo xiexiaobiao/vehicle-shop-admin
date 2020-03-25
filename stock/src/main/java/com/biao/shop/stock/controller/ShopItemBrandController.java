@@ -32,15 +32,24 @@ public class ShopItemBrandController {
 
     @SoulClient(path = "/vehicle/stock/brandSave", desc = "新增品牌")
     @PostMapping("/brandSave")
-    public int createItemBrand(@RequestBody ShopItemBrandEntity itemBrandEntity){
-        System.out.println(itemBrandEntity);
-        return itemBrandService.createItemBrand(itemBrandEntity);
+    public ObjectResponse<Integer> createItemBrand(@RequestBody ShopItemBrandEntity itemBrandEntity){
+        int result =  itemBrandService.createItemBrand(itemBrandEntity);
+        ObjectResponse<Integer> response = new ObjectResponse<>();
+        response.setCode(RespStatusEnum.SUCCESS.getCode());
+        response.setMessage(RespStatusEnum.SUCCESS.getMessage());
+        response.setData(result);
+        return response;
     }
 
     @SoulClient(path = "/vehicle/stock/max/brandUId", desc = "查询最大品牌id")
     @GetMapping("/max/brandUId")
-    public String getMaxBrandCateId(){
-        return itemBrandService.getMaxBrandId();
+    public ObjectResponse<String> getMaxBrandCateId(){
+        String str =  itemBrandService.getMaxBrandId();
+        ObjectResponse<String> response = new ObjectResponse<>();
+        response.setCode(RespStatusEnum.SUCCESS.getCode());
+        response.setMessage(RespStatusEnum.SUCCESS.getMessage());
+        response.setData(str);
+        return response;
     }
 
     @SoulClient(path = "/vehicle/stock/brand/**", desc = "根据id查询")

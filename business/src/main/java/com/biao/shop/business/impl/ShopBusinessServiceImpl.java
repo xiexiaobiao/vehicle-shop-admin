@@ -98,9 +98,11 @@ public class ShopBusinessServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrder
             itemListEntities.add(listEntity);
             orderAmount.updateAndGet(v -> v + itemDTO.getDiscountPrice().doubleValue() * itemDTO.getQuantity());
             if (orderEntity.getPaidStatus()){
+                clientRPCService.addPoint(orderEntity.getClientUuid(),orderAmount.get().intValue());
                 // 扣减库存
                 try {
                     stockRPCService.decreaseStock(itemDTO.getItemUuid(),itemDTO.getQuantity());
+                    stockRPCService.increaseSale(itemDTO.getItemUuid(),itemDTO.getQuantity()); //销量更新
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -150,6 +152,7 @@ public class ShopBusinessServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrder
             listEntity.setOrderUuid(orderUuid);
             itemListEntities.add(listEntity);
             orderAmount.updateAndGet(v -> v + itemDTO.getDiscountPrice().doubleValue() * itemDTO.getQuantity());
+            /**这里要考虑四种情况：未付->已付 未付->未付 已付->已付 已付->未付,但约定只允许更新 未付 的 。*/
             if (orderEntity.getPaidStatus()){
                 clientRPCService.addPoint(orderEntity.getClientUuid(),orderAmount.get().intValue());
                 // 取消冻结库存
@@ -161,6 +164,7 @@ public class ShopBusinessServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrder
                 // 扣减库存
                 try {
                     stockRPCService.decreaseStock(itemDTO.getItemUuid(),itemDTO.getQuantity());
+                    stockRPCService.increaseSale(itemDTO.getItemUuid(),itemDTO.getQuantity()); //销量更新
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

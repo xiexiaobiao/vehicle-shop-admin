@@ -10,5 +10,6 @@ public interface ShopStockRPCService {
     int frozenStock(String itemUuid, int frozenQuantity) throws Exception;
     int decreaseStock(String itemUuid, int decreaseQuantity) throws Exception;
     int unfrozenStock(String itemUuid, int unfrozenQuantity) throws Exception;
+    int increaseSale(String itemUuid, int saleQuantity) throws Exception;
     List<ShopItemPictureEntity> listItemPictures(String itemUuid);
 }

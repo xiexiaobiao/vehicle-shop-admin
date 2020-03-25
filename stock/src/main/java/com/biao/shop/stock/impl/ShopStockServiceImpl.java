@@ -26,8 +26,12 @@ public class ShopStockServiceImpl extends ServiceImpl<ShopStockDao, ShopStockEnt
 
     private Logger logger = LoggerFactory.getLogger(ShopStockServiceImpl.class);
 
+    private ShopStockDao stockDao;
+
     @Autowired
-    ShopStockDao stockDao;
+    public ShopStockServiceImpl(ShopStockDao stockDao) {
+        this.stockDao = stockDao;
+    }
 
     @Override
     public int saveStock(ShopStockEntity Stock) {
@@ -81,6 +85,14 @@ public class ShopStockServiceImpl extends ServiceImpl<ShopStockDao, ShopStockEnt
             throw new Exception("stock has not enough stock quantity!!!!");
         }
         shopStockEntity.setQuantity(shopStockEntity.getQuantity() -  decreaseQuantity);
+        return stockDao.updateById(shopStockEntity);
+    }
+
+    @Override
+    public int increaseSale(String itemUuid, int saleQuantity) {
+        ShopStockEntity shopStockEntity = stockDao.selectOne(
+                new LambdaQueryWrapper<ShopStockEntity>().eq(ShopStockEntity::getItemUuid,itemUuid));
+        shopStockEntity.setSales(shopStockEntity.getSales() + saleQuantity);
         return stockDao.updateById(shopStockEntity);
     }
 }

@@ -1,4 +1,4 @@
-# 写码不易，加星鼓励！
+﻿# 编码不易，加星鼓励！
 # Coding is hard, star to my heart ！
 
 ***

@@ -13,6 +13,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -47,43 +51,50 @@ public class ShopClientServiceImpl extends ServiceImpl<ShopClientDao, ShopClient
     }
 
     @Override
+    @Caching(put = @CachePut(cacheNames = {"shopClient"},key = "#root.args[0].clientUuid"),
+            evict = @CacheEvict(cacheNames = {"shopClientPage","shopClientPlateList","shopClientList"},allEntries = true))
     public int createClient(ShopClientEntity clientEntity) {
         clientEntity.setGenerateDate(LocalDateTime.now());
         return shopClientDao.insert(clientEntity);
     }
 
+    /** */
     @Override
-//    @CacheEvict(cacheNames = "shopClient")
+    @CacheEvict(cacheNames = {"shopClient","shopClientPage","shopClientPlateList","shopClientList"},allEntries = true)
     public int deleteBatchById(Collection<Integer> ids) {
-        logger.info("删除Redis缓存");
+        logger.info("deleteBatchById 删除Redis缓存");
         return shopClientDao.deleteBatchIds(ids);
     }
 
     @Override
-//    @CacheEvict(cacheNames = "shopClient")
+    @CacheEvict(cacheNames = {"shopClient","shopClientPage","shopClientPlateList","shopClientList"},allEntries = true)
     public int deleteById(int id) {
-        logger.info("删除Redis缓存");
+        logger.info("deleteById 删除Redis缓存");
         return shopClientDao.deleteById(id);
     }
 
     @Override
-//    @CacheEvict(cacheNames = "shopClient") // 删除Redis缓存
+    @Caching(evict = {@CacheEvict(cacheNames = "shopClient",key = "#root.args[0]"),
+            @CacheEvict(cacheNames = {"shopClientPage","shopClientPlateList","shopClientList"},allEntries = true)})
     public int deleteByUUid(String uuid) {
+        logger.info("deleteByUUid 删除Redis缓存");
         QueryWrapper<ShopClientEntity> qw = new QueryWrapper<>();
         qw.eq(true,"uuid",uuid);
         return shopClientDao.delete(qw);
     }
 
     @Override
-//    @CachePut(cacheNames = "shopClient")  // 更新Redis缓存
+    @Caching(put = @CachePut(cacheNames = "shopClient",key = "#root.args[0].clientUuid"),
+            evict = @CacheEvict(cacheNames = {"shopClientPage","shopClientPlateList","shopClientList"},allEntries = true))
     public int updateClient(ShopClientEntity clientEntity) {
-//        logger.info("更新Redis缓存");
+        logger.info("updateClient 更新Redis缓存");
         clientEntity.setModifyDate(LocalDateTime.now());
         return shopClientDao.updateById(clientEntity);
     }
 
 
     @Override
+    @CacheEvict(cacheNames = {"shopClient","shopClientPage","shopClientPlateList","shopClientList"},allEntries = true)
     public int addPoint(String uuid,int pointToAdd) {
         ShopClientEntity clientEntity =  this.queryByUuId(uuid);
         log.debug(clientEntity.toString());
@@ -92,23 +103,23 @@ public class ShopClientServiceImpl extends ServiceImpl<ShopClientDao, ShopClient
     }
 
     @Override
-//    @Cacheable(cacheNames = "shopClient")
+    @Cacheable(cacheNames = "shopClient",key = "#root.args[0]")
     public ShopClientEntity queryByUuId(String uuid) {
-//        logger.info("queryByUuId 未使用Redis缓存");
+        logger.info("queryByUuId 未使用Redis缓存");
         QueryWrapper<ShopClientEntity> qw = new QueryWrapper<>();
         qw.eq(true,"client_uuid",uuid);
         return shopClientDao.selectOne(qw);
     }
 
     @Override
-//    @Cacheable(cacheNames = "shopClient")
+    @Cacheable(cacheNames = "shopClientById",key = "#root.args[0]")
     public ShopClientEntity queryById(int id) {
         logger.info("queryById 未使用Redis缓存");
         return shopClientDao.selectById(id);
     }
 
     @Override
-//    @Cacheable(cacheNames = "shopClient")
+    @Cacheable(cacheNames = "shopClientPage")
     public PageInfo<ShopClientEntity> listClient(Integer current, Integer size, String clientUuid, String name,
                                                  String vehiclePlate, String phone) {
         logger.info("listClient 未使用Redis缓存");
@@ -117,7 +128,8 @@ public class ShopClientServiceImpl extends ServiceImpl<ShopClientDao, ShopClient
         map.put("client_uuid",clientUuid);
         map.put("vehicle_plate",vehiclePlate);
         map.put("phone",phone);
-        boolean valid = Objects.isNull(name); // "name" 模糊匹配
+        // "name" 模糊匹配
+        boolean valid = Objects.isNull(name);
         qw.allEq(true,map,false).like(!valid,"client_name",name);
         PageHelper.startPage(current,size);
         List<ShopClientEntity> clientEntities = shopClientDao.selectList(qw);
@@ -126,7 +138,7 @@ public class ShopClientServiceImpl extends ServiceImpl<ShopClientDao, ShopClient
 
     // java Stream
     @Override
-//    @Cacheable(cacheNames = "shopClient")
+    @Cacheable(cacheNames = "shopClientPlateList")
     public List<String> listPlate() {
         logger.info("listPlate 未使用Redis缓存");
         List<ShopClientEntity> clientEntities =
@@ -135,16 +147,19 @@ public class ShopClientServiceImpl extends ServiceImpl<ShopClientDao, ShopClient
     }
 
     @Override
+    @Cacheable(cacheNames = "shopClientList",key = "#root.args[0].toString()")
     public List<ShopClientEntity> listByClientDto(ClientQueryDTO clientQueryDTO) {
+        logger.info("listByClientDto 未使用Redis缓存");
         QueryWrapper<ShopClientEntity> qw = new QueryWrapper<>();
         boolean phoneFlag = Objects.isNull(clientQueryDTO.getPhone());
         boolean clientNameFlag = Objects.isNull(clientQueryDTO.getClientName());
-        boolean VehicleSeriesFlag = Objects.isNull(clientQueryDTO.getVehicleSeries());
-        boolean VehiclePlateFlag = Objects.isNull(clientQueryDTO.getVehiclePlate());
-        qw.eq(!phoneFlag,"phone",clientQueryDTO.getPhone())  //如有null的条件直接不参与查询
+        boolean vehicleSeriesFlag = Objects.isNull(clientQueryDTO.getVehicleSeries());
+        boolean vehiclePlateFlag = Objects.isNull(clientQueryDTO.getVehiclePlate());
+        //如有null的条件直接不参与查询
+        qw.eq(!phoneFlag,"phone",clientQueryDTO.getPhone())
                 .like(!clientNameFlag,"client_name",clientQueryDTO.getClientName())
-                .like(!VehiclePlateFlag,"vehicle_plate",clientQueryDTO.getVehiclePlate())
-                .like(!VehicleSeriesFlag,"vehicle_series",clientQueryDTO.getVehicleSeries());
+                .like(!vehicleSeriesFlag,"vehicle_plate",clientQueryDTO.getVehiclePlate())
+                .like(!vehiclePlateFlag,"vehicle_series",clientQueryDTO.getVehicleSeries());
         return shopClientDao.selectList(qw);
     }
 }

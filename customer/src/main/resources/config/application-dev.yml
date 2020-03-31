@@ -7,6 +7,23 @@ spring:
   main:
     allow-bean-definition-overriding: true
 
+  # spring + redis缓存配置 ,与springboot集成了,自带 jedis
+  redis:
+    database: 0
+    host: localhost
+    port: 6379
+    jedis:
+      pool: #连接池配置
+        max-active: 8
+        max-wait: 3000ms
+        max-idle: 8
+        min-idle: 0
+    timeout: 2000ms
+  cache:
+    redis:
+      time-to-live: 1d # Entry expiration in milliseconds. By default the entries never expire.
+      use-key-prefix: true  #写入redis时是否使用键前缀
+
   #连接池配置
   datasource:
     name: druidDatasource

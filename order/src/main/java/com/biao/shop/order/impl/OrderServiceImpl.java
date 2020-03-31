@@ -46,7 +46,8 @@ public class OrderServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrderEntity>
     private ShopClientRPCService clientRPCService;
 
     @Reference(version = "1.0.0",group = "shop",interfaceClass = ShopStockRPCService.class)
-    private ShopStockRPCService stockRPCService; // 商品 + 库存
+    // 商品 + 库存
+    private ShopStockRPCService stockRPCService;
 
     @Autowired
     public OrderServiceImpl(ShopOrderDao shopOrderDao,ItemListService itemListService){
@@ -66,7 +67,7 @@ public class OrderServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrderEntity>
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int deleteById(int id) {
         ShopOrderEntity shopOrderEntity = shopOrderDao.selectById(id);
         String orderUuid = shopOrderEntity.getOrderUuid();
@@ -162,9 +163,9 @@ public class OrderServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrderEntity>
     @Override
     public int paidOrder(String orderUId,String note) throws Exception {
         ShopOrderEntity orderEntity = this.selectByUuId(orderUId);
-        if (Objects.isNull(orderEntity))
+        if (Objects.isNull(orderEntity)) {
             return 0;
-        else{
+        } else{
             if (orderEntity.getPaidStatus()){
                 throw new Exception("paid order can't be paid again");
             }
@@ -196,9 +197,9 @@ public class OrderServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrderEntity>
     @Override
     public int cancelOrder(String UuId, String note) throws Exception {
         ShopOrderEntity orderEntity = this.selectByUuId(UuId);
-        if (Objects.isNull(orderEntity))
+        if (Objects.isNull(orderEntity)) {
             return 0;
-        else{
+        } else{
             if (orderEntity.getPaidStatus()){
                 throw new Exception("paid order can't be canceled");
             }

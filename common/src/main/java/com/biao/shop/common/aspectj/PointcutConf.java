@@ -28,7 +28,7 @@ public class PointcutConf {
     }
 
     // 标记了@LogAspect注解的方法就进行AOP
-    @Pointcut(value = "@annotation(com.biao.shop.common.aspectj.LogAspect)")
+    @Pointcut(value = "@annotation(com.biao.shop.common.annotation.LogAspect)")
     public void logPointcut1(){
     }
 }

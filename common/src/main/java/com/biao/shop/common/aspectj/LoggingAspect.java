@@ -1,5 +1,6 @@
 package com.biao.shop.common.aspectj;
 
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
@@ -16,6 +17,7 @@ import java.util.Arrays;
  **/
 @Aspect
 @Component
+@Slf4j
 public class LoggingAspect {
 
     // 前置通知,方法执行之前执行
@@ -23,22 +25,24 @@ public class LoggingAspect {
     public void beforeMethod(JoinPoint jp){
        String methodName = jp.getSignature().getName();
        Object[] args = jp.getArgs();
-       System.out.println("BeforeMethod  The method   "+ methodName +"   parameter is  "+ Arrays.asList(args));
-       System.out.println("add before");
+       log.info("BeforeMethod  The method {} parameter is {}",methodName,Arrays.asList(args));
+       log.info("add before");
    }
 
     // 实际使用过程当中，也可以像这样把Advice 和 Pointcut 合在一起，直接在Advice上面定义切入点
     @After("execution(* com.biao.shop.*(..))")
     public void afterMethod() {
-        System.out.println("afterMethod >>>>>>>>>");
+       log.info("afterMethod >>>>>>>>>");
     }
 
-    // 使用环绕增强为最常用模式
+    // 使用环绕增强为最常用模式 配合com.biao.shop.common.aspectj.PointcutConf中定义的切点
     @Around("com.biao.shop.common.aspectj.PointcutConf.logPointcut1()")
-    public void aroundMethod(ProceedingJoinPoint jp) throws Throwable {
-        System.out.println("before >>>>>>>>>>>");
-        jp.proceed();
-        System.out.println("After >>>>>>>>>>>>");
-
+    public Object aroundMethod(ProceedingJoinPoint jp) throws Throwable {
+        String methodName = jp.getSignature().getName();
+        Object[] jpArgs = jp.getArgs();
+        log.info("before method: {}, args : {}  >>>>>>>>>>>",methodName,jpArgs);
+        Object proceed = jp.proceed();
+        log.info("After method: {}, args : {}  >>>>>>>>>>>>",methodName,jpArgs);
+        return proceed;
     }
 }

@@ -119,11 +119,6 @@ subprojects {
         compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-zipkin', version: '2.2.2.RELEASE'
 
 
-
-
-
-
-
     }
     //if code include the chinese content
     //>>>>>>>>>>>> unmappable character for encoding GBK,

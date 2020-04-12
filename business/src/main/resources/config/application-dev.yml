@@ -56,6 +56,18 @@ spring:
       time-to-live: 1d # Entry expiration in milliseconds. By default the entries never expire.
       use-key-prefix: true  #写入redis时是否使用键前缀
 
+ #zipkin
+  zipkin:
+    enabled: true
+    base-url: http://192.168.0.224:9411
+    message-timeout: 500
+    sender:
+      type: web # 支持web，kafka，rabbitMQ，activeMQ
+  sleuth:
+    sampler:
+      rate: 10
+      probability: 0.1f
+
 
 #mybatis
 mybatis-plus:
@@ -136,11 +148,13 @@ dubbo:
     loadbalance: roundrobin
     cluster: failover
     check: false
+    filter: 'tracing'
   provider:
     timeout: 1000
     retries: 2
     loadbalance: roundrobin
     cluster: failback
+    filter: 'tracing'
 
 #soul 配置
 soul:
@@ -154,10 +168,10 @@ soul:
     app-name: businessApp
 
 #zipkin
-zipkin:
-  serviceName: business
-  url: http://192.168.0.224:9411
-  connectTimeout: 6000
-  readTimeout: 6000
-  flushInterval: 1
-  compressionEnabled: true
+#zipkin:
+#  serviceName: business
+#  url: http://192.168.0.224:9411
+#  connectTimeout: 6000
+#  readTimeout: 6000
+#  flushInterval: 1
+#  compressionEnabled: true

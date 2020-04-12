@@ -5,6 +5,7 @@ import com.biao.shop.common.enums.RespStatusEnum;
 import com.biao.shop.common.response.ObjectResponse;
 import com.biao.shop.common.service.IdempotentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -17,11 +18,12 @@ import java.util.Objects;
 
 /**
  * @ClassName IdempotentInterceptor
- * @Description: TODO
+ * @Description: redis 幂等拦截器
  * @Author Biao
  * @Date 2020/4/11
  * @Version V1.0
  **/
+@Component
 public class IdempotentInterceptor implements HandlerInterceptor {
 
     private IdempotentService idempotentService;

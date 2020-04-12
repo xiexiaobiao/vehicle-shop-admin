@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.biao.shop.business.mq.RocketMQTransProducer;
 import com.biao.shop.business.service.ShopBusinessService;
 import com.biao.shop.common.bo.OrderBo;
+import com.biao.shop.common.constant.Constant;
+import com.biao.shop.common.controller.BaseController;
 import com.biao.shop.common.dto.OrderDto;
 import com.biao.shop.common.dto.ShopItemEntityDto;
 import com.biao.shop.common.entity.ShopOrderEntity;
@@ -45,7 +47,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/business")
 @Slf4j
-public class ShopBusinessController {
+public class ShopBusinessController extends BaseController {
     private final Logger logger = LoggerFactory.getLogger(ShopBusinessController.class);
 
     private ShopBusinessService businessService;
@@ -69,6 +71,15 @@ public class ShopBusinessController {
     @SoulClient(path = "/vehicle/business/create", desc = "创建一个订单")
     @PostMapping(value = "/create") //@PostMapping等价于@RequestMapping(method = RequestMethod.POST)
     public ObjectResponse<Integer> saveOrderDTO(@RequestBody OrderDto orderDTO){
+
+        // 临时需要在web层使用request或response的方式如下； 如频繁使用，可以使用继承一个BaseController
+        /*ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = attributes.getRequest();
+        HttpServletResponse response = attributes.getResponse();*/
+
+        // 继承自BaseController
+        /*String idempotentId = request.getHeader(Constant.IDEMPOTENT_TOKEN);*/
+
         int result  = businessService.saveOrderDTO(orderDTO);
         ObjectResponse<Integer> response = new ObjectResponse<>();
         response.setCode(RespStatusEnum.SUCCESS.getCode());

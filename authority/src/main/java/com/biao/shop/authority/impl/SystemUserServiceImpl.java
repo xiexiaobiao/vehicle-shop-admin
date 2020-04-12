@@ -2,6 +2,7 @@ package com.biao.shop.authority.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.biao.shop.authority.service.SystemUserService;
+import com.biao.shop.common.annotation.LogAspect;
 import com.biao.shop.common.entity.SystemUserEntity;
 import com.biao.shop.common.dao.SystemUserDao;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -25,6 +26,7 @@ public class SystemUserServiceImpl extends ServiceImpl<SystemUserDao, SystemUser
     SystemUserDao systemUserDao;
 
     @Override
+    @LogAspect
     public boolean checkPasswd(String user, String passwd) {
         SystemUserEntity userEntity = systemUserDao.selectOne(new LambdaQueryWrapper<SystemUserEntity>()
                 .eq(SystemUserEntity::getUserName, user).eq(SystemUserEntity::getUserPasswd, passwd));

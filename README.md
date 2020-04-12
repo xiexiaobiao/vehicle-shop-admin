@@ -7,9 +7,9 @@ a mirco-service framework admin system for vehicle shop
 
 自己业余全栈开发的一个汽修店铺系统，前后分离，不为功能完善酷炫，只为技术整合。
 
-演示地址：http://47.115.127.19:8088/
+演示地址：http://47.115.127.19:8088/  账号密码请联系我
 
-安卓APP下载地址：https://biao-aliyun-oss-pic-bucket.oss-cn-shenzhen.aliyuncs.com/__UNI__10604B1_0331141734.apk
+安卓APP下载地址：https://biao-aliyun-oss-pic-bucket.oss-cn-shenzhen.aliyuncs.com/0412105148.apk
 
 ## Framework架构图:
 

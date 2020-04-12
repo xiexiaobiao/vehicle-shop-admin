@@ -21,6 +21,7 @@ public class DubboConf {
         return providerConfig;
     }
 
+
     @Bean
     public ConsumerConfig consumerConfig(){
         ConsumerConfig consumerConfig = new ConsumerConfig();

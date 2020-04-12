@@ -31,14 +31,15 @@ a mirco-service framework admin system for vehicle shop
 | Shiro     | 鉴权     | 系统API访问权限控制     |
 | Seata     | RPC     | 分布式事务方案     |
 | Sentinel     | 限流     | 服务访问限流降级     |
-| Redis     | 缓存     | 数据库访问缓存；session缓存     |已整合
+| Redis     | 缓存     | 数据库访问缓存；session缓存；API幂等     |已整合
+| Zipkin     | 监控     | 微服务链路跟踪     |
 | RocketMQ     | MQ     | 服务间通信；分布式事务；     |已整合
 | Kafka     | MQ     | 日志传输     |
 | ElasticSearch     | DB     | 搜索；推荐；日志存储     |
 | Logstash     | 日志     | 收集系统日志     |
 | Kibana     | 日志     | 日志展现     |
 | Druid     | JDBC     | 数据库连接池     |已整合
-| Mybatis+     | ORM     | 实体映射和DAO     |已整合
+| Mybatis+     | ORM     | 实体映射和DAO;后端物理分页     |已整合
 | Lombok     | POJO     | 实体类简化处理和log     |已整合
 | Logback     | 日志     | 日志类生成     |已整合
 | Mango     | DB     | 文件存储服务器     |
@@ -47,6 +48,7 @@ a mirco-service framework admin system for vehicle shop
 | Junit     | Test     | 单元测试     |已整合
 | Pagehelper     | pagination     | 数据分页查询     |已整合
 | FineReport     | Report     | 系统报表功能     |已整合
+
 
 ***
 

@@ -106,10 +106,20 @@ subprojects {
         compile group: 'com.aliyun', name: 'aliyun-java-sdk-core', version: '4.5.0'
         compile group: 'com.aliyun', name: 'aliyun-java-sdk-sts', version: '3.0.1'
 
-
         compile group: 'javax.activation', name: 'activation', version: '1.1.1'
         // net.sf.json-lib/json-lib,这个包比较特殊，必须加入classifier，否则报错，见百度
         compile group: 'net.sf.json-lib', name: 'json-lib', version: '2.4', classifier:'jdk15'
+
+        // zipkin 相关
+        compile group: 'io.zipkin.brave', name: 'brave-bom', version: '5.11.2', ext: 'pom'
+        compile group: 'io.zipkin.reporter2', name: 'zipkin-reporter', version: '2.12.2'
+        compile group: 'io.zipkin.brave', name: 'brave-instrumentation-dubbo-rpc', version: '5.11.2'
+        compile group: 'io.zipkin.brave', name: 'brave-context-slf4j', version: '5.11.2'
+        compile group: 'io.zipkin.reporter2', name: 'zipkin-sender-okhttp3', version: '2.12.2'
+        compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-zipkin', version: '2.2.2.RELEASE'
+
+
+
 
 
 

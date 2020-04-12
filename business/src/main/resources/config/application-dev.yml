@@ -152,3 +152,12 @@ soul:
     admin-url: http://localhost:9095
     context-path: /business
     app-name: businessApp
+
+#zipkin
+zipkin:
+  serviceName: business
+  url: http://192.168.0.224:9411
+  connectTimeout: 6000
+  readTimeout: 6000
+  flushInterval: 1
+  compressionEnabled: true

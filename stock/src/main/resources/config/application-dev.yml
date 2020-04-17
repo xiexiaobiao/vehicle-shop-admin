@@ -38,6 +38,18 @@ spring:
       # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
       connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
 
+  # spring 集成的 zipkin
+  zipkin:
+    enabled: true
+    base-url: http://192.168.0.224:9411
+    message-timeout: 5
+    sender:
+      type: web # 四种选择：web，kafka，rabbit，activeMQ
+  sleuth:
+    enabled: true
+    sampler:
+      probability: 1.0
+
 #mybatis
 mybatis-plus:
   ## 如果是放在common模块的src/main/java目录下 classpath:com/yourpackage/*/mapper/*Mapper.xml
@@ -156,11 +168,13 @@ dubbo:
     port: 20884
   consumer:
     cluster: failover
+    filter: 'tracing'
   provider:
     cluster: failback
     timeout: 2000
     retries: 2
     loadbalance: consistenthash
+    filter: 'tracing'
 
 aliyun:
   oss:

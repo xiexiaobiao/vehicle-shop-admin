@@ -10,6 +10,9 @@ import com.biao.shop.common.response.ObjectResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.skywalking.apm.toolkit.trace.ActiveSpan;
+import org.apache.skywalking.apm.toolkit.trace.Trace;
+import org.apache.skywalking.apm.toolkit.trace.TraceContext;
 import org.dromara.soul.client.common.annotation.SoulClient;
 import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
@@ -55,6 +58,7 @@ public class SystemUserController extends BaseController {
     @SoulClient(path = "/vehicle/admin/login", desc = "登录")
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @LogAspect
+    @Trace //SKYWALKING 对任何需要追踪的方法，使用 @Trace 标注，则此方法会被加入到追踪链中
     public ObjectResponse<String> login(@RequestBody UserDto userDto) throws JsonProcessingException {
 
         // 临时需要在web层使用request或response的方式如下； 如频繁使用，可以使用继承一个BaseController
@@ -66,7 +70,15 @@ public class SystemUserController extends BaseController {
         /*String idempotentId = request.getHeader(Constant.IDEMPOTENT_TOKEN);*/
 
         //String token = adminService.login(umsAdminLoginParam.getUsername(), umsAdminLoginParam.getPassword());
-        logger.info("user info is : {} / {}",userDto.getUsername(),userDto.getPassword());
+        //logger.info("user info is : {} / {}",userDto.getUsername(),userDto.getPassword());
+
+        // TraceContext.traceId() API，在应用程序的任何地方获取traceId.
+        String traceId = TraceContext.traceId();
+        logger.info("{}======{}========{}",userDto.getUsername(),userDto.getPassword(), traceId);
+        // 在被追踪的方法中自定义 tag
+        ActiveSpan.tag("login_tag", "login to system, user: " + userDto.getUsername());
+        System.out.println("TraceContext.traceId =========== "+ traceId);
+
         String token = null;
         if (systemUserService.checkPasswd(userDto.getUsername(),userDto.getPassword())){
             logger.info("用户登录验证通过！");
@@ -94,6 +106,7 @@ public class SystemUserController extends BaseController {
     @SoulClient(path = "/vehicle/admin/info", desc = "获取用户信息")
     @RequestMapping(value = "/info", method = RequestMethod.GET)
     @LogAspect
+    @Trace
     public ObjectResponse<Map<String, Object>> getAdminInfo() throws JsonProcessingException {
         ObjectResponse<Map<String, Object>> objectResponse = new ObjectResponse();
         objectResponse.setCode(200);
@@ -113,6 +126,7 @@ public class SystemUserController extends BaseController {
     @SoulClient(path = "/vehicle/admin/logout", desc = "用户注销")
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
     @LogAspect
+    @Trace
     public ObjectResponse<String> logout() {
         ObjectResponse<String> objectResponse = new ObjectResponse();
         objectResponse.setCode(RespStatusEnum.SUCCESS.getCode());
@@ -121,7 +135,4 @@ public class SystemUserController extends BaseController {
         return objectResponse;
     }
 
-    public void print(){
-
-    }
 }

@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -17,8 +19,9 @@ import java.util.Arrays;
  **/
 @Aspect
 @Component
-@Slf4j
+//@Slf4j
 public class LoggingAspect {
+    private static final Logger log = LoggerFactory.getLogger(LoggingAspect.class);
 
     // 前置通知,方法执行之前执行
    @Before("com.biao.shop.common.aspectj.PointcutConf.logPointcut()")

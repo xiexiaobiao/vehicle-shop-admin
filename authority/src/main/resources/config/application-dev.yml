@@ -48,7 +48,16 @@ spring:
   application:
     name: authApp
 
-
+  # spring 集成的 zipkin
+#  sleuth:
+#    enabled: true
+#    sampler:
+#      probability: 1
+#  zipkin:
+#    enabled: true
+#    base-url: http://192.168.0.224:9411
+#    sender:
+#      type: web # 四种选择：web，kafka，rabbit，activeMQ
 
 ## soul 配置
 soul:

@@ -16,7 +16,6 @@ import java.util.List;
  * @Date 2020/2/7
  * @Version V1.0
  **/
-//
 @Service(version = "1.0.0",group = "shop")
 public class ShopClientRPCServiceImpl implements ShopClientRPCService {
 

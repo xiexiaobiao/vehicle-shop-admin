@@ -1,15 +1,11 @@
 package com.biao.shop.business.conf;
 
-import com.biao.shop.common.aspectj.IdempotentInterceptor;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import javax.annotation.Resource;
 
 /**
  * @ClassName WebConf
- * @Description: TODO
+ * @Description: redis实现幂等拦截器注入配置
  * @Author Biao
  * @Date 2020/4/11
  * @Version V1.0
@@ -17,11 +13,4 @@ import javax.annotation.Resource;
 @Configuration
 public class WebConf implements WebMvcConfigurer {
 
-    @Resource
-    IdempotentInterceptor idempotentInterceptor;
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(idempotentInterceptor);
-    }
 }

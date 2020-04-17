@@ -5,6 +5,7 @@ import com.biao.shop.common.service.IdempotentService;
 import com.biao.shop.common.utils.RedisLettuceUtil;
 import io.lettuce.core.RedisFuture;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.UUID;
@@ -20,6 +21,7 @@ import java.util.concurrent.TimeoutException;
  * @Date 2020/4/11
  * @Version V1.0
  **/
+@Component
 public class IdempotentServiceImpl implements IdempotentService {
 
 

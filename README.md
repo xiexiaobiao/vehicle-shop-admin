@@ -9,7 +9,7 @@ a mirco-service framework admin system for vehicle shop
 
 管理后台演示地址：http://47.115.127.19:8088/  账号密码请联系我
 
-用户端安卓APP下载地址：https://biao-aliyun-oss-pic-bucket.oss-cn-shenzhen.aliyuncs.com/0412130113.apk
+用户端安卓APP下载地址：https://biao-aliyun-oss-pic-bucket.oss-cn-shenzhen.aliyuncs.com/__UNI__10604B1_360_0421145705.apk
 
 用户端iOS越狱包：https://biao-aliyun-oss-pic-bucket.oss-cn-shenzhen.aliyuncs.com/0412130238.ipa
 

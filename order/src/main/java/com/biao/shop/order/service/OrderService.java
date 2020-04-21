@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.biao.shop.common.dto.OrderDto;
 import com.biao.shop.common.entity.ShopOrderEntity;
+import com.biao.shop.common.response.ObjectResponse;
+import com.xxl.job.core.biz.model.ReturnT;
 
 import java.util.Collection;
 
@@ -28,5 +30,6 @@ public interface OrderService extends IService<ShopOrderEntity>{
     Page<OrderDto> listOrderDTO(Integer current, Integer size, String orderUuid, String clientName, String phone,
                                 String vehicleSeries, String vehiclePlate, String generateDateStart,
                                 String generateDateEnd, int paidStatus);
+    ObjectResponse<Integer> autoCancelOrder();
 
 }

@@ -67,6 +67,23 @@ spring:
     sampler:
       probability: 1.0
 
+### xxl-job, email
+  mail:
+    host: smtp.qq.com
+    port: 25
+    protocol: smtp
+    default-encoding: UTF-8
+    sendMail: xxx@qq.com
+    myEmailPassword: xxxx
+    auth: true
+    smtp:
+      auth: true
+      starttls: true
+      required: true
+      socketFactory:
+        class: javax.net.ssl.SSLSocketFactory
+    receiver:
+      addr: xxxx@qq.com
 
 #mybatis
 mybatis-plus:
@@ -137,3 +154,20 @@ soul:
     admin-url: http://localhost:9095
     context-path: /client
     app-name: customerApp
+
+### xxl-job
+xxl:
+  job:
+    admin:
+      #admin address list, such as "http://address" or "http://address01,http://address02"
+      addresses: http://127.0.0.1:8080/xxl-job-admin
+    accessToken: 6eccc15a-5fa2-4737-a606-f74d4f3cee61 #需要与调度中心配对使用
+    # 执行器配置信息
+    executor:
+      appname: vehicle-admin-customer-service
+      address: #default use address to registry , otherwise use ip:port if address is null
+      ip: 127.0.0.1
+      port: 9992
+      logpath: /data/applogs/xxl-job/jobhandler
+      logretentiondays: 30
+

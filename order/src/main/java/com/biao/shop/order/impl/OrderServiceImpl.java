@@ -10,10 +10,15 @@ import com.biao.shop.common.dto.OrderDto;
 import com.biao.shop.common.entity.ItemListEntity;
 import com.biao.shop.common.entity.ShopClientEntity;
 import com.biao.shop.common.entity.ShopOrderEntity;
+import com.biao.shop.common.enums.RespStatusEnum;
+import com.biao.shop.common.response.ObjectResponse;
 import com.biao.shop.common.rpc.service.ShopClientRPCService;
 import com.biao.shop.common.rpc.service.ShopStockRPCService;
 import com.biao.shop.order.service.ItemListService;
 import com.biao.shop.order.service.OrderService;
+import com.xxl.job.core.biz.model.ReturnT;
+import com.xxl.job.core.handler.annotation.XxlJob;
+import com.xxl.job.core.log.XxlJobLogger;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.dubbo.config.annotation.Reference;
 import org.slf4j.Logger;
@@ -23,6 +28,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -159,6 +170,7 @@ public class OrderServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrderEntity>
 
     }
 
+
     // 将未付款订单更新为已付款
     @Override
     public int paidOrder(String orderUId,String note) throws Exception {
@@ -219,6 +231,134 @@ public class OrderServiceImpl extends ServiceImpl<ShopOrderDao, ShopOrderEntity>
             });
         }
         return shopOrderDao.updateById(orderEntity);
+    }
+
+    @Override
+    public ObjectResponse<Integer> autoCancelOrder() {
+        ObjectResponse<Integer> response = new ObjectResponse<>();
+        try{
+            // 查找当天30分钟内未付款订单
+            List<ShopOrderEntity> orderEntityList = shopOrderDao.selectList(new LambdaQueryWrapper<ShopOrderEntity>()
+                    .gt(ShopOrderEntity::getGenerateDate, LocalDate.now())
+                    .lt(ShopOrderEntity::getGenerateDate,LocalDateTime.now().minusMinutes(30L)));
+            if (!Objects.isNull(orderEntityList) && !orderEntityList.isEmpty()){
+                int result = shopOrderDao.deleteBatchIds(orderEntityList);
+                response.setCode(RespStatusEnum.SUCCESS.getCode());
+                response.setMessage(RespStatusEnum.SUCCESS.getMessage());
+                response.setData(result);
+            }
+            return response;
+        }catch (Exception e){
+            response.setCode(RespStatusEnum.FAIL.getCode());
+            response.setMessage(RespStatusEnum.FAIL.getMessage());
+            response.setData(null);
+            return response;
+        }
+    }
+
+    /**
+     * 这里为了演示http模式，直接使用参数：
+     *      url: http://127.0.0.1:9195/order/vehicle/order/autoCancel
+     *      method: get
+     *      data: content
+     */
+    @XxlJob("autoCancelOrderJobHandler")
+    public ReturnT<String> autoCancelOrderJob( String param ){
+        // param parse
+        if (param==null || param.trim().length()==0) {
+            XxlJobLogger.log("param["+ param +"] invalid.");
+            return ReturnT.FAIL;
+        }
+        String[] httpParams = param.split("\n");
+        String url = null;
+        String method = null;
+        String data = null;
+        for (String httpParam: httpParams) {
+            if (httpParam.startsWith("url:")) {
+                url = httpParam.substring(httpParam.indexOf("url:") + 4).trim();
+            }
+            if (httpParam.startsWith("method:")) {
+                method = httpParam.substring(httpParam.indexOf("method:") + 7).trim().toUpperCase();
+                System.out.println("method>>>>>>>>"+ method);
+            }
+            if (httpParam.startsWith("data:")) {
+                data = httpParam.substring(httpParam.indexOf("data:") + 5).trim();
+            }
+        }
+
+        // param valid
+        if (url==null || url.trim().length()==0) {
+            XxlJobLogger.log("url["+ url +"] invalid.");
+            return ReturnT.FAIL;
+        }
+        // 限制只支持 "GET" 和 "POST"
+        if (method==null || !Arrays.asList("GET", "POST").contains(method)) {
+            XxlJobLogger.log("method["+ method +"] invalid.");
+            return ReturnT.FAIL;
+        }
+
+        // request
+        HttpURLConnection connection = null;
+        BufferedReader bufferedReader = null;
+        try {
+            // connection
+            URL realUrl = new URL(url);
+            connection = (HttpURLConnection) realUrl.openConnection();
+
+            // connection setting
+            connection.setRequestMethod(method);
+            connection.setDoOutput(true);
+            connection.setDoInput(true);
+            connection.setUseCaches(false);
+            connection.setReadTimeout(5 * 1000);
+            connection.setConnectTimeout(3 * 1000);
+            connection.setRequestProperty("connection", "Keep-Alive");
+            connection.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+            connection.setRequestProperty("Accept-Charset", "application/json;charset=UTF-8");
+
+            // do connection
+            connection.connect();
+
+            // data
+            if (data!=null && data.trim().length()>0) {
+                DataOutputStream dataOutputStream = new DataOutputStream(connection.getOutputStream());
+                dataOutputStream.write(data.getBytes("UTF-8"));
+                dataOutputStream.flush();
+                dataOutputStream.close();
+            }
+
+            // valid StatusCode
+            int statusCode = connection.getResponseCode();
+            if (statusCode != 200) {
+                throw new RuntimeException("Http Request StatusCode(" + statusCode + ") Invalid.");
+            }
+
+            // result
+            bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
+            StringBuilder result = new StringBuilder();
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                result.append(line);
+            }
+            String responseMsg = result.toString();
+
+            XxlJobLogger.log(responseMsg);
+            return ReturnT.SUCCESS;
+        } catch (Exception e) {
+            XxlJobLogger.log(e);
+            return ReturnT.FAIL;
+        } finally {
+            try {
+                if (bufferedReader != null) {
+                    bufferedReader.close();
+                }
+                if (connection != null) {
+                    connection.disconnect();
+                }
+            } catch (Exception e2) {
+                XxlJobLogger.log(e2);
+            }
+        }
     }
 
 }

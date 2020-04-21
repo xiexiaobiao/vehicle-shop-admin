@@ -133,6 +133,14 @@ subprojects {
         // logback日志组件
         compile group: 'org.apache.skywalking', name: 'apm-toolkit-logback-1.x', version: '7.0.0'
 
+        // xxl-job-core
+        compile group: 'com.xuxueli', name: 'xxl-job-core', version: '2.2.0'
+
+        // java mail component
+        compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '2.2.6.RELEASE'
+
+
+
     }
     //if code include the chinese content
     //>>>>>>>>>>>> unmappable character for encoding GBK,

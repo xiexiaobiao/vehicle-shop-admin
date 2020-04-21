@@ -10,13 +10,21 @@ import com.biao.shop.common.response.ObjectResponse;
 import com.biao.shop.order.manager.OrderManager;
 import com.biao.shop.order.service.ItemListService;
 import com.biao.shop.order.service.OrderService;
+import com.xxl.job.core.biz.model.ReturnT;
+import com.xxl.job.core.log.XxlJobLogger;
 import org.dromara.soul.client.common.annotation.SoulClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -133,5 +141,11 @@ public class OrderController {
         response.setMessage(RespStatusEnum.SUCCESS.getMessage());
         response.setData(result);
         return response;
+    }
+
+    @SoulClient(path = "/vehicle/order/autoCancel", desc = "自动取消未支付订单")
+    @GetMapping("/autoCancel")
+    public ObjectResponse<Integer> autoCancelOrder(){
+        return orderService.autoCancelOrder();
     }
 }

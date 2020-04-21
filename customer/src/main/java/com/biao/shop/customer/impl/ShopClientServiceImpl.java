@@ -6,18 +6,23 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.biao.shop.common.dao.ShopClientDao;
 import com.biao.shop.common.dto.ClientQueryDTO;
 import com.biao.shop.common.entity.ShopClientEntity;
+import com.biao.shop.common.utils.MailUtil;
 import com.biao.shop.customer.service.ShopClientService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.xxl.job.core.biz.model.ReturnT;
+import com.xxl.job.core.handler.annotation.XxlJob;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -36,6 +41,9 @@ public class ShopClientServiceImpl extends ServiceImpl<ShopClientDao, ShopClient
     private final Logger logger = LoggerFactory.getLogger(ShopClientServiceImpl.class);
 
     private ShopClientDao shopClientDao;
+
+    @Value("${spring.mail.receiver.addr}")
+    private String mailReceiverAddr;
 
     @Autowired
     public ShopClientServiceImpl(ShopClientDao shopClientDao){
@@ -161,5 +169,31 @@ public class ShopClientServiceImpl extends ServiceImpl<ShopClientDao, ShopClient
                 .like(!vehicleSeriesFlag,"vehicle_plate",clientQueryDTO.getVehiclePlate())
                 .like(!vehiclePlateFlag,"vehicle_series",clientQueryDTO.getVehicleSeries());
         return shopClientDao.selectList(qw);
+    }
+
+    @Override
+    @XxlJob("autoSendPromotionJobHandler")
+    public ReturnT<String> autoSendPromotion(String param) {
+        try{
+            // 找出当天注册的用户
+            List<ShopClientEntity> clientEntityList =
+                    shopClientDao.selectList(new LambdaQueryWrapper<ShopClientEntity>()
+                            .gt(ShopClientEntity::getGenerateDate,LocalDate.now())
+                            .lt(ShopClientEntity::getGenerateDate,LocalDate.now().plusDays(1L)));
+            // 发送邮件信息
+            if (!Objects.isNull(clientEntityList) && !clientEntityList.isEmpty()){
+                // shopClientEntity中需要设计用户邮箱地址，我这里简化为一个固定的邮箱地址
+                clientEntityList.forEach(shopClientEntity -> {
+                    try {
+                        MailUtil.sendMailTo(shopClientEntity.getClientName(),mailReceiverAddr);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+            return ReturnT.SUCCESS;
+        }catch (Exception e){
+            return ReturnT.FAIL;
+        }
     }
 }

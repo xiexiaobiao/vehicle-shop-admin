@@ -5,6 +5,7 @@ import com.biao.shop.common.dto.ClientQueryDTO;
 import com.biao.shop.common.entity.ShopClientEntity;
 import com.biao.shop.common.entity.ShopItemEntity;
 import com.github.pagehelper.PageInfo;
+import com.xxl.job.core.biz.model.ReturnT;
 
 import java.util.Collection;
 import java.util.List;
@@ -31,4 +32,5 @@ public interface ShopClientService extends IService<ShopClientEntity> {
                                             String name,String vehiclePlate,String phone);
     List<String> listPlate();
     List<ShopClientEntity> listByClientDto(ClientQueryDTO clientQueryDTO);
+    ReturnT<String> autoSendPromotion(String param);
 }

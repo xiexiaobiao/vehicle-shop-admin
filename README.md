@@ -15,7 +15,7 @@ a mirco-service framework admin system for vehicle shop
 
 ## Framework架构图:
 
-![Image text](https://github.com/xiexiaobiao/vehicle-shop-admin/blob/master/devDocument/framework.PNG)
+![Image text](https://biao-aliyun-oss-pic-bucket.oss-cn-shenzhen.aliyuncs.com/framework.PNG)
 
 ***
 
@@ -34,7 +34,7 @@ a mirco-service framework admin system for vehicle shop
 | Seata     | RPC     | 分布式事务方案     |
 | Sentinel     | 限流     | 服务访问限流降级     |
 | Redis     | 缓存     | 数据库访问缓存；session缓存；API幂等     |已整合
-| Skywalking     | 监控     | 微服务链路跟踪     |
+| Skywalking     | 监控     | 微服务链路跟踪     |已整合
 | RocketMQ     | MQ     | 服务间通信；分布式事务；     |已整合
 | Kafka     | MQ     | 日志传输     |
 | ElasticSearch     | DB     | 搜索；推荐；日志存储     |
